@@ -1,12 +1,13 @@
-import './App.less';
-import Button from 'components/common/Button';
+import React from "react";
 
 function App() {
+
   return (
-    <div className="App">
-      <Button/>
+    <div className='app'>
+
     </div>
   );
+
 }
 
 export default App;
