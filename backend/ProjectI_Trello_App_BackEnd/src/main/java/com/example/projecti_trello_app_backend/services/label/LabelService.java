@@ -22,4 +22,6 @@ public interface LabelService {
 
      boolean delete (int labelId);
 
+     boolean deleteByTask(int taskId);
+
 }

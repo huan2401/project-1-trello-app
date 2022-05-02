@@ -5,6 +5,7 @@ import com.example.projecti_trello_app_backend.entities.board.Board;
 import com.example.projecti_trello_app_backend.entities.column.Columns;
 import com.example.projecti_trello_app_backend.services.board.BoardService;
 import com.example.projecti_trello_app_backend.services.column.ColumnService;
+import com.example.projecti_trello_app_backend.services.combinations.ColumnTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +23,7 @@ public class ColumnController {
 
     @Autowired
     private BoardService boardService;
+
 
     @GetMapping("/find-all-by-board")
     public ResponseEntity<?> findAllByBoard(@RequestParam(name = "board_id") int boardId)
@@ -45,6 +47,13 @@ public class ColumnController {
         if(!columnService.findByColumnId(columId).isPresent()) return ResponseEntity.ok(Optional.empty());
         columnDTO.setColumnId(columId);
         return ResponseEntity.ok(columnService.update(columnDTO));
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> delete (@RequestParam(name = "column_id")int columnId)
+    {
+        return columnService.delete(columnId)?ResponseEntity.status(200).build()
+                                            :ResponseEntity.status(304).build();
     }
 
 

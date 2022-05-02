@@ -16,7 +16,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(schema = "bfrtggj2gyfwccjjatxj", name = "board")
+@Table(schema = "${database.name}", name = "board")
 public class Board {
 
     @Id

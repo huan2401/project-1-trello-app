@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(schema = "bfrtggj2gyfwccjjatxj", name = "column_task")
+@Table(schema = "${database.name}", name = "column_task")
 public class ColumnTask {
 
     @Id

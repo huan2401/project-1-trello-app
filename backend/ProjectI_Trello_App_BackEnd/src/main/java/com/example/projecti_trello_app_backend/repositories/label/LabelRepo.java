@@ -27,4 +27,10 @@ public interface LabelRepo extends JpaRepository<Label, Integer>{
     @Query(value = "update Label label set label.deleted =true where label.labelId =?1")
      int delete (int labelId);
 
+    @Modifying
+    @Transactional
+    @Query(value = " update Label label set label.deleted =true" +
+            " where label.task.taskId =?1 and label.deleted=false")
+    int deleteByTask(int taskId);
+
 }

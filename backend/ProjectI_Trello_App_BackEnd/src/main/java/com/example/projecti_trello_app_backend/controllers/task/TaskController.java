@@ -1,6 +1,8 @@
 package com.example.projecti_trello_app_backend.controllers.task;
 
 import com.example.projecti_trello_app_backend.dto.TaskDTO;
+import com.example.projecti_trello_app_backend.entities.task.Task;
+import com.example.projecti_trello_app_backend.services.column.ColumnService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +18,20 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private ColumnService columnService;
+
     @GetMapping("/find-by-task-id")
     public ResponseEntity<?> findByTaskId(@RequestParam(name = "task_id") int taskId)
     {
         return ResponseEntity.ok(taskService.findByTaskId(taskId));
+    }
+
+    @PutMapping("/add")
+    public ResponseEntity<?> add(@RequestBody Task task, @RequestParam(name = "column_id")int columnId){
+        return columnService.findByColumnId(columnId).map(column -> {
+            return ResponseEntity.ok(taskService.add(task,column.getColumnId()));
+        }).orElse(ResponseEntity.ok(Optional.empty()));
     }
 
     @PutMapping("/update")

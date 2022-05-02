@@ -3,7 +3,10 @@ package com.example.projecti_trello_app_backend.serviceImpls.column;
 import com.example.projecti_trello_app_backend.dto.ColumnDTO;
 import com.example.projecti_trello_app_backend.entities.column.Columns;
 import com.example.projecti_trello_app_backend.repositories.column.ColumnRepo;
+import com.example.projecti_trello_app_backend.repositories.combinations.ColumnTaskRepo;
 import com.example.projecti_trello_app_backend.services.column.ColumnService;
+import com.example.projecti_trello_app_backend.services.combinations.ColumnTaskService;
+import com.example.projecti_trello_app_backend.services.task.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,10 @@ public class ColumnServiceImpl implements ColumnService {
 
     @Autowired
     private ColumnRepo columnRepo;
+
+    @Autowired
+    ColumnTaskService columnTaskService;
+
 
     @Override
     public List<Columns> findAllByBoard(int boardId) {
@@ -78,8 +85,7 @@ public class ColumnServiceImpl implements ColumnService {
     public boolean delete(int columnId) {
         try
         {
-            // còn phải xử lý xóa task trong column
-            return columnRepo.delete(columnId)>0?true:false;
+            return columnRepo.delete(columnId)>0 && columnTaskService.deleteByColumn(columnId) ?true:false;
         } catch (Exception ex)
         {
             log.error("delete column error",ex);

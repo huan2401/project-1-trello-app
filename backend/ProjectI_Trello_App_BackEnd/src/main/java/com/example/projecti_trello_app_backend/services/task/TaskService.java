@@ -11,6 +11,8 @@ public interface TaskService {
 
     Optional<Task> findByTaskId(int taskId);
 
+    Optional<?> add (Task task, int columnId);
+
     Optional<Task> update(TaskDTO taskDTO);
 
     boolean delete(int taskId);

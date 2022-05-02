@@ -16,7 +16,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(schema = "bfrtggj2gyfwccjjatxj", name = "user_task")
+@Table(schema = "${database.name}", name = "user_task")
 public class UserTask {
 
     @Id

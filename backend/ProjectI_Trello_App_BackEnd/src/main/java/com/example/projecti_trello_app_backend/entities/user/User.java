@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(schema = "bfrtggj2gyfwccjjatxj", name = "user")
+@Table(schema = "${database.name}", name = "user")
 public class User {
 
     @Id

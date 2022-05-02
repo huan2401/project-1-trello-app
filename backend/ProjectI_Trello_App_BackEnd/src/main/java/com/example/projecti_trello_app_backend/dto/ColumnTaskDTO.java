@@ -9,14 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LabelDTO {
+public class ColumnTaskDTO {
 
-    private int labelId;
+    private int id;
 
-    private int taskId;
-
-    private String labelColor;
-
-    private String labelTitle;
-
+    private Boolean staged;
 }

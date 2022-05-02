@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(schema = "bfrtggj2gyfwccjjatxj", name = "label")
+@Table(schema = "${database.name}", name = "label")
 public class Label {
 
     @Id

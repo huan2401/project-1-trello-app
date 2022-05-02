@@ -57,16 +57,50 @@ public class LabelServiceImpl implements LabelService {
 
     @Override
     public Optional<Label> add(Label label) {
-        return Optional.empty();
+        try
+        {
+            return Optional.ofNullable(labelRepo.save(label));
+        } catch (Exception ex)
+        {
+            log.error("add label to task error",ex);
+            return Optional.empty();
+        }
     }
 
     @Override
     public Optional<Label> update(LabelDTO labelDTO) {
-        return Optional.empty();
+        try{
+            Label labelToUpdate = labelRepo.findByLabelId(labelDTO.getLabelId()).get();
+            labelToUpdate.setLabelColor(labelDTO!=null? labelDTO.getLabelColor():labelToUpdate.getLabelColor());
+            labelToUpdate.setLabelTitle(labelDTO.getLabelTitle()!=null? labelDTO.getLabelTitle():labelToUpdate.getLabelTitle());
+            return Optional.ofNullable(labelRepo.save(labelToUpdate));
+        } catch (Exception ex)
+        {
+            log.error("update label error",ex);
+            return Optional.empty();
+        }
     }
 
     @Override
     public boolean delete(int labelId) {
-        return false;
+        try{
+            return labelRepo.delete(labelId)>0?true:false;
+        } catch (Exception ex)
+        {
+            log.error("deleted label by label id error",ex);
+
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deleteByTask(int taskId) {
+        try{
+            return labelRepo.deleteByTask(taskId)>0?true:false;
+        } catch (Exception ex)
+        {
+            log.error("delete label by task error",ex);
+            return false;
+        }
     }
 }

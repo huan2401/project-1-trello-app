@@ -1,13 +1,21 @@
 package com.example.projecti_trello_app_backend.serviceImpls.task;
 
 import com.example.projecti_trello_app_backend.dto.TaskDTO;
+import com.example.projecti_trello_app_backend.entities.column.Columns;
+import com.example.projecti_trello_app_backend.entities.combinations.ColumnTask;
 import com.example.projecti_trello_app_backend.entities.task.Task;
+import com.example.projecti_trello_app_backend.repositories.column.ColumnRepo;
+import com.example.projecti_trello_app_backend.repositories.combinations.ColumnTaskRepo;
 import com.example.projecti_trello_app_backend.repositories.task.TaskRepo;
+import com.example.projecti_trello_app_backend.services.column.ColumnService;
+import com.example.projecti_trello_app_backend.services.combinations.ColumnTaskService;
+import com.example.projecti_trello_app_backend.services.combinations.UserTaskService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.Optional;
 
 @Service
@@ -16,6 +24,15 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private TaskRepo taskRepo;
+
+    @Autowired
+    private ColumnService columnService;
+
+    @Autowired
+    private ColumnTaskService columnTaskService;
+
+    @Autowired
+    private UserTaskService userTaskService;
 
     @Override
     public Optional<Task> findByTaskId(int taskId) {
@@ -54,9 +71,28 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public Optional<?> add(Task task, int columnId) {
+        try
+        {
+            task.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            Task TaskAdded = taskRepo.save(task);
+            Columns column = columnService.findByColumnId(columnId).get();
+            ColumnTask columnTask =ColumnTask.builder().column(column).task(task).staged(true).build();
+            return columnTaskService.add(columnTask);
+        } catch (Exception ex)
+        {
+            log.error("add task error",ex);
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public boolean delete(int taskId) {
         try {
-            return taskRepo.delete(taskId)>0?true:false;
+            return taskRepo.delete(taskId)>0
+                    && columnTaskService.deleteByTask(taskId)
+                    && userTaskService.deleteByTask(taskId)
+                    ?true:false;
         } catch (Exception ex)
         {
             log.error("delete task error", ex);

@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(schema = "bfrtggj2gyfwccjjatxj", name = "login_history")
+@Table(schema = "${database.name}", name = "login_history")
 public class LoginHistory {
 
     @Id
