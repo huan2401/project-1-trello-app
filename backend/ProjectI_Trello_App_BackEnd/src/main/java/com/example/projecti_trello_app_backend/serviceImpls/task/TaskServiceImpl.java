@@ -6,10 +6,13 @@ import com.example.projecti_trello_app_backend.entities.combinations.ColumnTask;
 import com.example.projecti_trello_app_backend.entities.task.Task;
 import com.example.projecti_trello_app_backend.repositories.column.ColumnRepo;
 import com.example.projecti_trello_app_backend.repositories.combinations.ColumnTaskRepo;
+import com.example.projecti_trello_app_backend.repositories.combinations.UserTaskRepo;
+import com.example.projecti_trello_app_backend.repositories.comment.CommentRepo;
 import com.example.projecti_trello_app_backend.repositories.task.TaskRepo;
 import com.example.projecti_trello_app_backend.services.column.ColumnService;
 import com.example.projecti_trello_app_backend.services.combinations.ColumnTaskService;
 import com.example.projecti_trello_app_backend.services.combinations.UserTaskService;
+import com.example.projecti_trello_app_backend.services.comment.CommentService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +29,16 @@ public class TaskServiceImpl implements TaskService {
     private TaskRepo taskRepo;
 
     @Autowired
-    private ColumnService columnService;
+    private ColumnRepo columnRepo;
 
     @Autowired
-    private ColumnTaskService columnTaskService;
+    private ColumnTaskRepo columnTaskRepo;
 
     @Autowired
-    private UserTaskService userTaskService;
+    private UserTaskRepo userTaskRepo;
+
+    @Autowired
+    private CommentRepo commentRepo;
 
     @Override
     public Optional<Task> findByTaskId(int taskId) {
@@ -75,10 +81,10 @@ public class TaskServiceImpl implements TaskService {
         try
         {
             task.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-            Task TaskAdded = taskRepo.save(task);
-            Columns column = columnService.findByColumnId(columnId).get();
-            ColumnTask columnTask =ColumnTask.builder().column(column).task(task).staged(true).build();
-            return columnTaskService.add(columnTask);
+            Task taskAdded = taskRepo.save(task);
+            Columns column = columnRepo.findByColumnId(columnId).get();
+            ColumnTask columnTask =ColumnTask.builder().column(column).task(taskAdded).staged(true).build();
+            return Optional.ofNullable(columnTaskRepo.save(columnTask));
         } catch (Exception ex)
         {
             log.error("add task error",ex);
@@ -90,8 +96,9 @@ public class TaskServiceImpl implements TaskService {
     public boolean delete(int taskId) {
         try {
             return taskRepo.delete(taskId)>0
-                    && columnTaskService.deleteByTask(taskId)
-                    && userTaskService.deleteByTask(taskId)
+                    && columnTaskRepo.deleteByTask(taskId)>0
+                    && userTaskRepo.deleteByTask(taskId)>0
+                    && commentRepo.deleteByTask(taskId) >0
                     ?true:false;
         } catch (Exception ex)
         {

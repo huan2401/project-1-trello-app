@@ -22,12 +22,6 @@ public class UserTaskServiceImpl implements UserTaskService {
     @Autowired
     private UserTaskRepo userTaskRepo;
 
-    @Autowired
-    private  TaskService taskService;
-
-    @Autowired
-    private  UserService userService;
-
     @Override
     public List<UserTask> findByTask(int taskId) {
        try

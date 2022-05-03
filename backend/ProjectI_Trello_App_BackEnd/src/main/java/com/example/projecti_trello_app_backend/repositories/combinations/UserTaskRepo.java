@@ -26,7 +26,7 @@ public interface UserTaskRepo extends JpaRepository<UserTask,Integer> {
 
     @Modifying
     @Transactional
-    @Query(value = "update UserTask userTask set usertask.deleted=true where userTask.task.taskId=?1" +
+    @Query(value = "update UserTask userTask set userTask.deleted=true where userTask.task.taskId=?1" +
             " and userTask.deleted=false ")
     public int deleteByTask(int taskId); // delete all when the task was deleted
 

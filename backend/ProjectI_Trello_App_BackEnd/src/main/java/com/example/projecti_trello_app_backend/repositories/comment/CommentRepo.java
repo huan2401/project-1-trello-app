@@ -21,8 +21,16 @@ public interface CommentRepo extends JpaRepository<Comment,Integer> {
 
     @Modifying
     @Transactional
-    @Query("update Comment cmt set cmt.deleted =true " +
+    @Query(value = "update Comment cmt set cmt.deleted =true " +
             " where cmt.commentId =?1 and cmt.deleted=false")
-     boolean delete(int commentId);
+     int deleteByComment(int commentId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "update Comment cmt set cmt.deleted=true " +
+            " where cmt.task.taskId=?1 and cmt.deleted=false")
+    int deleteByTask(int taskId);
+
+
 
 }
