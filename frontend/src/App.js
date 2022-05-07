@@ -1,11 +1,19 @@
 import './App.less';
-import Button from 'components/common/Button';
+import {BrowserRouter as Router,Switch,Route} from 'react-router-dom';
+import Home from "containers/Home";
+import PrivateRoute from "components/common/PrivateRoute";
+import Login from "components/common/Login";
 
 function App() {
   return (
-    <div className="App">
-      <Button/>
-    </div>
+    <Router>
+      <Switch>
+        <Route path="/login">
+          <Login/>
+        </Route>
+        <PrivateRoute path="/" Component={Home}/>
+      </Switch>
+    </Router>
   );
 }
 
