@@ -1,4 +1,4 @@
-package com.example.projecti_trello_app_backend.configurations;
+package com.example.projecti_trello_app_backend.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +35,7 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().anyRequest().permitAll();
     }
 
-    // config cors to allow fetch API
+    // config cors to allow js call api use fetch or axios
     @Bean
     CorsConfigurationSource corsConfigurationSource()
     {

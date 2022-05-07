@@ -25,7 +25,7 @@ public class UserController {
                                                    @RequestParam(name = "email", required = false) String email)
     {
         return userService.findByUsernameOrEmail(userName,email).isPresent()
-                ?ResponseEntity.ok(userService.findByUsernameOrEmail(userName,email).get())
+                ?ResponseEntity.ok(UserDTO.convertToDTO(userService.findByUsernameOrEmail(userName,email).get()))
                 :ResponseEntity.ok(Optional.empty());
     }
 

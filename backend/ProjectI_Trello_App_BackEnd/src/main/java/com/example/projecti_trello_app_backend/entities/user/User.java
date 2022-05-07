@@ -1,5 +1,6 @@
 package com.example.projecti_trello_app_backend.entities.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +28,7 @@ public class User {
 
     @Column(name ="password", nullable = false)
     @NotNull
+    @JsonIgnore
     private String passWord;
 
     @Column(name = "email",unique = true, nullable = false)
@@ -41,10 +43,13 @@ public class User {
     @NotNull
     private String lastName;
 
+    @Column(name = "sex", nullable = false)
+    private String sex;
+
     @Column(name = "avatar", length = 256)
     private String avatarUrl;
 
-    @Column(name = "phone_number", length = 10)
+    @Column(name = "phone_number", length = 11)
     private String phoneNumber;
 
 }

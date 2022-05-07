@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
         }
     }
     @Override
-    public Optional<User> update(UserDTO userDTO) {
+    public Optional<?> update(UserDTO userDTO) {
         try {
             if(!userRepo.findByUserId(userDTO.getUserId()).isPresent())
             {
@@ -75,11 +75,12 @@ public class UserServiceImpl implements UserService {
                 return Optional.empty();
             }
             User userToUpdate = userRepo.findByUserId(userDTO.getUserId()).get();
+            userToUpdate.setSex(userDTO.getSex()!=null?userDTO.getSex():userToUpdate.getSex());
             userToUpdate.setFirstName(userDTO.getFirstName()!=null?userDTO.getFirstName():userToUpdate.getFirstName());
             userToUpdate.setLastName(userDTO.getLastName()!=null?userDTO.getLastName():userToUpdate.getLastName());
             userToUpdate.setAvatarUrl(userDTO.getAvatarUrl()!=null?userDTO.getAvatarUrl():userToUpdate.getAvatarUrl());
             userToUpdate.setPhoneNumber(userDTO.getPhoneNumber()!=null?userDTO.getPhoneNumber():userToUpdate.getPhoneNumber());
-            return Optional.of(userRepo.save(userToUpdate));
+            return Optional.of(UserDTO.convertToDTO(userRepo.save(userToUpdate)));
         } catch (Exception exp)
         {
             log.error("Update User error",exp);

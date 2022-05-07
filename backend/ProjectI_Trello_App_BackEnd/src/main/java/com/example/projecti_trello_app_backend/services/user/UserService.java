@@ -18,7 +18,7 @@ public interface UserService {
 
     Optional<User> signUp(User user); // add new user
 
-    Optional<User> update(UserDTO userDTO);
+    Optional<?> update(UserDTO userDTO);
 
     Optional<User> changePassWord(User user);
 
