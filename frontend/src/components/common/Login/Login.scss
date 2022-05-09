@@ -7,7 +7,15 @@
     font-family: 'Poppins', sans-serif;
     // overflow: hidden;
 }
-section {
+.login {
+    .logo {
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        margin-bottom: 50px;
+        margin-left: 15px;
+        width: 300px; 
+    }
     display: flex;
     justify-content: center;
     align-items: center;
@@ -45,6 +53,50 @@ section {
     }
     .box {
         position: relative;
+            .square {
+                position: absolute;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+                border: 1px solid rgba(138, 111, 111, 0.5);
+                border-right: 1px solid rgba(138, 111, 111, 0.5);
+                border-bottom: 1px solid rgba(138, 111, 111, 0.5);
+                border-radius: 10px;
+                animation: animate 10s linear infinite;
+                animation-delay: calc(-1s * var(--i));
+            }
+            .square:nth-child(1) {
+                top: -50px;
+                right: -60px;
+                width: 100px;
+                height: 100px;
+            }
+            .square:nth-child(2) {
+                top: 150px;
+                left: -150px;
+                width: 120px;
+                height: 120px;
+                z-index: 2;
+            }
+            .square:nth-child(3) {
+                bottom: 50px;
+                right: -65px;
+                width: 80px;
+                height: 80px;
+                z-index: 2;
+            }
+            .square:nth-child(4) {
+                bottom: -20px;
+                left: 100px;
+                width: 50px;
+                height: 50px;
+            }
+            .square:nth-child(5) {
+                top: -80px;
+                left: -35px;
+                width: 60px;
+                height: 60px;
+            }
+        
         .container {
             position: relative;
             width: 400px;
@@ -128,51 +180,8 @@ section {
         }
     }
 }
-.box {
-    .square {
-        position: absolute;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(138, 111, 111, 0.5);
-        border-right: 1px solid rgba(138, 111, 111, 0.5);
-        border-bottom: 1px solid rgba(138, 111, 111, 0.5);
-        border-radius: 10px;
-        animation: animate 10s linear infinite;
-        animation-delay: calc(-1s * var(--i));
-    }
-}
-.box .square:nth-child(1) {
-    top: -50px;
-    right: -60px;
-    width: 100px;
-    height: 100px;
-}
-.box .square:nth-child(2) {
-    top: 150px;
-    left: -150px;
-    width: 120px;
-    height: 120px;
-    z-index: 2;
-}
-.box .square:nth-child(3) {
-    bottom: 50px;
-    right: -65px;
-    width: 80px;
-    height: 80px;
-    z-index: 2;
-}
-.box .square:nth-child(4) {
-    bottom: -20px;
-    left: 100px;
-    width: 50px;
-    height: 50px;
-}
-.box .square:nth-child(5) {
-    top: -80px;
-    left: -35px;
-    width: 60px;
-    height: 60px;
-}
+
+
 @keyframes animate 
     {
         0%, 100% {
@@ -183,15 +192,7 @@ section {
         }
     }
 
-.logo {
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    margin-bottom: 50px;
-    margin-left: 15px;
-    width: 300px;
-    
-}
+
 
 
 

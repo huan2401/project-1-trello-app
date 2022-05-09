@@ -3,7 +3,7 @@ import "./Signup.scss";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 const Signup = () => {
     return (
-        <section>
+        <section className="signup">
             <div className="logo">
                 <img
                     src="https://aid-frontend.prod.atl-paas.net/atlassian-id/front-end/5.0.332/static/media/trello-logo-blue.f7627b3a.svg"
