@@ -18,6 +18,8 @@ public class UserDTO {
 
     private String passWord;
 
+    private Boolean activated;
+
     private String firstName;
 
     private String lastName;
@@ -28,6 +30,8 @@ public class UserDTO {
 
     private String phoneNumber;
 
+    private String region ;
+
     public static UserDTO convertToDTO(User user)
     {
         return UserDTO.builder().userId(user.getUserId())
@@ -35,8 +39,11 @@ public class UserDTO {
                                 .firstName(user.getFirstName())
                                 .lastName(user.getLastName())
                                 .sex(user.getSex())
-                                .passWord("Private Field")
+                                .passWord(null)
                                 .avatarUrl(user.getAvatarUrl())
-                                .phoneNumber(user.getPhoneNumber()).build();
+                                .phoneNumber(user.getPhoneNumber())
+                                .region(user.getRegion())
+                                .activated(user.getActivated())
+                                .build();
     }
 }

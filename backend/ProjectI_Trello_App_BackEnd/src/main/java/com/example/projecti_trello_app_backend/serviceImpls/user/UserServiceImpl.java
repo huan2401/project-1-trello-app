@@ -1,14 +1,22 @@
 package com.example.projecti_trello_app_backend.serviceImpls.user;
 
+import com.example.projecti_trello_app_backend.constants.MailConstants;
 import com.example.projecti_trello_app_backend.dto.UserDTO;
 import com.example.projecti_trello_app_backend.entities.user.User;
 import com.example.projecti_trello_app_backend.repositories.user.UserRepo;
 import com.example.projecti_trello_app_backend.services.user.UserService;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +26,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JavaMailSender mailSender;
 
     @Override
     public List<User> findAll() {
@@ -54,18 +68,67 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> signUp(User user) {
+    public Optional<User> signUp(User user,String siteURL) { // create a new user
         try{
             if(userRepo.findByUserNameOrEmail(user.getUserName(),user.getEmail()).isPresent())
                 return Optional.empty();
-            return Optional.of(userRepo.save(user));
+            user.setPassWord(passwordEncoder.encode(user.getPassWord()));
+            String randomCode = RandomString.make(64);
+            user.setVerificationCode(randomCode);
+            user.setActivated(false);
+            User newUser = userRepo.save(user);
+            sendVerificationEmail(user,siteURL);
+            return Optional.ofNullable(newUser);
         } catch (Exception exp)
         {
             log.error("Sign Up error ",exp);
-            exp.printStackTrace();
             return Optional.empty();
         }
     }
+
+    @Override
+    public void sendVerificationEmail(User user, String siteURL) // verify user -> set activated = true
+    {
+        try{
+            String toAddress =user.getEmail();
+            String fromAddress =MailConstants.MAIL_SENDER;
+            String subject ="Verification Email";
+            String senderName = MailConstants.SENDER_NAME;
+            StringBuilder content = new StringBuilder();
+            content.append("<div>");
+            content.append("Dear ").append(user.getFirstName()+" "+user.getLastName()).append("! Thank for using our service<br>");
+            content.append("<h2>Please verificate your account</h3><br>");
+            content.append("<a href =\"").append(siteURL+"/verify?verify-code="+user.getVerificationCode())
+                    .append("\">Activate your account</a><br>");
+            content.append("Best Regards !<br> Chien Dao</div>");
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+            helper.setTo(toAddress);
+            helper.setFrom(fromAddress,senderName);
+            helper.setSubject(subject);
+            helper.setText(content.toString(),true); // set format content to html type
+            mailSender.send(message);
+        } catch (Exception ex)
+        {
+            log.error("send verification email error",ex);
+        }
+    }
+
+    @Override
+    public Optional<User> verifyUser(String verificationCode) {
+        try{
+            if(!userRepo.findUserByVerificationCode(verificationCode).isPresent()) return Optional.empty();
+            User userToActivate = userRepo.findUserByVerificationCode(verificationCode).get();
+            if(userToActivate.getActivated()==true) return Optional.empty();
+            userToActivate.setActivated(true);
+            return Optional.ofNullable(userRepo.save(userToActivate));
+        } catch (Exception ex)
+        {
+            log.error("activate user error",ex);
+            return Optional.empty();
+        }
+    }
+
     @Override
     public Optional<?> update(UserDTO userDTO) {
         try {
@@ -80,6 +143,7 @@ public class UserServiceImpl implements UserService {
             userToUpdate.setLastName(userDTO.getLastName()!=null?userDTO.getLastName():userToUpdate.getLastName());
             userToUpdate.setAvatarUrl(userDTO.getAvatarUrl()!=null?userDTO.getAvatarUrl():userToUpdate.getAvatarUrl());
             userToUpdate.setPhoneNumber(userDTO.getPhoneNumber()!=null?userDTO.getPhoneNumber():userToUpdate.getPhoneNumber());
+            userToUpdate.setRegion(userDTO.getRegion()!=null?userDTO.getRegion():userToUpdate.getRegion());
             return Optional.of(UserDTO.convertToDTO(userRepo.save(userToUpdate)));
         } catch (Exception exp)
         {

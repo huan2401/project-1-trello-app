@@ -1,6 +1,7 @@
 package com.example.projecti_trello_app_backend.entities.board;
 
 import com.example.projecti_trello_app_backend.entities.user.User;
+import com.example.projecti_trello_app_backend.entities.workspace.Workspace;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,10 +25,9 @@ public class Board {
     @Column(name = "board_id", unique = true, nullable = false)
     private int boardId;
 
-    @ManyToOne
-    @JoinColumn(name = "manager_id", nullable = false)
-    @NotNull
-    private User boardManager;
+    @OneToOne
+    @JoinColumn(name = "work_space_id")
+    private Workspace workspace;
 
     @Column(name = "board_title")
     private String boardTitle;

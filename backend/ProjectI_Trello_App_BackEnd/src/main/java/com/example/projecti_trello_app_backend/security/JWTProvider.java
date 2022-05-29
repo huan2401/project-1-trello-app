@@ -1,6 +1,6 @@
 package com.example.projecti_trello_app_backend.security;
 
-import com.example.projecti_trello_app_backend.security.SecurityConstants;
+import com.example.projecti_trello_app_backend.constants.SecurityConstants;
 import com.example.projecti_trello_app_backend.repositories.user.UserRepo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

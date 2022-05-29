@@ -10,8 +10,6 @@ import java.util.Optional;
 @Service
 public interface BoardService {
 
-    List<Board> findAllByUser(int userId);
-
     Optional<Board> findByBoardId(int boardId);
 
     Optional<Board> addBoard (Board board);

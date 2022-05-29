@@ -28,8 +28,13 @@ public class User {
 
     @Column(name ="password", nullable = false)
     @NotNull
-    @JsonIgnore
     private String passWord;
+
+    @Column(name = "activated", nullable = false)
+    private Boolean activated;
+
+    @Column(name = "verification_code",length = 64,unique = true)
+    private String verificationCode;
 
     @Column(name = "email",unique = true, nullable = false)
     @NotNull
@@ -51,5 +56,8 @@ public class User {
 
     @Column(name = "phone_number", length = 11)
     private String phoneNumber;
+
+    @Column(name ="region")
+    private String region;
 
 }

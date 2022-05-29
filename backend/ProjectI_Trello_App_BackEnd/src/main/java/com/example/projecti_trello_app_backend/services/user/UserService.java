@@ -4,6 +4,8 @@ import com.example.projecti_trello_app_backend.dto.UserDTO;
 import com.example.projecti_trello_app_backend.entities.user.User;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +18,11 @@ public interface UserService {
 
     Optional<User> findByUsernameOrEmail(String userName, String email);
 
-    Optional<User> signUp(User user); // add new user
+    Optional<User> signUp(User user, String siteURL); // add new user
+
+    void sendVerificationEmail(User user, String siteURL);
+
+    Optional<User> verifyUser(String verificationCode);
 
     Optional<?> update(UserDTO userDTO);
 

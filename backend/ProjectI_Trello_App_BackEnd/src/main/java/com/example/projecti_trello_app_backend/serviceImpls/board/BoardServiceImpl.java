@@ -23,17 +23,6 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     private UserRepo userRepo;
 
-    @Override
-    public List<Board> findAllByUser(int userId) {
-        try {
-            return boardRepo.findAllByUser(userId);
-        } catch (Exception exp)
-        {
-            log.error("Find board by board's manager id error",exp);
-            exp.printStackTrace();
-            return List.of();
-        }
-    }
 
     @Override
     public Optional<Board> findByBoardId(int boardId) {
@@ -69,8 +58,6 @@ public class BoardServiceImpl implements BoardService {
             }
             Board boardToUpdate = boardRepo.findByBoardId(boardDTO.getBoardId()).get();
             boardToUpdate.setBoardTitle(boardDTO.getBoardTitle()!=null?boardDTO.getBoardTitle():boardToUpdate.getBoardTitle());
-            if(userRepo.findByUserId(boardDTO.getBoardManagerId()).isPresent() && boardDTO.getBoardManagerId()!=0)
-                boardToUpdate.setBoardManager(userRepo.findByUserId(boardDTO.getBoardManagerId()).get());
             boardToUpdate.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
             return Optional.ofNullable(boardRepo.save(boardToUpdate));
         } catch (Exception exp)

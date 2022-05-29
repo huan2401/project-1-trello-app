@@ -1,13 +1,16 @@
 package com.example.projecti_trello_app_backend.controllers.user;
 
+import com.example.projecti_trello_app_backend.constants.MailConstants;
 import com.example.projecti_trello_app_backend.dto.UserDTO;
 import com.example.projecti_trello_app_backend.entities.user.User;
 import com.example.projecti_trello_app_backend.services.user.UserService;
+import com.example.projecti_trello_app_backend.utils.HttpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @RestController
@@ -32,8 +35,17 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody User user)
     {
-        user.setPassWord(passwordEncoder.encode(user.getPassWord()));
-         return ResponseEntity.ok(userService.signUp(user));
+        String siteURL = MailConstants.USER_SITE_URL;
+        Optional<User> userOptional = userService.signUp(user,siteURL);
+        return userOptional.isPresent()?ResponseEntity.status(200).build():ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<?> verifyUser(@RequestParam(name ="verify-code") String verifyCode)
+    {
+        return userService.verifyUser(verifyCode).isPresent()
+                ?ResponseEntity.ok(UserDTO.convertToDTO(userService.verifyUser(verifyCode).get()))
+                :ResponseEntity.noContent().build();
     }
 
     @PutMapping("/update/{user_id}")
