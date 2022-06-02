@@ -113,6 +113,24 @@ public class ColumnTaskServiceImpl implements ColumnTaskService {
         }
     }
 
+
+    @Override
+    public Optional<ColumnTask> update(ColumnTaskDTO columnTaskDTO) {
+        try{
+            if(!columnTaskRepo.findByColumnAndTask(columnTaskDTO.getColumnId(),columnTaskDTO.getTaskId()).isPresent())
+                return Optional.empty();
+            ColumnTask columnTaskToUpdate = columnTaskRepo.findByColumnAndTask(
+                                                            columnTaskDTO.getColumnId(),columnTaskDTO.getTaskId()).get();
+            columnTaskToUpdate.setStaged(columnTaskDTO.getStaged()!=null?columnTaskDTO.getStaged()
+                                                                        :columnTaskToUpdate.isStaged());
+            return Optional.ofNullable(columnTaskRepo.save(columnTaskToUpdate));
+        }catch (Exception ex)
+        {
+            log.error("update column task (DTO params) error",ex);
+            return Optional.empty();
+        }
+    }
+
     @Override
     public boolean deleteByTask(int taskId) {
         try{

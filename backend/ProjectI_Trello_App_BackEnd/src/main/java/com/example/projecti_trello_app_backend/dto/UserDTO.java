@@ -16,6 +16,10 @@ public class UserDTO {
 
     private String userName;
 
+    private String email;
+
+    private String previousPassword;
+
     private String passWord;
 
     private Boolean activated;
@@ -39,6 +43,7 @@ public class UserDTO {
                                 .firstName(user.getFirstName())
                                 .lastName(user.getLastName())
                                 .sex(user.getSex())
+                                .email(user.getEmail())
                                 .passWord(null)
                                 .avatarUrl(user.getAvatarUrl())
                                 .phoneNumber(user.getPhoneNumber())

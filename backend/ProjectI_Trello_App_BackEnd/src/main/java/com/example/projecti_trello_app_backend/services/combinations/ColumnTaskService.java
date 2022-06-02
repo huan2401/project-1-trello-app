@@ -24,6 +24,8 @@ public interface ColumnTaskService {
 
     Optional<ColumnTask> update(int columnTaskId);
 
+    Optional<ColumnTask> update(ColumnTaskDTO columnTaskDTO);
+
     boolean deleteByTask(int taskId);
 
     boolean deleteByColumn(int columnId);

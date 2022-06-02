@@ -25,18 +25,18 @@ public class BoardController {
     @Autowired
     private WorkspaceService workspaceService;
 
-    @GetMapping("find-all-by-manager")
-    public ResponseEntity<?> findAllByManager(@RequestParam("manager_id") Integer managerId)
-    {
-        return userService.findByUserId(managerId).map(user -> {
-            return ResponseEntity.ok(boardService.findAllByUser(user.getUserId()));
-        }).orElse(ResponseEntity.noContent().build());
-    }
+//    @GetMapping("find-all-by-manager")
+//    public ResponseEntity<?> findAllByManager(@RequestParam("manager_id") Integer managerId)
+//    {
+//        return userService.findByUserId(managerId).map(user -> {
+//            return ResponseEntity.ok(boardService.findAllByUser(user.getUserId()));
+//        }).orElse(ResponseEntity.noContent().build());
+//    }
 
     @PostMapping("/add-board")
     public ResponseEntity<?> addBoard(@RequestBody Board board,
                                       @RequestParam(name = "work_space_id")int workSpaceId){
-           return workspaceService.findByWorkSpaceId(workSpaceId).map(workspace -> {
+           return workspaceService.findByWorkspaceId(workSpaceId).map(workspace -> {
                board.setWorkspace(workspace);
                return ResponseEntity.ok(boardService.addBoard(board));
            }).orElse(ResponseEntity.noContent().build());

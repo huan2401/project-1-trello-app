@@ -47,7 +47,7 @@ public class UserTaskController {
 
     @DeleteMapping("/delete-user-from-task")
     public ResponseEntity<?> deleteUserFromTask (@RequestParam(name = "task_id")int taskId,
-                                           @RequestParam(name= "user_id") int userId)
+                                                 @RequestParam(name= "user_id") int userId)
     {
         return taskService.findByTaskId(taskId).map(task -> {
             return userService.findByUserId(userId).map(user -> {

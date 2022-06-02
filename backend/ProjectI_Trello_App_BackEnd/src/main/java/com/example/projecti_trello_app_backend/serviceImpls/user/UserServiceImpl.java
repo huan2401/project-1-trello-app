@@ -3,7 +3,9 @@ package com.example.projecti_trello_app_backend.serviceImpls.user;
 import com.example.projecti_trello_app_backend.constants.MailConstants;
 import com.example.projecti_trello_app_backend.dto.UserDTO;
 import com.example.projecti_trello_app_backend.entities.user.User;
+import com.example.projecti_trello_app_backend.repositories.token.ResetPasswordTokenRepo;
 import com.example.projecti_trello_app_backend.repositories.user.UserRepo;
+import com.example.projecti_trello_app_backend.services.token.ResetPasswordService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.swing.text.html.Option;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
@@ -97,7 +100,7 @@ public class UserServiceImpl implements UserService {
             StringBuilder content = new StringBuilder();
             content.append("<div>");
             content.append("Dear ").append(user.getFirstName()+" "+user.getLastName()).append("! Thank for using our service<br>");
-            content.append("<h2>Please verificate your account</h3><br>");
+            content.append("<h2>Please verificate your account</h2><br>");
             content.append("<a href =\"").append(siteURL+"/verify?verify-code="+user.getVerificationCode())
                     .append("\">Activate your account</a><br>");
             content.append("Best Regards !<br> Chien Dao</div>");
@@ -161,6 +164,19 @@ public class UserServiceImpl implements UserService {
         {
             log.error("Change Password Error",exp);
             exp.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<User> resetPassword(UserDTO userDTO) {
+        try {
+            User userToUpDate = userRepo.findByUserId(userDTO.getUserId()).get();
+            userToUpDate.setPassWord(userDTO.getPassWord());
+            return Optional.ofNullable(userRepo.save(userToUpDate));
+        }catch (Exception ex)
+        {
+            log.error("reset password error",ex);
             return Optional.empty();
         }
     }

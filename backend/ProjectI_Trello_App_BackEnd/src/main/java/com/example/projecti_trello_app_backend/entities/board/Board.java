@@ -25,7 +25,7 @@ public class Board {
     @Column(name = "board_id", unique = true, nullable = false)
     private int boardId;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "work_space_id")
     private Workspace workspace;
 

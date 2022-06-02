@@ -2,6 +2,7 @@ package com.example.projecti_trello_app_backend.serviceImpls.workspace;
 
 import com.example.projecti_trello_app_backend.dto.WorkSpaceDTO;
 import com.example.projecti_trello_app_backend.entities.workspace.Workspace;
+import com.example.projecti_trello_app_backend.repositories.combinations.UserWorkspaceRepo;
 import com.example.projecti_trello_app_backend.repositories.workspace.WorkspaceRepo;
 import com.example.projecti_trello_app_backend.services.workspace.WorkspaceService;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Autowired
     private WorkspaceRepo workspaceRepo;
 
+    @Autowired
+    private UserWorkspaceRepo userWorkspaceRepo;
+
     @Override
     public List<Workspace> findAll() {
         try{
@@ -29,9 +33,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public Optional<Workspace> findByWorkSpaceId(int workSpaceId) {
+    public Optional<Workspace> findByWorkspaceId(int workSpaceId) {
         try{
-            Optional<Workspace> workspaceOptional = workspaceRepo.findByWorkSpaceId(workSpaceId);
+            Optional<Workspace> workspaceOptional = workspaceRepo.findByWorkspaceId(workSpaceId);
             return workspaceOptional.isPresent()?workspaceOptional:Optional.empty();
         } catch (Exception ex)
         {
@@ -54,15 +58,15 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public Optional<Workspace> update(WorkSpaceDTO workSpaceDTO) {
         try{
-            if(!workspaceRepo.findByWorkSpaceId(workSpaceDTO.getWorkspaceId()).isPresent())
+            if(!workspaceRepo.findByWorkspaceId(workSpaceDTO.getWorkspaceId()).isPresent())
                 return Optional.empty();
-            Workspace workspaceToUpdate = workspaceRepo.findByWorkSpaceId(workSpaceDTO.getWorkspaceId()).get();
-            workspaceToUpdate.setWorkSpaceTitle(workSpaceDTO.getWorkSpaceTitle()!=null?
-                    workSpaceDTO.getWorkSpaceTitle():workspaceToUpdate.getWorkSpaceTitle());
-            workspaceToUpdate.setWorkSpaceDescription(workSpaceDTO.getWorkSpaceDescription()!=null?
-                    workSpaceDTO.getWorkSpaceDescription(): workspaceToUpdate.getWorkSpaceDescription());
-            workspaceToUpdate.setWorkSpaceType(workSpaceDTO.getWorkSpaceType()!=null?
-                    workSpaceDTO.getWorkSpaceType(): workspaceToUpdate.getWorkSpaceType());
+            Workspace workspaceToUpdate = workspaceRepo.findByWorkspaceId(workSpaceDTO.getWorkspaceId()).get();
+            workspaceToUpdate.setWorkspaceTitle(workSpaceDTO.getWorkspaceTitle()!=null?
+                    workSpaceDTO.getWorkspaceTitle():workspaceToUpdate.getWorkspaceTitle());
+            workspaceToUpdate.setWorkspaceDescription(workSpaceDTO.getWorkspaceDescription()!=null?
+                    workSpaceDTO.getWorkspaceDescription(): workspaceToUpdate.getWorkspaceDescription());
+            workspaceToUpdate.setWorkspaceType(workSpaceDTO.getWorkspaceType()!=null?
+                    workSpaceDTO.getWorkspaceType(): workspaceToUpdate.getWorkspaceType());
             return Optional.ofNullable(workspaceRepo.save(workspaceToUpdate));
         } catch (Exception ex) {
             log.error("update workspace error",ex);
@@ -73,7 +77,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public boolean delete(int workSpaceId) {
         try {
-            return workspaceRepo.deleteByWorkSpaceId(workSpaceId)>0?true:false;
+            return workspaceRepo.deleteByWorkspaceId(workSpaceId)>0
+                    && userWorkspaceRepo.deleteByWorkspace(workSpaceId)>0
+                    ?true:false;
         }catch (Exception ex)
         {
             log.error("delete workspace error",ex);

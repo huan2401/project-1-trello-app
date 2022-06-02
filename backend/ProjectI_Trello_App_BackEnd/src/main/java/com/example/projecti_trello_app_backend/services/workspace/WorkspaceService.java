@@ -12,7 +12,7 @@ public interface WorkspaceService {
 
     List<Workspace> findAll();
 
-    Optional<Workspace> findByWorkSpaceId(int workSpaceId);
+    Optional<Workspace> findByWorkspaceId(int workSpaceId);
 
     Optional<Workspace> add(Workspace workspace);
 

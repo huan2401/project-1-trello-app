@@ -18,22 +18,22 @@ public class Workspace {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "work_space_id")
-    private int workSpaceId;
+    private int workspaceId;
 
-    @Column(name = "work_space_name")
+    @Column(name = "work_space_title")
     @NotNull
-    private String workSpaceTitle;
+    private String workspaceTitle;
 
     @Column(name = "work_space_type")
-    private String workSpaceType;
+    private String workspaceType;
 
     @Column(name ="work_space_description")
-    private String workSpaceDescription;
+    private String workspaceDescription;
 
     @ManyToOne
     @JoinColumn(name = "work_space_creator_id")
     @NotNull
-    private User workSpaceCreator;
+    private User workspaceCreator;
 
     @Column(name = "deleted")
     private boolean deleted;

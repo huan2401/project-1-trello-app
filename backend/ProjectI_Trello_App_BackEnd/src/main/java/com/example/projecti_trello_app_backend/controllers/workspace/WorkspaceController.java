@@ -19,29 +19,29 @@ public class WorkspaceController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/find-by-work-space-id")
-    public ResponseEntity<?> findWorkSpaceById(@RequestParam(name = "work-space-id")int workSpaceId)
+    @GetMapping("/find-by-workspace-id")
+    public ResponseEntity<?> findWorkSpaceById(@RequestParam(name = "workspace_id")int workSpaceId)
     {
-        return workspaceService.findByWorkSpaceId(workSpaceId).isPresent()
-                ?ResponseEntity.ok(workspaceService.findByWorkSpaceId(workSpaceId))
+        return workspaceService.findByWorkspaceId(workSpaceId).isPresent()
+                ?ResponseEntity.ok(workspaceService.findByWorkspaceId(workSpaceId))
                 :ResponseEntity.noContent().build();
     }
 
     @PostMapping("/add")
     public ResponseEntity<?> add(@RequestBody Workspace workspace,
-                                 @RequestParam(name = "creator-id") int creatorId)
+                                 @RequestParam(name = "creator_id") int creatorId)
     {
         return userService.findByUserId(creatorId).map(creator -> {
-            workspace.setWorkSpaceCreator(creator);
+            workspace.setWorkspaceCreator(creator);
             return ResponseEntity.ok(workspaceService.add(workspace));
         }).orElse(ResponseEntity.noContent().build());
     }
 
     @PutMapping("/update")
     public ResponseEntity<?> update(@RequestBody WorkSpaceDTO workSpaceDTO,
-                                    @RequestParam(name = "work-space-id") int workSpaceId)
+                                    @RequestParam(name = "workspace_id") int workSpaceId)
     {
-        return workspaceService.findByWorkSpaceId(workSpaceId).map(workspace ->
+        return workspaceService.findByWorkspaceId(workSpaceId).map(workspace ->
         {
            workSpaceDTO.setWorkspaceId(workSpaceId);
            return ResponseEntity.ok(workspaceService.update(workSpaceDTO));
@@ -49,9 +49,9 @@ public class WorkspaceController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> delete(@RequestParam(name = "work-space-id") int workSpacaId)
+    public ResponseEntity<?> delete(@RequestParam(name = "workspace_id") int workSpaceId)
     {
-        return workspaceService.delete(workSpacaId)?ResponseEntity.status(200).build()
+        return workspaceService.delete(workSpaceId)?ResponseEntity.status(200).build()
                 :ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
     }
 }

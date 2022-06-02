@@ -16,11 +16,11 @@ public interface WorkspaceRepo extends JpaRepository<Workspace,Integer> {
     @Query(value = "from Workspace wp where wp.deleted =false")
     List<Workspace> findAll();
 
-    @Query(value = "from Workspace wp where wp.workSpaceId=?1 and wp.deleted=false")
-    Optional<Workspace> findByWorkSpaceId(int workSpaceId);
+    @Query(value = "from Workspace wp where wp.workspaceId=?1 and wp.deleted=false")
+    Optional<Workspace> findByWorkspaceId(int workSpaceId);
 
     @Modifying
     @Transactional
-    @Query(value = "update Workspace wp set wp.deleted =true where wp.workSpaceId =?1 and wp.deleted=false")
-    int deleteByWorkSpaceId(int workSpaceId);
+    @Query(value = "update Workspace wp set wp.deleted =true where wp.workspaceId =?1 and wp.deleted=false")
+    int deleteByWorkspaceId(int workspaceId);
 }

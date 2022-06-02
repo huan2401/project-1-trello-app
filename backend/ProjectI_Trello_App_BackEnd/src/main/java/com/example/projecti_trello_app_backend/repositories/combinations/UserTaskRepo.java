@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserTaskRepo extends JpaRepository<UserTask,Integer> {
@@ -17,6 +18,9 @@ public interface UserTaskRepo extends JpaRepository<UserTask,Integer> {
 
     @Query(value = "from UserTask userTask where userTask.user.userId =?1 and userTask.deleted =false")
     public List<UserTask> findByUser(int userId);
+
+    @Query("from UserTask ustk where ustk.user.userId=?1 and ustk.task.taskId=?2 and ustk.deleted =false")
+    Optional<UserTask> findByUserAndTask(int userId, int taskId);
 
     @Modifying
     @Transactional

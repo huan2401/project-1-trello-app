@@ -9,15 +9,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class WorkSpaceDTO {
+public class UserWorkspaceDTO {
 
-    private int workspaceId;
+    private int id;
 
-    private String workspaceTitle;
+    private Integer userId;
 
-    private String workspaceDescription;
-
-    private String workspaceType;
+    private Integer workspaceId;
 
     private Boolean deleted;
 }
