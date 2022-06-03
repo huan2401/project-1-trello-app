@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 
@@ -64,14 +65,15 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     public boolean validateToken(String token) {
         try {
             Optional<ResetPasswordToken> resetPasswordTokenOptional = resetPasswordTokenRepo.findByToken(token);
-            if (resetPasswordTokenOptional.isPresent()==false) return false;
+            if (!resetPasswordTokenOptional.isPresent()) return false;
             ResetPasswordToken resetPasswordToken = resetPasswordTokenOptional.get();
-            if(resetPasswordToken.getExpireTime().before(new Timestamp(System.currentTimeMillis())))
-                return true;
-            else {
-                resetPasswordTokenRepo.setExpired(token);
-                return false;
-            }
+            System.out.println(resetPasswordToken.getExpireTime().getTime()+"and"+ System.currentTimeMillis());
+           if(resetPasswordToken.getExpireTime().after(new Timestamp(System.currentTimeMillis())))
+               return true;
+           else{
+               resetPasswordTokenRepo.setExpired(token);
+               return false;
+           }
         } catch (Exception ex)
         {
             log.error("validate token error",ex);

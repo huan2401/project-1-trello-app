@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 
 @Entity
@@ -16,7 +17,7 @@ import java.util.Date;
 @Table(schema = "${database.name}",name = "reset_password_token")
 public class ResetPasswordToken {
 
-    public static final long EXPIRE_DURATION = 90000; // expire duration = 90s
+    public static final long EXPIRE_DURATION = 180000; // expire duration = 180s
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +40,7 @@ public class ResetPasswordToken {
     {
         this.user =user;
         this.token =token;
-        this.expireTime = new Timestamp(new Date().getTime()+EXPIRE_DURATION);
+        this.expireTime = new Timestamp(System.currentTimeMillis() +EXPIRE_DURATION);
         this.expired =false;
     }
 }

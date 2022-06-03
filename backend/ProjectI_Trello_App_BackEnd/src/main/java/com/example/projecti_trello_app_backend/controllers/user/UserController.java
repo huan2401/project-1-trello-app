@@ -96,12 +96,16 @@ public class UserController {
                                                  @RequestBody UserDTO userDTO)
     {
         Optional<ResetPasswordToken> rsPasswordTokenOptional = resetPasswordService.findByToken(token);
-        if(!rsPasswordTokenOptional.isPresent() ||resetPasswordService.validateToken(token)==false)
+        System.out.println(rsPasswordTokenOptional);
+        if(rsPasswordTokenOptional.isPresent()==false || resetPasswordService.validateToken(token)==false) {
+            System.out.println(resetPasswordService.validateToken(token));
             return ResponseEntity.ok("not find token or validate fail");
-        userDTO.setUserId(rsPasswordTokenOptional.get().getUser().getUserId());
-        userDTO.setPassWord(passwordEncoder.encode(userDTO.getPassWord()));
-        resetPasswordService.setExpired(token);
-        return userService.resetPassword(userDTO).isPresent()?ResponseEntity.status(200).build()
-                                                            : ResponseEntity.noContent().build();
+        }
+        else {
+            userDTO.setUserId(rsPasswordTokenOptional.get().getUser().getUserId());
+            userDTO.setPassWord(passwordEncoder.encode(userDTO.getPassWord()));
+            return userService.resetPassword(userDTO).isPresent() ? ResponseEntity.status(200).build()
+                    : ResponseEntity.noContent().build();
+        }
     }
 }
