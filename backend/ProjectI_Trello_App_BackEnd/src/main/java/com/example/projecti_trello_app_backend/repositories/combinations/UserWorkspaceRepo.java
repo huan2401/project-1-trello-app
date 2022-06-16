@@ -1,6 +1,7 @@
 package com.example.projecti_trello_app_backend.repositories.combinations;
 
 import com.example.projecti_trello_app_backend.entities.combinations.UserWorkspace;
+import com.example.projecti_trello_app_backend.entities.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -28,6 +29,10 @@ public interface UserWorkspaceRepo extends JpaRepository<UserWorkspace,Integer> 
     @Query(value = "from UserWorkspace uswp where uswp.user.userId=?1 and " +
                    " uswp.workspace.workspaceId=?2 and uswp.deleted =false")
     Optional<UserWorkspace> findByUserAndWorkspace(int userId, int workSpaceId);
+
+    @Query(value = "select count(uswp) from UserWorkspace uswp where uswp.workspace.workspaceId=?1 " +
+            "and uswp.user.userId=?2 and uswp.deleted=false")
+    int checkCreator(int workspaceId, int userId);
 
     @Modifying
     @Transactional

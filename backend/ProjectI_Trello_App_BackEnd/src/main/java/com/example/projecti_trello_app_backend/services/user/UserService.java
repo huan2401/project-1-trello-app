@@ -28,6 +28,6 @@ public interface UserService {
 
     Optional<User> changePassWord(User user);
 
-    Optional<User> resetPassword(UserDTO userDTO);
+    Optional<User> resetPassword(UserDTO userDTO,String token);
 
 }

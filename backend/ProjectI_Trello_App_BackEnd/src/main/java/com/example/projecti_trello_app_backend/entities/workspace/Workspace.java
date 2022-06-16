@@ -30,11 +30,6 @@ public class Workspace {
     @Column(name ="work_space_description")
     private String workspaceDescription;
 
-    @ManyToOne
-    @JoinColumn(name = "work_space_creator_id")
-    @NotNull
-    private User workspaceCreator;
-
     @Column(name = "deleted")
     private boolean deleted;
 

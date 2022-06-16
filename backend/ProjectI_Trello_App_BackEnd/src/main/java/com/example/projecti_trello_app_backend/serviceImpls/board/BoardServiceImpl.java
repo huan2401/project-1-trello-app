@@ -70,6 +70,12 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public boolean delete(int boardId) {
-        return false;
+        try{
+            return boardRepo.delete(boardId)>0?true:false;
+        } catch (Exception ex)
+        {
+            log.error("delete board error");
+            return false;
+        }
     }
 }

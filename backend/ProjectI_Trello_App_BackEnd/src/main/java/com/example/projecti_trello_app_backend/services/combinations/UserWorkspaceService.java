@@ -18,6 +18,8 @@ public interface UserWorkspaceService {
 
     Optional<UserWorkspace> findByUserAndWorkspace(int userId, int workspaceId);
 
+    boolean checkCreator(int workspaceId, int userId);
+
     Optional<UserWorkspace> add(UserWorkspace userWorkspace);// add a new user to workspace
 
     Optional<UserWorkspace> update (UserWorkspaceDTO userWorkspaceDTO);

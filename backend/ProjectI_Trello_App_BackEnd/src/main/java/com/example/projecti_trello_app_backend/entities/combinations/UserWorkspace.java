@@ -33,6 +33,9 @@ public class UserWorkspace {
     @NotNull
     private Workspace workspace;
 
+    @Column(name = "is_creator")
+    private boolean isCreator;
+
     @Column(name = "deleted")
     private boolean deleted;
 }

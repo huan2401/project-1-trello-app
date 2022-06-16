@@ -65,6 +65,17 @@ public class UserWorkspaceServiceImpl implements UserWorkspaceService {
     }
 
     @Override
+    public boolean checkCreator(int workspaceId, int userId) {
+        try{
+            return userWorkspaceRepo.checkCreator(workspaceId,userId)>0?true:false;
+        } catch (Exception ex)
+        {
+            log.error("check workspace creator error", ex);
+            return false;
+        }
+    }
+
+    @Override
     public Optional<UserWorkspace> add(UserWorkspace userWorkspace) {
         try {
             return Optional.ofNullable(userWorkspaceRepo.save(userWorkspace));

@@ -104,7 +104,7 @@ public class UserController {
         else {
             userDTO.setUserId(rsPasswordTokenOptional.get().getUser().getUserId());
             userDTO.setPassWord(passwordEncoder.encode(userDTO.getPassWord()));
-            return userService.resetPassword(userDTO).isPresent() ? ResponseEntity.status(200).build()
+            return userService.resetPassword(userDTO,token).isPresent() ? ResponseEntity.status(200).build()
                     : ResponseEntity.noContent().build();
         }
     }

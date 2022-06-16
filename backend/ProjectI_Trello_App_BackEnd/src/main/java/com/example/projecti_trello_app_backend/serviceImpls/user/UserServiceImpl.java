@@ -36,6 +36,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Autowired
+    private ResetPasswordTokenRepo resetPasswordTokenRepo;
+
     @Override
     public List<User> findAll() {
         try{
@@ -169,11 +172,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> resetPassword(UserDTO userDTO) {
+    public Optional<User> resetPassword(UserDTO userDTO, String token) {
         try {
             User userToUpDate = userRepo.findByUserId(userDTO.getUserId()).get();
             userToUpDate.setPassWord(userDTO.getPassWord());
-            return Optional.ofNullable(userRepo.save(userToUpDate));
+            Optional<User> updatedUserOptional = Optional.ofNullable(userRepo.save(userToUpDate));
+            resetPasswordTokenRepo.setExpired(token);
+            return updatedUserOptional;
         }catch (Exception ex)
         {
             log.error("reset password error",ex);

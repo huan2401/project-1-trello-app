@@ -50,6 +50,7 @@ public class UserWorkspaceController {
         if(userWorkspaceService.findByUserAndWorkspace(userId,workspaceId).isPresent())
             return ResponseEntity.noContent().build(); // existed a user workspace
         UserWorkspace userWorkspace = new UserWorkspace();
+        userWorkspace.setCreator(false);
         return userService.findByUserId(userId).map(user -> {
             userWorkspace.setUser(user);
             return workspaceService.findByWorkspaceId(workspaceId).map(workspace -> {
@@ -58,6 +59,7 @@ public class UserWorkspaceController {
             }).orElse(ResponseEntity.noContent().build());
         }).orElse(ResponseEntity.noContent().build());
     }
+
 
     @PutMapping(path = "/update")
     public ResponseEntity<?> update(@RequestBody UserWorkspaceDTO userWorkspaceDTO)
@@ -72,10 +74,13 @@ public class UserWorkspaceController {
                                                                   :ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
     }
 
+
     @DeleteMapping(path = "/remove-user-from-workspace")
     public ResponseEntity<?> removeUserFromWorkspace(@RequestParam(name = "user_id") int userId,
                                                      @RequestParam(name = "workspace_id") int workspaceId)
     {
+        if(userWorkspaceService.checkCreator(workspaceId,userId)==true)
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         return userWorkspaceService
                 .removeUserFromWorkspace(userId,workspaceId)
                 ?ResponseEntity.status(200).build()
