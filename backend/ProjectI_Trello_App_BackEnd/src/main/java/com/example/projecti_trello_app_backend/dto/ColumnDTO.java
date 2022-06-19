@@ -17,5 +17,7 @@ public class ColumnDTO {
 
     private String columnTitle;
 
+    private String status;
+
     private Integer position;
 }

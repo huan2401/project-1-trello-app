@@ -103,8 +103,8 @@ public class ColumnTaskServiceImpl implements ColumnTaskService {
         try{
             if(!columnTaskRepo.findById(columnTaskId).isPresent()) return Optional.empty();
             ColumnTask columnTaskToUpdate = columnTaskRepo.findById(columnTaskId).get();
-            if(columnTaskToUpdate.isStaged()) columnTaskToUpdate.setStaged(false);
-            else columnTaskToUpdate.setStaged(true);
+            if(columnTaskToUpdate.isStage()) columnTaskToUpdate.setStage(false);
+            else columnTaskToUpdate.setStage(true);
             return Optional.ofNullable(columnTaskRepo.save(columnTaskToUpdate));
         } catch (Exception ex)
         {
@@ -121,8 +121,8 @@ public class ColumnTaskServiceImpl implements ColumnTaskService {
                 return Optional.empty();
             ColumnTask columnTaskToUpdate = columnTaskRepo.findByColumnAndTask(
                                                             columnTaskDTO.getColumnId(),columnTaskDTO.getTaskId()).get();
-            columnTaskToUpdate.setStaged(columnTaskDTO.getStaged()!=null?columnTaskDTO.getStaged()
-                                                                        :columnTaskToUpdate.isStaged());
+            columnTaskToUpdate.setStage(columnTaskDTO.getStaged()!=null?columnTaskDTO.getStaged()
+                                                                        :columnTaskToUpdate.isStage());
             return Optional.ofNullable(columnTaskRepo.save(columnTaskToUpdate));
         }catch (Exception ex)
         {

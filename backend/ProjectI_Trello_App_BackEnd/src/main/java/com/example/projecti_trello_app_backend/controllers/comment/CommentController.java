@@ -1,5 +1,6 @@
 package com.example.projecti_trello_app_backend.controllers.comment;
 
+import com.example.projecti_trello_app_backend.dto.CommentDTO;
 import com.example.projecti_trello_app_backend.entities.comment.Comment;
 import com.example.projecti_trello_app_backend.services.comment.CommentService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
@@ -42,6 +43,13 @@ public class CommentController {
                 return ResponseEntity.ok(commentService.add(comment));
             }).orElse(ResponseEntity.status(304).build());
         }).orElse(ResponseEntity.status(304).build());
+    }
+
+    @PutMapping(path = "/edit")
+    public ResponseEntity<?> edit(@RequestParam(name = "commnnt_id")int commentId,
+                                  @RequestBody CommentDTO commentDTO)
+    {
+        return ResponseEntity.ok("");
     }
 
     @DeleteMapping("/delete-by-comment")

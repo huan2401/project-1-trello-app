@@ -3,10 +3,8 @@ package com.example.projecti_trello_app_backend.entities.combinations;
 import com.example.projecti_trello_app_backend.entities.board.Board;
 import com.example.projecti_trello_app_backend.entities.role.Role;
 import com.example.projecti_trello_app_backend.entities.user.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.sun.istack.NotNull;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -24,15 +22,18 @@ public class UserBoardRole {
     private int id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
+    @NotNull
     private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "board_id")
+    @JoinColumn(name = "board_id",nullable = false)
+    @NotNull
     private Board board;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "role_id", nullable = false)
+    @NonNull
     private Role role;
 
     @Column(name = "delted")

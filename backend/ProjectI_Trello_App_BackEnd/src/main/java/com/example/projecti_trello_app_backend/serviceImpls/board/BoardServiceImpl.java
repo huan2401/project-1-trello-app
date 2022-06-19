@@ -3,6 +3,7 @@ package com.example.projecti_trello_app_backend.serviceImpls.board;
 import com.example.projecti_trello_app_backend.dto.BoardDTO;
 import com.example.projecti_trello_app_backend.entities.board.Board;
 import com.example.projecti_trello_app_backend.repositories.board.BoardRepo;
+import com.example.projecti_trello_app_backend.repositories.combinations.UserBoardRoleRepo;
 import com.example.projecti_trello_app_backend.repositories.user.UserRepo;
 import com.example.projecti_trello_app_backend.services.board.BoardService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,9 @@ public class BoardServiceImpl implements BoardService {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private UserBoardRoleRepo userBoardRoleRepo;
 
 
     @Override
@@ -59,6 +63,7 @@ public class BoardServiceImpl implements BoardService {
             Board boardToUpdate = boardRepo.findByBoardId(boardDTO.getBoardId()).get();
             boardToUpdate.setBoardTitle(boardDTO.getBoardTitle()!=null?boardDTO.getBoardTitle():boardToUpdate.getBoardTitle());
             boardToUpdate.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+            boardToUpdate.setStatus(boardDTO.getStatus()!=null? boardDTO.getStatus() : boardToUpdate.getStatus());
             return Optional.ofNullable(boardRepo.save(boardToUpdate));
         } catch (Exception exp)
         {

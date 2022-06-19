@@ -5,7 +5,6 @@ import com.example.projecti_trello_app_backend.dto.UserDTO;
 import com.example.projecti_trello_app_backend.entities.user.User;
 import com.example.projecti_trello_app_backend.repositories.token.ResetPasswordTokenRepo;
 import com.example.projecti_trello_app_backend.repositories.user.UserRepo;
-import com.example.projecti_trello_app_backend.services.token.ResetPasswordService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
@@ -15,11 +14,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import javax.swing.text.html.Option;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
 

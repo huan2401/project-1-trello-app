@@ -1,5 +1,6 @@
 package com.example.projecti_trello_app_backend.controllers.combinations;
 
+import com.example.projecti_trello_app_backend.dto.UserTaskDTO;
 import com.example.projecti_trello_app_backend.entities.combinations.UserTask;
 import com.example.projecti_trello_app_backend.services.combinations.UserTaskService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.html.parser.Entity;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("project1/api/user_task")
@@ -43,6 +45,15 @@ public class UserTaskController {
                 return ResponseEntity.ok(userTaskService.add(userTaskToAdd));
             }).orElse(ResponseEntity.status(304).build());
         }).orElse(ResponseEntity.status(304).build());
+    }
+
+    public ResponseEntity<?> update(@RequestBody UserTaskDTO userTaskDTO,
+                                    @RequestParam(name = "id")int id)
+    {
+        if(!userTaskService.findById(id).isPresent()) return ResponseEntity.noContent().build();
+        userTaskDTO.setId(id);
+        Optional<UserTask> userTaskOptional = userTaskService.update(userTaskDTO);
+        return userTaskOptional.isPresent()?ResponseEntity.ok(userTaskOptional):ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/delete-user-from-task")

@@ -13,11 +13,14 @@ import java.util.Optional;
 @Repository
 public interface UserTaskRepo extends JpaRepository<UserTask,Integer> {
 
+    @Query(value = "from UserTask userTask where userTask.id =?1 and userTask.deleted=false")
+    Optional<UserTask> findById(int id);
+
     @Query(value = "from UserTask userTask where userTask.task.taskId=?1 and userTask.deleted=false")
-    public List<UserTask> findByTask(int taskId);
+     List<UserTask> findByTask(int taskId);
 
     @Query(value = "from UserTask userTask where userTask.user.userId =?1 and userTask.deleted =false")
-    public List<UserTask> findByUser(int userId);
+     List<UserTask> findByUser(int userId);
 
     @Query("from UserTask ustk where ustk.user.userId=?1 and ustk.task.taskId=?2 and ustk.deleted =false")
     Optional<UserTask> findByUserAndTask(int userId, int taskId);
@@ -26,13 +29,18 @@ public interface UserTaskRepo extends JpaRepository<UserTask,Integer> {
     @Transactional
     @Query (value =" update UserTask userTask set userTask.deleted =true " +
             " where userTask.task.taskId =?1 and userTask.user.userId =?2 and userTask.deleted=false")
-    public int deleteByUser (int taskId, int userId); // unassign a user from a task
+    int deleteByUser (int taskId, int userId); // unassign a user from a task
 
     @Modifying
     @Transactional
     @Query(value = "update UserTask userTask set userTask.deleted=true where userTask.task.taskId=?1" +
             " and userTask.deleted=false ")
-    public int deleteByTask(int taskId); // delete all when the task was deleted
+     int deleteByTask(int taskId); // delete all when the task was deleted
+
+    @Modifying
+    @Transactional
+    @Query(value = "update UserTask userTask set userTask.deleted= true where userTask.id =?1 and userTask.deleted=false ")
+     int deleteById(int id);
 
 
 

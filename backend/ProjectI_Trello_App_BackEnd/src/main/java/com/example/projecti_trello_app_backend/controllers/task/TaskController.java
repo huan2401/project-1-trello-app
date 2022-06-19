@@ -27,7 +27,7 @@ public class TaskController {
         return ResponseEntity.ok(taskService.findByTaskId(taskId));
     }
 
-    @PutMapping("/add")
+    @PostMapping("/add")
     public ResponseEntity<?> add(@RequestBody Task task, @RequestParam(name = "column_id")int columnId){
         return columnService.findByColumnId(columnId).map(column -> {
             return ResponseEntity.ok(taskService.add(task,column.getColumnId()));

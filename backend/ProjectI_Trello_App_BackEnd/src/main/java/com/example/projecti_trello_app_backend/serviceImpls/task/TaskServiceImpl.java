@@ -67,7 +67,6 @@ public class TaskServiceImpl implements TaskService {
             taskToUpdate.setDueAt(taskDTO.getDueAt()!=null?taskDTO.getDueAt():taskToUpdate.getDueAt());
             taskToUpdate.setIsDone(taskDTO.getDone()!=null?taskDTO.getDone():taskToUpdate.getIsDone());
             taskToUpdate.setIsReviewed(taskDTO.getReviewed()!=null?taskDTO.getReviewed():taskToUpdate.getIsReviewed());
-            taskToUpdate.setPosition(taskDTO.getPosition()!=null?taskDTO.getPosition():taskToUpdate.getPosition());
             return Optional.of(taskRepo.save(taskToUpdate));
         } catch (Exception ex)
         {
@@ -83,7 +82,7 @@ public class TaskServiceImpl implements TaskService {
             task.setCreatedAt(new Timestamp(System.currentTimeMillis()));
             Task taskAdded = taskRepo.save(task);
             Columns column = columnRepo.findByColumnId(columnId).get();
-            ColumnTask columnTask =ColumnTask.builder().column(column).task(taskAdded).staged(true).build();
+            ColumnTask columnTask =ColumnTask.builder().column(column).task(taskAdded).stage(true).build();
             return Optional.ofNullable(columnTaskRepo.save(columnTask));
         } catch (Exception ex)
         {

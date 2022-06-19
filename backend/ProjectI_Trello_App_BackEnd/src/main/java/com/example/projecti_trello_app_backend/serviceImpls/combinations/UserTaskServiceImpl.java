@@ -22,6 +22,18 @@ public class UserTaskServiceImpl implements UserTaskService {
     @Autowired
     private UserTaskRepo userTaskRepo;
 
+
+    @Override
+    public Optional<UserTask> findById(int id) {
+        try{
+            return userTaskRepo.findById(id);
+        }catch (Exception ex)
+        {
+            log.error("find User_Task by id error",ex);
+            return Optional.empty();
+        }
+    }
+
     @Override
     public List<UserTask> findByTask(int taskId) {
        try
@@ -58,8 +70,17 @@ public class UserTaskServiceImpl implements UserTaskService {
     }
 
     @Override
-    public Optional<UserTask> update(UserTaskDTO userTaskDTO) { // not have to
-        return Optional.empty();
+    public Optional<UserTask> update(UserTaskDTO userTaskDTO) {
+        try{
+            UserTask userTaskToUpdate = userTaskRepo.findById(userTaskDTO.getId()).get();
+            userTaskToUpdate.setTaskDetail(userTaskDTO.getTaskDetail()!=null? userTaskDTO.getTaskDetail()
+                    :userTaskToUpdate.getTaskDetail());
+            return Optional.ofNullable(userTaskRepo.save(userTaskToUpdate));
+        } catch (Exception ex)
+        {
+            log.error("update UserTask error",ex);
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -81,6 +102,17 @@ public class UserTaskServiceImpl implements UserTaskService {
         }catch (Exception ex)
         {
             log.error("delete user_task by task error",ex);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deleteById(int id) {
+        try{
+            return userTaskRepo.deleteById(id)>0?true:false;
+        }catch (Exception ex)
+        {
+            log.error("delete User_Task by id error",ex);
             return false;
         }
     }

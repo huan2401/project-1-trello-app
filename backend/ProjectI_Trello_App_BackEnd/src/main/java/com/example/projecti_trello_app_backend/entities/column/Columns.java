@@ -39,6 +39,9 @@ public class Columns {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
+    @Column(name = "status")
+    private String status;
+
     @Column(name = "position")
     private Integer position;
 

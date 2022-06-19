@@ -34,6 +34,9 @@ public class UserTask {
     @NotNull
     private Task task;
 
+    @Column(name = "task_detail")
+    private String taskDetail;
+
     @Column(name ="assign-at")
     private Date assignedAt;
 

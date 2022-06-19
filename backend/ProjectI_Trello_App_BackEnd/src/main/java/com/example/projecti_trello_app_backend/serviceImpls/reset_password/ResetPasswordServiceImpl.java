@@ -1,26 +1,20 @@
-package com.example.projecti_trello_app_backend.serviceImpls.token;
+package com.example.projecti_trello_app_backend.serviceImpls.reset_password;
 
 import com.example.projecti_trello_app_backend.constants.MailConstants;
 import com.example.projecti_trello_app_backend.entities.token.ResetPasswordToken;
 import com.example.projecti_trello_app_backend.entities.user.User;
 import com.example.projecti_trello_app_backend.repositories.token.ResetPasswordTokenRepo;
-import com.example.projecti_trello_app_backend.services.token.ResetPasswordService;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.example.projecti_trello_app_backend.services.reset_password.ResetPasswordService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 

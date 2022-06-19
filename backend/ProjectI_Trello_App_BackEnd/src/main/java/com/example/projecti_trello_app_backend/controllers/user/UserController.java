@@ -4,17 +4,13 @@ import com.example.projecti_trello_app_backend.constants.MailConstants;
 import com.example.projecti_trello_app_backend.dto.UserDTO;
 import com.example.projecti_trello_app_backend.entities.token.ResetPasswordToken;
 import com.example.projecti_trello_app_backend.entities.user.User;
-import com.example.projecti_trello_app_backend.services.token.ResetPasswordService;
+import com.example.projecti_trello_app_backend.services.reset_password.ResetPasswordService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
-import com.example.projecti_trello_app_backend.utils.HttpUtils;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @RestController

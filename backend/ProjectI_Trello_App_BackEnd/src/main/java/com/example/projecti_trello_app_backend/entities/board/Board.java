@@ -38,6 +38,9 @@ public class Board {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
+    @Column(name = "status")
+    private String status;
+
     @Column(name = "deleted")
     private boolean deleted ;
 

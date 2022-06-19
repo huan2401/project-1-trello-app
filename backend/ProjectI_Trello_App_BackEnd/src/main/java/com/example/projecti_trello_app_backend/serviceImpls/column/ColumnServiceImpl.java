@@ -72,6 +72,7 @@ public class ColumnServiceImpl implements ColumnService {
             Columns columnToUpdate = columnRepo.findByColumnId(columnDTO.getColumnId()).get();
             columnToUpdate.setColumnTitle(columnDTO.getColumnTitle()!=null? columnDTO.getColumnTitle()
                     :columnToUpdate.getColumnTitle());
+            columnToUpdate.setStatus(columnDTO.getStatus()!=null?columnDTO.getStatus():columnToUpdate.getStatus());
             columnToUpdate.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
             return Optional.ofNullable(columnRepo.save(columnToUpdate));
         } catch (Exception ex)

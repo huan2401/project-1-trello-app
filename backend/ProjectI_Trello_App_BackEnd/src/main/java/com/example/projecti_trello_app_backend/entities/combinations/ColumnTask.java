@@ -29,8 +29,8 @@ public class ColumnTask {
     @JoinColumn(name = "task_id")
     private Task task;
 
-    @Column(name = "staged")
-    private boolean staged; // đánh dấu trạng thái của 1 task ở 1 column (có hay không)
+    @Column(name = "stage")
+    private boolean stage; // đánh dấu trạng thái của 1 task ở 1 column (có hay không)
 
 
 }

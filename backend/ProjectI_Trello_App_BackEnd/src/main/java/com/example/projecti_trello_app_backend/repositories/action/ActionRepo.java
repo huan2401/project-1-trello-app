@@ -13,6 +13,6 @@ public interface ActionRepo extends JpaRepository<Action,Integer> {
 
     Optional<Action> findByActionId(int actionId);
 
-    @Query(value = "from Action action where action.task.taskId=?1")
+    @Query(value = "from Action action where action.task.taskId=?1 order by action.processAt desc")
      List<Action> findAllByTask(int taskId);
 }

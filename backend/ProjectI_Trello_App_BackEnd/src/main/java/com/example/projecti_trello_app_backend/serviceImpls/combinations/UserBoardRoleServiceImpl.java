@@ -87,7 +87,8 @@ public class UserBoardRoleServiceImpl implements UserBoardRoleService {
     @Override
     public boolean deleteUserFromBoard(int userId, int boardId) {
         try{
-            return userBoardRoleRepo.deleteUserFromBoard(userId,boardId)>0?true:false;
+            return userBoardRoleRepo.deleteUserFromBoard(userId,boardId)>0
+                    && userBoardRoleRepo.deleteByBoard(boardId)>0?true:false;
         } catch (Exception ex)
         {
             log.error("delete User from Board error",ex);

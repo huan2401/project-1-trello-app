@@ -42,7 +42,7 @@ public class ColumnTaskController {
                                  @RequestParam(name = "task_id") int taskId)
     {
         ColumnTask columnTask = new ColumnTask();
-        columnTask.setStaged(true);
+        columnTask.setStage(true);
         return columnService.findByColumnId(columnId).map(column->{
                 columnTask.setColumn(column);
                 return taskService.findByTaskId(taskId).map(task -> {
@@ -65,7 +65,7 @@ public class ColumnTaskController {
         else{
             ColumnTask columnTask = ColumnTask.builder().column(columnService.findByColumnId(endCollumnId).get())
                                                         .task(taskService.findByTaskId(taskId).get())
-                                                        .staged(true).build();
+                                                        .stage(true).build();
             columnTaskService.add(columnTask);
         }
         return ResponseEntity.ok(columnTaskService.findAllByColumn(endCollumnId));

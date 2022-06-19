@@ -1,10 +1,9 @@
-package com.example.projecti_trello_app_backend.services.token;
+package com.example.projecti_trello_app_backend.services.reset_password;
 
 import com.example.projecti_trello_app_backend.entities.token.ResetPasswordToken;
 import com.example.projecti_trello_app_backend.entities.user.User;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.spec.OAEPParameterSpec;
 import java.util.Optional;
 
 @Service
