@@ -25,5 +25,11 @@ public interface BoardRepo extends JpaRepository<Board,Integer> {
             " where  board.boardId =?1 and board.deleted =false")
     int delete (int boardId);
 
+    @Modifying
+    @Transactional
+    @Query(value = "update Board board set board.deleted =true where board.workspace.workspaceId =?1 " +
+            "and board.deleted =false")
+    int deleteByWorkspace(int workspaceId);
+
 
 }

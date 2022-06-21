@@ -2,6 +2,7 @@ package com.example.projecti_trello_app_backend.serviceImpls.workspace;
 
 import com.example.projecti_trello_app_backend.dto.WorkSpaceDTO;
 import com.example.projecti_trello_app_backend.entities.workspace.Workspace;
+import com.example.projecti_trello_app_backend.repositories.board.BoardRepo;
 import com.example.projecti_trello_app_backend.repositories.combinations.UserWorkspaceRepo;
 import com.example.projecti_trello_app_backend.repositories.workspace.WorkspaceRepo;
 import com.example.projecti_trello_app_backend.services.workspace.WorkspaceService;
@@ -21,6 +22,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Autowired
     private UserWorkspaceRepo userWorkspaceRepo;
+
+    @Autowired
+    private BoardRepo boardRepo;
 
     @Override
     public List<Workspace> findAll() {
@@ -79,6 +83,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         try {
             return workspaceRepo.deleteByWorkspaceId(workSpaceId)>0
                     && userWorkspaceRepo.deleteByWorkspace(workSpaceId)>0
+                    && boardRepo.deleteByWorkspace(workSpaceId)>0
                     ?true:false;
         }catch (Exception ex)
         {

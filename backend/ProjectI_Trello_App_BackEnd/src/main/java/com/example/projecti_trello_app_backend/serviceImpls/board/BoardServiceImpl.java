@@ -83,4 +83,15 @@ public class BoardServiceImpl implements BoardService {
             return false;
         }
     }
+
+    @Override
+    public boolean deleteByWorkspace(int workspaceId) {
+        try{
+            return boardRepo.deleteByWorkspace(workspaceId)>0?true:false;
+        } catch (Exception ex)
+        {
+            log.error("delete board by workspace error",ex);
+            return false;
+        }
+    }
 }

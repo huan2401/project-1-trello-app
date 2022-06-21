@@ -17,4 +17,6 @@ public interface BoardService {
     Optional<Board> update (BoardDTO boardDTO);
 
     boolean delete(int boardId);
+
+    boolean deleteByWorkspace(int workspaceId);
 }

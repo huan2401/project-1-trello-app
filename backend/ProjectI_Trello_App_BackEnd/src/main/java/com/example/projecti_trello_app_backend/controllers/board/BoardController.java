@@ -7,6 +7,7 @@ import com.example.projecti_trello_app_backend.services.board.BoardService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
 import com.example.projecti_trello_app_backend.services.workspace.WorkspaceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +33,7 @@ public class BoardController {
 //            return ResponseEntity.ok(boardService.findAllByUser(user.getUserId()));
 //        }).orElse(ResponseEntity.noContent().build());
 //    }
-
+    
     @PostMapping("/add-board")
     public ResponseEntity<?> addBoard(@RequestBody Board board,
                                       @RequestParam(name = "work_space_id")int workSpaceId){
@@ -50,6 +51,17 @@ public class BoardController {
         return ResponseEntity.ok(boardService.update(boardDTO));
     }
 
+    @DeleteMapping(path = "/delete")
+    public ResponseEntity<?> delete(@RequestParam(name = "board_id")int boardId)
+    {
+        return boardService.delete(boardId)?ResponseEntity.status(200).build()
+                                            : ResponseEntity.noContent().build();
+    }
 
-
+    @DeleteMapping(path = "/delete-by-work-space")
+    public ResponseEntity<?> deleteByWorkSpace(@RequestParam(name = "workspace_id")int workspaceId)
+    {
+        return boardService.deleteByWorkspace(workspaceId)?ResponseEntity.status(200).build()
+                                                          :ResponseEntity.noContent().build();
+    }
 }
