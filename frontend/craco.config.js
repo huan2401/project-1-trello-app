@@ -24,11 +24,10 @@ module.exports = {
         {
             plugin: CracoAntDesignPlugin,
             options: {
-                customizeTheme: {
-                },
+                customizeTheme: {},
                 customizeThemeLessPath: path.join(
-                  __dirname,
-                  "src/styles/customAntd.less"
+                    __dirname,
+                    "src/styles/customAntd.less"
                 ),
             },
         },

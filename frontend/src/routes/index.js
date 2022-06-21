@@ -1,29 +1,34 @@
-import { lazy } from "react";
+import React from "react";
+import { Navigate, useRoutes } from "react-router-dom";
 
-const Home = lazy(() => import("containers/Home"));
-// const Login = lazy(() => import("../components/common/Login/Login.js"));
-// const Signup = lazy(() => import("../components/common/Signup/Signup"));
+import Login from "components/common/Login/Login";
+import Signup from "components/common/Signup/Signup";
+import Home from "containers/Home/Home";
+import Setup from "components/common/Setup/Setup";
+
+// const Home = lazy(() => import("containers/Home/Home"));
 
 /*
  * If route has children, it's a parent menu (not link to any pages)
  * You can change permissions to your IAM's permissions
  */
-const routes = [
-    {
-        path: "/login",
-        title: "Login",
-        component: Login,
-    },
-    // {
-    //     path: "/signup",
-    //     title: "Sign Up",
-    //     component: Signup,
-    // },
-    // {
-    //     path: "/",
-    //     title: "Home",
-    //     component: Home,
-    // },
-];
-
-export default routes;
+export default function Router() {
+    return useRoutes([
+        {
+            path: "login",
+            element: <Login />,
+        },
+        {
+            path: "signup",
+            element: <Signup />,
+        },
+        {
+            path: "/",
+            element: <Home />,
+        },
+        {
+            path: "/setup",
+            element: <Setup />,
+        },
+    ]);
+}
