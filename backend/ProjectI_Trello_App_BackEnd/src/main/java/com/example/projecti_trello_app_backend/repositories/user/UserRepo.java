@@ -21,4 +21,7 @@ public interface UserRepo extends JpaRepository<User,Integer> {
      Optional<User> findByUserNameOrEmail(String userName, String email);
 
      Optional<User> findUserByVerificationCode(String verificationCode);
+
+     @Query(value = "from User user where (user.userName =?1 or user.email =?2) and user.activated =true")
+     Boolean existsByUsernameOrEmail(String userName, String email);
 }

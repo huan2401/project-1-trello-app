@@ -13,7 +13,8 @@ public interface UserNotificationService {
 
     List<UserNotification> findByUser(int userId);
 
-    Optional<UserNotification> sendUpdateNotification(UserNotification userNotification);
+    Optional<UserNotification> sendNotification(UserNotification userNotification);
+
 
 
 }

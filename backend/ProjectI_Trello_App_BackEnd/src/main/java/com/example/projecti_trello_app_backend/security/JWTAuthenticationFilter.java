@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
+public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
 
 
     @Autowired
@@ -21,7 +21,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
 
 
-    public JWTAuthorizationFilter(AuthenticationManager authenticationManager, AuthEntryPoint authenticationEntryPoint) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, AuthEntryPoint authenticationEntryPoint) {
         super(authenticationManager, authenticationEntryPoint);
     }
 

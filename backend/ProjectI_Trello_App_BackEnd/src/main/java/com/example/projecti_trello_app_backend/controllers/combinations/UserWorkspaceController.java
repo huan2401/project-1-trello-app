@@ -1,5 +1,6 @@
 package com.example.projecti_trello_app_backend.controllers.combinations;
 
+import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.dto.UserWorkspaceDTO;
 import com.example.projecti_trello_app_backend.entities.combinations.UserWorkspace;
 import com.example.projecti_trello_app_backend.entities.user.User;
@@ -31,7 +32,7 @@ public class UserWorkspaceController {
     public ResponseEntity<?> findByUser(@RequestParam(name = "user_id") int userId)
     {
         return userWorkspaceService.findByUser(userId).isEmpty()
-                ?ResponseEntity.noContent().build()
+                ?ResponseEntity.status(204).body(new MessageResponse("This user doesn't belong to any board"))
                 :ResponseEntity.ok(userWorkspaceService.findByWorkspace(userId));
     }
 
@@ -39,7 +40,7 @@ public class UserWorkspaceController {
     public ResponseEntity<?> findByWorkspace(@RequestParam(name = "workspace_id")int workspaceId)
     {
         return userWorkspaceService.findByWorkspace(workspaceId).isEmpty()
-                ?ResponseEntity.noContent().build()
+                ?ResponseEntity.status(204).body(new MessageResponse("This workspace doesn't has any member"))
                 :ResponseEntity.ok(userWorkspaceService.findByWorkspace(workspaceId));
     }
 

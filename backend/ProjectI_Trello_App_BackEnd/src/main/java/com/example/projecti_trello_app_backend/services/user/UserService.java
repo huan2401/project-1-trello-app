@@ -20,6 +20,8 @@ public interface UserService {
 
     Optional<User> signUp(User user, String siteURL); // add new user
 
+    Boolean existsByUsernameOrEmail(String userName, String email);
+
     void sendVerificationEmail(User user, String siteURL);
 
     Optional<User> verifyUser(String verificationCode);

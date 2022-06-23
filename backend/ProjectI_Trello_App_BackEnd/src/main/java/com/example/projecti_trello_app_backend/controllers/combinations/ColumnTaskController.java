@@ -55,20 +55,24 @@ public class ColumnTaskController {
 
     @GetMapping("/change-stage")
     public ResponseEntity<?> changeStage(@RequestParam(name = "start_col_id") int startColumnId,
-                                         @RequestParam(name ="end_col_id") int endCollumnId,
+                                         @RequestParam(name ="end_col_id") int endColumnId,
                                          @RequestParam(name = "task_id") int taskId)
     {
         Optional<ColumnTask> columnTask1 = columnTaskService.findByColumnAndTask(startColumnId,taskId);
         if(columnTask1.isPresent()) columnTaskService.update(columnTask1.get().getId());
-        Optional<ColumnTask> columnTask2 = columnTaskService.findByColumnAndTask(endCollumnId,taskId);
-        if(columnTask2.isPresent()) columnTaskService.update(columnTask2.get().getId());
+        else return ResponseEntity.status(304).build();
+        Optional<ColumnTask> columnTask2 = columnTaskService.findByColumnAndTask(endColumnId,taskId);
+        if(columnTask2.isPresent()) {
+             return columnTaskService.update(columnTask2.get().getId()).isPresent()
+                     ?ResponseEntity.status(200).build():ResponseEntity.status(304).build();
+        }
         else{
-            ColumnTask columnTask = ColumnTask.builder().column(columnService.findByColumnId(endCollumnId).get())
+            ColumnTask columnTask = ColumnTask.builder().column(columnService.findByColumnId(endColumnId).get())
                                                         .task(taskService.findByTaskId(taskId).get())
                                                         .stage(true).build();
-            columnTaskService.add(columnTask);
+          return columnTaskService.add(columnTask).isPresent()?ResponseEntity.status(200).build()
+                                                                : ResponseEntity.status(304).build();
         }
-        return ResponseEntity.ok(columnTaskService.findAllByColumn(endCollumnId));
     }
 
 

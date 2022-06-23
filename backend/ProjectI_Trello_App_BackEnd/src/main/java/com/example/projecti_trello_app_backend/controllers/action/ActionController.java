@@ -1,11 +1,13 @@
 package com.example.projecti_trello_app_backend.controllers.action;
 
+import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.entities.action.Action;
 import com.example.projecti_trello_app_backend.services.action.ActionService;
 import com.example.projecti_trello_app_backend.services.combinations.UserTaskService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +32,7 @@ public class ActionController {
     {
         return actionService.findByActionId(actionId).isPresent()
                 ?ResponseEntity.ok(actionService.findByActionId(actionId))
-                :ResponseEntity.noContent().build();
+                :ResponseEntity.status(200).body(new MessageResponse("Action not found"));
     }
 
     @GetMapping(path = "/find-by-task")
@@ -38,8 +40,9 @@ public class ActionController {
     {
         return taskService.findByTaskId(taskId).map(task -> {
             List<Action> actions = actionService.findByTask(taskId);
-            return actions.isEmpty()?ResponseEntity.noContent().build():ResponseEntity.ok(actions);
-        }).orElse(ResponseEntity.noContent().build());
+            return actions.isEmpty()?ResponseEntity.status(204).body(new MessageResponse("This task doesn't has any action"))
+                                    :ResponseEntity.ok(actions);
+        }).orElse(ResponseEntity.status(204).body(new MessageResponse("Task not found")));
     }
 
     @PostMapping(path = "/add")
@@ -52,8 +55,9 @@ public class ActionController {
             return taskService.findByTaskId(taskId).map(task -> {
                 action.setTask(task);
                 Optional<Action> actionOptional = actionService.add(action);
-                return actionOptional.isPresent()?ResponseEntity.ok(actionOptional):ResponseEntity.noContent().build();
-            }).orElse(ResponseEntity.noContent().build());
+                return actionOptional.isPresent()?ResponseEntity.ok(actionOptional)
+                                                :ResponseEntity.status(304).body(new MessageResponse("Add action fail"));
+            }).orElse(ResponseEntity.status(204).body(new MessageResponse("Task not found")));
         }).orElse(ResponseEntity.noContent().build());
     }
 }

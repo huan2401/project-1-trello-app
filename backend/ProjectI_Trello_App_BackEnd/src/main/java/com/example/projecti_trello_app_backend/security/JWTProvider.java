@@ -66,7 +66,7 @@ public class JWTProvider {
     public boolean validateToken(String token)
     {
         try {
-            Claims claims =getClaims(token);
+            Claims claims = getClaims(token);
             return isExpired(token)?false:true;
         } catch (Exception ex)
         {

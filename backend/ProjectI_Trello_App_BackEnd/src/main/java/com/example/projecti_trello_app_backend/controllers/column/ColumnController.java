@@ -1,6 +1,7 @@
 package com.example.projecti_trello_app_backend.controllers.column;
 
 import com.example.projecti_trello_app_backend.dto.ColumnDTO;
+import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.entities.board.Board;
 import com.example.projecti_trello_app_backend.entities.column.Columns;
 import com.example.projecti_trello_app_backend.services.board.BoardService;
@@ -28,16 +29,20 @@ public class ColumnController {
     @GetMapping("/find-all-by-board")
     public ResponseEntity<?> findAllByBoard(@RequestParam(name = "board_id") int boardId)
     {
-        return boardService.findByBoardId(boardId).isPresent()?ResponseEntity.ok(columnService.findAllByBoard(boardId))
-                                                              :ResponseEntity.ok(Optional.empty());
+        return boardService.findByBoardId(boardId).isPresent()
+                ?ResponseEntity.ok(columnService.findAllByBoard(boardId))
+                :ResponseEntity.ok(new MessageResponse("This board doesn't has any columns"));
     }
 
     @PostMapping("/add")
     public ResponseEntity<?> addColumn(@RequestBody Columns column, @RequestParam(name = "board_id") int boardId)
     {
-        if(!boardService.findByBoardId(boardId).isPresent()) return ResponseEntity.ok(Optional.empty());
+        if(!boardService.findByBoardId(boardId).isPresent())
+            return ResponseEntity.status(204).body(new MessageResponse("Board not found"));
         column.setBoard(boardService.findByBoardId(boardId).get());
-        return ResponseEntity.ok(columnService.add(column));
+        return columnService.add(column).isPresent()
+                ?ResponseEntity.ok(new MessageResponse("Add new column successfully"))
+                :ResponseEntity.status(304).body(new MessageResponse("Add new column fail"));
     }
 
     @PutMapping("/update")
@@ -46,14 +51,17 @@ public class ColumnController {
     {
         if(!columnService.findByColumnId(columId).isPresent()) return ResponseEntity.ok(Optional.empty());
         columnDTO.setColumnId(columId);
-        return ResponseEntity.ok(columnService.update(columnDTO));
+        return columnService.update(columnDTO).isPresent()
+                ?ResponseEntity.ok(new MessageResponse("Update column successfully"))
+                :ResponseEntity.status(304).body(new MessageResponse("Update column fail"));
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<?> delete (@RequestParam(name = "column_id")int columnId)
     {
-        return columnService.delete(columnId)?ResponseEntity.status(200).build()
-                                            :ResponseEntity.status(304).build();
+        return columnService.delete(columnId)
+                ?ResponseEntity.ok(new MessageResponse("Delete column successfully"))
+                :ResponseEntity.status(304).body(new MessageResponse("Delete column fail"));
     }
 
 

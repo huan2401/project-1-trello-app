@@ -69,6 +69,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Boolean existsByUsernameOrEmail(String userName, String email) {
+        try {
+            return userRepo.existsByUsernameOrEmail(userName,email);
+        }catch (Exception ex)
+        {
+            log.error("check existing user by username or email error",ex);
+            return false;
+        }
+    }
+
+    @Override
     public Optional<User> signUp(User user,String siteURL) { // create a new user
         try{
             if(userRepo.findByUserNameOrEmail(user.getUserName(),user.getEmail()).isPresent())

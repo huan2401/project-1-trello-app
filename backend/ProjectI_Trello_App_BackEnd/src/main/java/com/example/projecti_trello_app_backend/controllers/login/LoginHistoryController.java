@@ -1,4 +1,4 @@
-package com.example.projecti_trello_app_backend.controllers.login_history;
+package com.example.projecti_trello_app_backend.controllers.login;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

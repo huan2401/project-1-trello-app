@@ -41,14 +41,16 @@ public class UserNotificationServiceImpl implements UserNotificationService {
         }
     }
 
+    // add new UserNotification to table
     @Override
-    public Optional<UserNotification> sendUpdateNotification(UserNotification userNotification) {
+    public Optional<UserNotification> sendNotification(UserNotification userNotification) {
         try{
             userNotification.setSentAt(new Timestamp(System.currentTimeMillis()));
+            userNotification.setRead(false);
             return Optional.ofNullable(userNotificationRepo.save(userNotification));
         } catch (Exception ex)
         {
-            log.error("send notification to members of a task error",ex);
+            log.error("send notification error",ex);
             return Optional.empty();
         }
     }
