@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;1,100;1,200;1,300;1,400&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    // overflow: hidden;
+}
+.setting {
+
+     .setting__avatar{
+        text-align: center;
+        height: 400px;
+        background-color: #dfe1e6;
+        p{
+            padding-top: 15px;
+            font-weight: 600px;
+            font-size: 24px;
+            color: rgb(97, 181, 200);
+        }
+        input {
+            margin-top: 10px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        div {
+            
+            img {
+                border-radius: 50%;
+                margin-bottom: 20px;
+                width: 200px;
+                height: 200px;
+                object-fit: cover;
+            }
+            //  outline: 1px solid red;
+        }
+    }
+    .setting__detail {
+        margin-left: 200px;
+        margin-right: 200px;
+        margin-top: 30px;
+        
+        .setting__detail-more1{
+            .language {
+                display: flex;
+                margin-top: 20px;
+                p {
+                    font-size: 16px;
+                }
+            }
+            position: relative;
+            h3 {
+                font-size: 24px;
+            }
+            h3::before {
+                content: "";
+                position: absolute;
+                right: 0px;
+                bottom: 75px;
+                width: 100%;
+                height: 1px;
+                background: rgb(223 225 230);
+            }
+            p {
+                margin-top: 20px;
+                margin-left: 50px;
+            }
+        }
+
+        .setting__detail-more2, .setting__detail-more3, .setting__detail-more4{
+            position: relative;
+            margin-top: 30px;
+            h3 {
+                font-size: 24px;
+            }
+            h3::before {
+                content: "";
+                position: absolute;
+                right: 0px;
+                bottom: 110px;
+                width: 100%;
+                height: 1px;
+                background: rgb(223 225 230);
+            }
+            p {
+                margin-top: 20px;
+                margin-left: 14px;
+            }
+        }
+
+        .setting__detail-more5{
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            .logout {
+                margin-top: 100px;
+                margin-bottom: 40px;
+                width: 200px;
+                height: 50px;
+            }
+        }
+    }
+}
+
+
+
+
