@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState } from "react";
+import { HomeWrapper } from "./CustomStyled";
 
 const Home = () => {
 
   return (
-    <>
-      Home
-    </>
-  )
-}
+    <HomeWrapper>
+      
+    </HomeWrapper>
+  );
+};
 
 export default Home;
