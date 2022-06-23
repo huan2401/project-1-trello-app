@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import React from "react";
-import "./Setup.scss";
+import "./Setting.scss";
 import Button from "@mui/material/Button";
 import { Input, TextField } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import IconButton from "@mui/material/IconButton";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 
-const Setup = ({ username, email }) => {
+const Setting = ({ username, email }) => {
     const [avatar, setAvatar] = useState();
 
     useEffect(() => {
@@ -23,9 +23,8 @@ const Setup = ({ username, email }) => {
     };
 
     return (
-        <div className="setup">
-            <div className="setup__header">HEADER</div>
-            <div className="setup__avatar">
+        <div className="setting">
+            <div className="setting__avatar">
                 <p>Thay đổi avatar</p>
                 <label htmlFor="contained-button-file">
                     <Input
@@ -70,8 +69,8 @@ const Setup = ({ username, email }) => {
                     Upload
                 </Button>
             </div>
-            <div className="setup__detail">
-                <div className="setup__detail-more1">
+            <div className="setting__detail">
+                <div className="setting__detail-more1">
                     <h3>Chi tiết tài khoản</h3>
                     <div className="language">
                         <p>Thay đổi ngôn ngữ: </p>
@@ -90,7 +89,7 @@ const Setup = ({ username, email }) => {
                         </Button>
                     </div>
                 </div>
-                <div className="setup__detail-more2">
+                <div className="setting__detail-more2">
                     <h3>Email</h3>
                     <p>Cập nhật email</p>
                     <TextField
@@ -99,7 +98,7 @@ const Setup = ({ username, email }) => {
                         variant="outlined"
                     />
                 </div>
-                <div className="setup__detail-more3">
+                <div className="setting__detail-more3">
                     <h3>Username</h3>
                     <p>Cập nhật username</p>
                     <TextField
@@ -108,7 +107,7 @@ const Setup = ({ username, email }) => {
                         variant="outlined"
                     />
                 </div>
-                <div className="setup__detail-more4">
+                <div className="setting__detail-more4">
                     <h3>Đổi mật khẩu</h3>
                     <p>Nhập mật khẩu mới</p>
                     <div className="test">
@@ -134,7 +133,7 @@ const Setup = ({ username, email }) => {
                         Lưu lại
                     </Button>
                 </div>
-                <div className="setup__detail-more5">
+                <div className="setting__detail-more5">
                     <Button className="logout" variant="contained">
                         Đăng xuất
                     </Button>
@@ -144,4 +143,4 @@ const Setup = ({ username, email }) => {
     );
 };
 
-export default Setup;
+export default Setting;
