@@ -51,7 +51,7 @@ public class UserWorkspaceController {
         if(userWorkspaceService.findByUserAndWorkspace(userId,workspaceId).isPresent())
             return ResponseEntity.noContent().build(); // existed a user workspace
         UserWorkspace userWorkspace = new UserWorkspace();
-        userWorkspace.setCreator(false);
+        userWorkspace.setRole("WS_MEMBER");
         return userService.findByUserId(userId).map(user -> {
             userWorkspace.setUser(user);
             return workspaceService.findByWorkspaceId(workspaceId).map(workspace -> {

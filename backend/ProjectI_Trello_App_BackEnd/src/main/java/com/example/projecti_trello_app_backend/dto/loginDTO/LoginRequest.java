@@ -16,6 +16,5 @@ public class LoginRequest {
 
     private String email;
 
-    @JsonIgnore
     private String password;
 }

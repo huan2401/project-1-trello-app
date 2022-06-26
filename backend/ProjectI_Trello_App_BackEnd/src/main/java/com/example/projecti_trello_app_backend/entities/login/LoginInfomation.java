@@ -1,4 +1,4 @@
-package com.example.projecti_trello_app_backend.entities.login_history;
+package com.example.projecti_trello_app_backend.entities.login;
 
 import com.example.projecti_trello_app_backend.entities.user.User;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(schema = "${database.name}", name = "login_history")
-public class LoginHistory {
+public class LoginInfomation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

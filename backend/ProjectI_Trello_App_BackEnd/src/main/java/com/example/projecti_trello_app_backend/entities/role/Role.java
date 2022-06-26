@@ -23,6 +23,9 @@ public class Role { // role in a board
     @Column(name = "role_name", nullable = false)
     private String roleName;
 
+    @Column(name = "role_type")
+    private String roleType;
+
     @Column(name = "deleted")
     private boolean deleted;
 

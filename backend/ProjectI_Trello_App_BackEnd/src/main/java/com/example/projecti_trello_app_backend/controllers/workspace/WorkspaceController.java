@@ -9,6 +9,7 @@ import com.example.projecti_trello_app_backend.services.workspace.WorkspaceServi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -44,7 +45,7 @@ public class WorkspaceController {
         return userService.findByUserId(creatorId).map(user -> {
             userWorkspace.setUser(user);
             userWorkspace.setWorkspace(userWorkspaceToAdd.get());
-            userWorkspace.setCreator(true);
+            userWorkspace.setRole("WS_CREATOR");
             return userWorkspaceService.add(userWorkspace).isPresent()?ResponseEntity.status(200).build()
                     :ResponseEntity.noContent().build();
         }).orElse(ResponseEntity.noContent().build());

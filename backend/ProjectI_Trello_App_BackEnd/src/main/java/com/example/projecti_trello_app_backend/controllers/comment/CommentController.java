@@ -1,13 +1,17 @@
 package com.example.projecti_trello_app_backend.controllers.comment;
 
 import com.example.projecti_trello_app_backend.dto.CommentDTO;
+import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.entities.comment.Comment;
 import com.example.projecti_trello_app_backend.services.comment.CommentService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("project1/api/comment")
@@ -46,10 +50,15 @@ public class CommentController {
     }
 
     @PutMapping(path = "/edit")
-    public ResponseEntity<?> edit(@RequestParam(name = "commnnt_id")int commentId,
-                                  @RequestBody CommentDTO commentDTO)
+    public ResponseEntity<?> edit(@RequestParam(name = "comment_id")int commentId,
+                                  @RequestBody CommentDTO commentDTO,
+                                  HttpServletRequest request)
     {
-        return ResponseEntity.ok("");
+        if(!commentService.findByCommentId(commentId).isPresent())
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new MessageResponse("Not found comment"));
+        return commentService.update(commentDTO).isPresent()
+                ?ResponseEntity.status(200).body(new MessageResponse("Edit comment successfully"))
+                :ResponseEntity.status(304).body(new MessageResponse("Edit comment fail"));
     }
 
     @DeleteMapping("/delete-by-comment")

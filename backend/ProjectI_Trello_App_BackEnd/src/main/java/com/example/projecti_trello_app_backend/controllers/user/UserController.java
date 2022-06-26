@@ -1,6 +1,7 @@
 package com.example.projecti_trello_app_backend.controllers.user;
 
 import com.example.projecti_trello_app_backend.constants.MailConstants;
+import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.dto.UserDTO;
 import com.example.projecti_trello_app_backend.entities.token.ResetPasswordToken;
 import com.example.projecti_trello_app_backend.entities.user.User;
@@ -44,11 +45,12 @@ public class UserController {
     }
 
     @GetMapping(path = "/verify")
-    public ResponseEntity<?> verifyUser(@RequestParam(name ="verify-code") String verifyCode)
+    public ResponseEntity<?> verifyUser(@RequestParam(name ="verification-code") String verificationCode)
     {
-        return userService.verifyUser(verifyCode).isPresent()
-                ?ResponseEntity.ok(UserDTO.convertToDTO(userService.verifyUser(verifyCode).get()))
-                :ResponseEntity.noContent().build();
+        Optional<User> verifiedUser = userService.verifyUser(verificationCode);
+        return verifiedUser.isPresent()
+                ?ResponseEntity.status(200).body(new MessageResponse("Activate user successfully"))
+                :ResponseEntity.status(204).body(new MessageResponse("Activate user fail"));
     }
 
     @PutMapping(path = "/update/{user_id}")
@@ -68,10 +70,10 @@ public class UserController {
         User userToUpdate = userService.findByUserId(userId).get();
         if(!userDTO.getPreviousPassword().equals(userDTO.getPreviousPassword()))
             return ResponseEntity.noContent().build();
-        if(passwordEncoder.matches(userDTO.getPassWord(),userToUpdate.getPassWord()))
+        if(passwordEncoder.matches(userDTO.getPassWord(),userToUpdate.getPassword()))
             return ResponseEntity.status(304).build();
         else {
-            userToUpdate.setPassWord(passwordEncoder.encode(userDTO.getPassWord()));
+            userToUpdate.setPassword(passwordEncoder.encode(userDTO.getPassWord()));
             return ResponseEntity.ok(Optional.of(UserDTO.convertToDTO(userService.changePassWord(userToUpdate).get())));
         }
     }
@@ -94,14 +96,13 @@ public class UserController {
         Optional<ResetPasswordToken> rsPasswordTokenOptional = resetPasswordService.findByToken(token);
         System.out.println(rsPasswordTokenOptional);
         if(rsPasswordTokenOptional.isPresent()==false || resetPasswordService.validateToken(token)==false) {
-            System.out.println(resetPasswordService.validateToken(token));
-            return ResponseEntity.ok("not find token or validate fail");
+            return ResponseEntity.status(204).body(new MessageResponse("Not found token or token is invalid !"));
         }
         else {
             userDTO.setUserId(rsPasswordTokenOptional.get().getUser().getUserId());
             userDTO.setPassWord(passwordEncoder.encode(userDTO.getPassWord()));
             return userService.resetPassword(userDTO,token).isPresent() ? ResponseEntity.status(200).build()
-                    : ResponseEntity.noContent().build();
+                    : ResponseEntity.status(204).body(new MessageResponse("Reset password fail"));
         }
     }
 }

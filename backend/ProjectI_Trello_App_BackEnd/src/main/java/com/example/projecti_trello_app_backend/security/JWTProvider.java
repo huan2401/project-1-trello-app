@@ -1,29 +1,30 @@
 package com.example.projecti_trello_app_backend.security;
 
 import com.example.projecti_trello_app_backend.constants.SecurityConstants;
-import com.example.projecti_trello_app_backend.repositories.user.UserRepo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @Slf4j
 public class JWTProvider {
 
-    @Autowired
-    private UserRepo userRepo;
-
-
     // generate jwt
-    public String generateToken(String userName)
+    public String generateToken(CustomUserDetails userDetails)
     {
         Date now = new Date(System.currentTimeMillis());
-        String jwt = Jwts.builder().setSubject(userName)
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("username",userDetails.getUsername());
+        claims.put("userid",String.valueOf(userDetails.getUser().getUserId()));
+        claims.put("email",userDetails.getUserEmail());
+        String jwt = Jwts.builder().setSubject(userDetails.getUsername())
+                                    .setClaims(claims)
                                     .setIssuedAt(now)
                                     .setExpiration(new Date (now.getTime() +SecurityConstants.EXPIRE_TIME))
                                     .signWith(SignatureAlgorithm.HS256,SecurityConstants.SECURITY_KEY)
@@ -42,9 +43,20 @@ public class JWTProvider {
     {
         try{
             Claims claims = getClaims(token);
-            return claims.getSubject();
+            return claims.get("username").toString();
         } catch (Exception ex) {
-            log.error("error :", ex);
+            log.error("get username from jwt error :", ex);
+            return null;
+        }
+    }
+
+    public Integer getUserIdFromJwt(String token){
+        try{
+            Claims claims = getClaims(token);
+            return (Integer) claims.get("userid");
+        }catch (Exception ex)
+        {
+            log.error("get user id from jwt error:",ex);
             return null;
         }
     }
@@ -74,9 +86,4 @@ public class JWTProvider {
             return false;
         }
     }
-
-
-
-
-
 }

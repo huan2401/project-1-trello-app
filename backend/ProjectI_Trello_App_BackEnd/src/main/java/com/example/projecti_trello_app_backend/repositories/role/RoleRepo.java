@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -15,6 +16,8 @@ public interface RoleRepo extends JpaRepository<Role, Integer> {
     Optional<Role> findByRoleId(int roleId);
 
     Optional<Role> findByRoleName(String roleName);
+
+    List<Role> findByRoleType(String roleType);
 
     @Modifying
     @Transactional

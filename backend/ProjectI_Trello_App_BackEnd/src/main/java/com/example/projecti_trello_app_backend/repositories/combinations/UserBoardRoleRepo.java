@@ -28,6 +28,12 @@ public interface UserBoardRoleRepo extends JpaRepository<UserBoardRole,Integer> 
 
     @Modifying
     @Transactional
+    @Query(value = "update UserBoardRole usbr set usbr.role.roleName =?3 " +
+            " where usbr.user.userId =?1 and usbr.board.boardId =?2 and usbr.deleted =false")
+    int setRoleForUser(int userId, int boardId, String roleName);
+
+    @Modifying
+    @Transactional
     @Query(value = "update UserBoardRole usbr set usbr.deleted=true where " +
             " usbr.board.boardId=?1 and usbr.deleted =false ")
     int deleteByBoard(int boardId);

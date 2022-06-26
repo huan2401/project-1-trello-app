@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -16,8 +18,8 @@ public class JWTResponse {
 
     private String tokenType ;
 
-    private String userName;
+    private Date issuedAt;
 
-    private String email;
+    private Date expireAt;
 
 }

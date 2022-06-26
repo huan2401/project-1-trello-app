@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-@Component
 @Slf4j
 public class CustomUserDetailService implements UserDetailsService {
 
@@ -22,8 +21,9 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-            Optional<User> userOptional = userRepo.findByUserNameOrEmail(username,"");
-             if(userOptional.isPresent()) return new CustomUserDetails(userOptional.get());
-             else throw new UsernameNotFoundException("Username not found");
+           Optional<User> userOptional = userRepo.findByUserName(username);
+           if(userOptional.isPresent())
+               return new CustomUserDetails(userOptional.get());
+           else throw new UsernameNotFoundException("Username not found");
     }
 }

@@ -28,8 +28,7 @@ public class User {
 
     @Column(name ="password", nullable = false)
     @NotNull
-    @JsonIgnore
-    private String passWord;
+    private String password;
 
     @Column(name = "activated", nullable = false)
     private Boolean activated;
