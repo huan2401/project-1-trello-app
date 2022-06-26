@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.SequenceGenerator;
 import javax.swing.text.html.Option;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -14,5 +15,8 @@ public interface RoleService {
 
     Optional<Role> findByRoleName(String roleName);
 
-    Optional<Role> save(Role role);
+    List<Role> findByRoleType(String roleType);
+
+    Optional<Role> add(Role role);
+
 }

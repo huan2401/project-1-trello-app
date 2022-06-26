@@ -5,12 +5,15 @@ import com.example.projecti_trello_app_backend.dto.UserDTO;
 import com.example.projecti_trello_app_backend.entities.user.User;
 import com.example.projecti_trello_app_backend.repositories.token.ResetPasswordTokenRepo;
 import com.example.projecti_trello_app_backend.repositories.user.UserRepo;
+import com.example.projecti_trello_app_backend.security.CustomUserDetails;
 import com.example.projecti_trello_app_backend.services.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -84,7 +87,7 @@ public class UserServiceImpl implements UserService {
         try{
             if(userRepo.findByUserNameOrEmail(user.getUserName(),user.getEmail()).isPresent())
                 return Optional.empty();
-            user.setPassWord(passwordEncoder.encode(user.getPassWord()));
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             String randomCode = RandomString.make(64);
             user.setVerificationCode(randomCode);
             user.setActivated(false);
@@ -110,7 +113,7 @@ public class UserServiceImpl implements UserService {
             content.append("<div>");
             content.append("Dear ").append(user.getFirstName()+" "+user.getLastName()).append("! Thank for using our service<br>");
             content.append("<h2>Please verificate your account</h2><br>");
-            content.append("<a href =\"").append(siteURL+"/verify?verify-code="+user.getVerificationCode())
+            content.append("<a href =\"").append(siteURL+"/verify?verification-code="+user.getVerificationCode())
                     .append("\">Activate your account</a><br>");
             content.append("Best Regards !<br> Chien Dao</div>");
             MimeMessage message = mailSender.createMimeMessage();
@@ -181,7 +184,7 @@ public class UserServiceImpl implements UserService {
     public Optional<User> resetPassword(UserDTO userDTO, String token) {
         try {
             User userToUpDate = userRepo.findByUserId(userDTO.getUserId()).get();
-            userToUpDate.setPassWord(userDTO.getPassWord());
+            userToUpDate.setPassword(userDTO.getPassWord());
             Optional<User> updatedUserOptional = Optional.ofNullable(userRepo.save(userToUpDate));
             resetPasswordTokenRepo.setExpired(token);
             return updatedUserOptional;

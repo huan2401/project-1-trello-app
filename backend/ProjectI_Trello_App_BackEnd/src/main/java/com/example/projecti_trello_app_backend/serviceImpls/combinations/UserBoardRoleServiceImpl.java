@@ -74,6 +74,17 @@ public class UserBoardRoleServiceImpl implements UserBoardRoleService {
     }
 
     @Override
+    public boolean setRoleForUser(int userId,int boardId, String roleName) {
+        try {
+            return userBoardRoleRepo.setRoleForUser(userId,boardId,roleName)>0?true:false;
+        } catch (Exception ex)
+        {
+            log.error("set role for user error",ex);
+            return false;
+        }
+    }
+
+    @Override
     public boolean deleteByBoard(int boardId) {
         try {
             return userBoardRoleRepo.deleteByBoard(boardId)>0?true:false;

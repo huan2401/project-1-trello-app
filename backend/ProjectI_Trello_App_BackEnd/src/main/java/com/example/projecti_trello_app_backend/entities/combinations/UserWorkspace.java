@@ -33,8 +33,8 @@ public class UserWorkspace {
     @NotNull
     private Workspace workspace;
 
-    @Column(name = "is_creator")
-    private boolean isCreator;
+    @Column(name = "role")
+    private String role;
 
     @Column(name = "deleted")
     private boolean deleted;

@@ -6,10 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -19,15 +19,16 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(
-        prePostEnabled = true,
-        securedEnabled = true,
-        jsr250Enabled = true
-)
 public class SecurityConfig  extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private CustomUserDetailService userDetailService;
+
+    @Autowired
+    private AuthEntryPoint authEntryPoint;
+
+    @Autowired
+    private JWTAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder()
@@ -42,22 +43,35 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
         return super.authenticationManager();
     }
 
-    // sercurity request config
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().cors();
-        http.authorizeRequests().anyRequest().permitAll();
-
-        // http.addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-    }
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailService) // provide userDetailService  for Spring Security
                 .passwordEncoder(passwordEncoder()); // provide password encoder
     }
 
-    // config cors to allow js call api use fetch or axios
+    // sercurity request config
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        String [] listURLPermitAll= {"/**/api/auth",
+                                    "/**/api/user/signup",
+                                    "/**/api/user/verify/**",
+                                    "/**/api/user/reset-password/**"};
+        http.csrf().disable();
+                http
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and().cors()
+                        .and()
+                    .authorizeRequests().antMatchers(listURLPermitAll)
+                    .permitAll()
+                    .anyRequest().authenticated()
+                    .and()
+                    .exceptionHandling().authenticationEntryPoint(authEntryPoint);
+                http.addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class);
+
+    }
+
+
+    // config cors to allow front-end call api use fetch or axios
     @Bean
     CorsConfigurationSource corsConfigurationSource()
     {

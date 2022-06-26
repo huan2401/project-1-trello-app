@@ -20,6 +20,8 @@ public interface UserBoardRoleService {
 
     Optional<UserBoardRole> add(UserBoardRole userBoardRole);
 
+    boolean setRoleForUser(int userId, int boardId,String roleName);
+
     boolean deleteByBoard(int boardId);
 
     boolean deleteUserFromBoard(int userId, int boardId);

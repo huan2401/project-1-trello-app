@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -39,7 +41,18 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Optional<Role> save(Role role) {
+    public List<Role> findByRoleType(String roleType) {
+        try {
+            return roleRepo.findByRoleType(roleType);
+        }catch (Exception ex)
+        {
+            log.error("find roles by role type",ex);
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public Optional<Role> add(Role role) {
         try{
             return Optional.ofNullable(roleRepo.save(role));
         } catch (Exception ex)
