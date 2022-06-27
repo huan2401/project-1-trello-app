@@ -1,5 +1,6 @@
 package com.example.projecti_trello_app_backend.entities.combinations;
 
+import com.example.projecti_trello_app_backend.entities.role.Role;
 import com.example.projecti_trello_app_backend.entities.user.User;
 import com.example.projecti_trello_app_backend.entities.workspace.Workspace;
 import com.sun.istack.NotNull;
@@ -33,8 +34,9 @@ public class UserWorkspace {
     @NotNull
     private Workspace workspace;
 
-    @Column(name = "role")
-    private String role;
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
     @Column(name = "deleted")
     private boolean deleted;

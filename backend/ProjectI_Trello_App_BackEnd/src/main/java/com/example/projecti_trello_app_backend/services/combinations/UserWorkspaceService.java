@@ -18,7 +18,7 @@ public interface UserWorkspaceService {
 
     Optional<UserWorkspace> findByUserAndWorkspace(int userId, int workspaceId);
 
-    boolean checkCreator(int workspaceId, int userId);
+    boolean checkRole(int workspaceId, int userId, String roleName);
 
     Optional<UserWorkspace> add(UserWorkspace userWorkspace);// add a new user to workspace
 

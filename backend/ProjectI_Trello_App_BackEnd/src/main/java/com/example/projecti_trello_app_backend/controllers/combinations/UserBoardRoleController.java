@@ -128,5 +128,4 @@ public class UserBoardRoleController {
         }).orElse(ResponseEntity.status(304).body(new MessageResponse("Delete user from board fail - user not found")));
     }
 
-
 }

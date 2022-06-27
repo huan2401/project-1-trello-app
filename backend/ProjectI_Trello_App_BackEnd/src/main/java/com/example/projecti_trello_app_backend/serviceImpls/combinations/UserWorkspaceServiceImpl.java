@@ -65,9 +65,9 @@ public class UserWorkspaceServiceImpl implements UserWorkspaceService {
     }
 
     @Override
-    public boolean checkCreator(int workspaceId, int userId) {
+    public boolean checkRole(int workspaceId, int userId,String roleName) {
         try{
-            return userWorkspaceRepo.checkCreator(workspaceId,userId)>0?true:false;
+            return userWorkspaceRepo.checkRole(workspaceId,userId,roleName)>0?true:false;
         } catch (Exception ex)
         {
             log.error("check workspace creator error", ex);

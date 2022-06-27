@@ -5,7 +5,6 @@ import com.example.projecti_trello_app_backend.entities.combinations.UserBoardRo
 import com.example.projecti_trello_app_backend.entities.combinations.UserWorkspace;
 import com.example.projecti_trello_app_backend.entities.user.User;
 import com.example.projecti_trello_app_backend.repositories.combinations.UserBoardRoleRepo;
-import com.example.projecti_trello_app_backend.repositories.combinations.UserTaskRepo;
 import com.example.projecti_trello_app_backend.repositories.combinations.UserWorkspaceRepo;
 import com.example.projecti_trello_app_backend.repositories.comment.CommentRepo;
 import com.example.projecti_trello_app_backend.repositories.user.UserRepo;
@@ -84,7 +83,7 @@ public class SecurityUtils {
         if(!userWorkspaceOptional.isPresent())
             return "WS_GUESS";
         try {
-           return userWorkspaceOptional.get().getRole();
+           return userWorkspaceOptional.get().getRole().getRoleName();
         }
         catch (Exception ex)
         {
