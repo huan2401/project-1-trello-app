@@ -1,9 +1,12 @@
 package com.example.projecti_trello_app_backend.controllers.workspace;
 
+import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.dto.WorkSpaceDTO;
 import com.example.projecti_trello_app_backend.entities.combinations.UserWorkspace;
+import com.example.projecti_trello_app_backend.entities.role.Role;
 import com.example.projecti_trello_app_backend.entities.workspace.Workspace;
 import com.example.projecti_trello_app_backend.services.combinations.UserWorkspaceService;
+import com.example.projecti_trello_app_backend.services.role.RoleService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
 import com.example.projecti_trello_app_backend.services.workspace.WorkspaceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,9 @@ public class WorkspaceController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RoleService roleService;
+
     @GetMapping("/find-by-workspace-id")
     public ResponseEntity<?> findWorkSpaceById(@RequestParam(name = "workspace_id")int workSpaceId)
     {
@@ -45,10 +51,14 @@ public class WorkspaceController {
         return userService.findByUserId(creatorId).map(user -> {
             userWorkspace.setUser(user);
             userWorkspace.setWorkspace(userWorkspaceToAdd.get());
-            userWorkspace.setRole("WS_CREATOR");
-            return userWorkspaceService.add(userWorkspace).isPresent()?ResponseEntity.status(200).build()
-                    :ResponseEntity.noContent().build();
-        }).orElse(ResponseEntity.noContent().build());
+            Optional<Role> roleOptional = roleService.findByRoleName("BOARD_ADMIN");
+            if(roleOptional.isPresent())
+            userWorkspace.setRole(roleOptional.get());
+            else return ResponseEntity.status(304).body(new MessageResponse("Role not found"));
+            return userWorkspaceService.add(userWorkspace).isPresent()
+                    ?ResponseEntity.status(200).body(new MessageResponse("Add workspace successfully"))
+                    :ResponseEntity.status(304).body(new MessageResponse("Add workspace fail"));
+        }).orElse(ResponseEntity.status(204).body(new MessageResponse("User not found")));
 
     }
 
@@ -57,7 +67,7 @@ public class WorkspaceController {
                                     @RequestParam(name = "workspace_id") int workSpaceId,
                                     @RequestParam(name = "creator_id") int creatorId)
     {
-        if(userWorkspaceService.checkCreator(workSpaceId,creatorId)==false)
+        if(userWorkspaceService.checkRole(workSpaceId,creatorId,"WS_CREATOR")==false)
             return ResponseEntity.noContent().build();
         return workspaceService.findByWorkspaceId(workSpaceId).map(workspace ->
         {
@@ -70,9 +80,8 @@ public class WorkspaceController {
     public ResponseEntity<?> delete(@RequestParam(name = "workspace_id") int workSpaceId,
                                     @RequestParam(name = "creator_id") int creatorId)
     {
-
         return workspaceService.delete(workSpaceId)
-                && userWorkspaceService.checkCreator(workSpaceId,creatorId)
+                && userWorkspaceService.checkRole(workSpaceId,creatorId,"WS_CREATOR")
                 ?ResponseEntity.status(200).build()
                 :ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
     }

@@ -3,8 +3,10 @@ package com.example.projecti_trello_app_backend.controllers.combinations;
 import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.dto.UserWorkspaceDTO;
 import com.example.projecti_trello_app_backend.entities.combinations.UserWorkspace;
+import com.example.projecti_trello_app_backend.entities.role.Role;
 import com.example.projecti_trello_app_backend.entities.user.User;
 import com.example.projecti_trello_app_backend.services.combinations.UserWorkspaceService;
+import com.example.projecti_trello_app_backend.services.role.RoleService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
 import com.example.projecti_trello_app_backend.services.workspace.WorkspaceService;
 import org.springframework.beans.factory.ObjectProvider;
@@ -28,6 +30,9 @@ public class UserWorkspaceController {
     @Autowired
     private WorkspaceService workspaceService;
 
+    @Autowired
+    private RoleService roleService;
+
     @GetMapping(path = "/find-by-user")
     public ResponseEntity<?> findByUser(@RequestParam(name = "user_id") int userId)
     {
@@ -46,21 +51,27 @@ public class UserWorkspaceController {
 
     @PostMapping(path = "/add")
     public ResponseEntity<?> add (@RequestParam(name = "user_id") int userId,
-                                  @RequestParam(name = "workspace_id")int workspaceId)
+                                  @RequestParam(name = "workspace_id")int workspaceId,
+                                  @RequestParam(name = "role") String roleName)
     {
         if(userWorkspaceService.findByUserAndWorkspace(userId,workspaceId).isPresent())
-            return ResponseEntity.noContent().build(); // existed a user workspace
+            return ResponseEntity.status(304).body(new MessageResponse("User is exsiting in workspace")); // existed a user workspace
         UserWorkspace userWorkspace = new UserWorkspace();
-        userWorkspace.setRole("WS_MEMBER");
+        String roleNameSta = "WS_"+roleName;
+        Optional<Role> roleOptional = roleService.findByRoleName(roleNameSta);
+        if(roleOptional.isPresent()) userWorkspace.setRole(roleOptional.get());
+        else return ResponseEntity.status(304).body(new MessageResponse("Role not found"));
         return userService.findByUserId(userId).map(user -> {
             userWorkspace.setUser(user);
             return workspaceService.findByWorkspaceId(workspaceId).map(workspace -> {
                 userWorkspace.setWorkspace(workspace);
-                return ResponseEntity.ok(userWorkspaceService.add(userWorkspace));
-            }).orElse(ResponseEntity.noContent().build());
-        }).orElse(ResponseEntity.noContent().build());
+                Optional<UserWorkspace> addedUserWorkspace = userWorkspaceService.add(userWorkspace);
+                return addedUserWorkspace.isPresent()
+                        ?ResponseEntity.status(200).body(new MessageResponse("Add user work space successfully"))
+                        :ResponseEntity.status(304).body(new MessageResponse("Add user workspace fail"));
+            }).orElse(ResponseEntity.status(204).body(new MessageResponse("Workspace not found")));
+        }).orElse(ResponseEntity.status(204).body(new MessageResponse("User not found")));
     }
-
 
     @PutMapping(path = "/update")
     public ResponseEntity<?> update(@RequestBody UserWorkspaceDTO userWorkspaceDTO)
@@ -80,7 +91,7 @@ public class UserWorkspaceController {
     public ResponseEntity<?> removeUserFromWorkspace(@RequestParam(name = "user_id") int userId,
                                                      @RequestParam(name = "workspace_id") int workspaceId)
     {
-        if(userWorkspaceService.checkCreator(workspaceId,userId)==true)
+        if(userWorkspaceService.checkRole(workspaceId,userId,"WS_CREATOR")==true)
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         return userWorkspaceService
                 .removeUserFromWorkspace(userId,workspaceId)

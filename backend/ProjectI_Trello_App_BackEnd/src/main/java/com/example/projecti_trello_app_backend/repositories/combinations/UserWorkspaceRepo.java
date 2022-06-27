@@ -32,7 +32,7 @@ public interface UserWorkspaceRepo extends JpaRepository<UserWorkspace,Integer> 
 
     @Query(value = "select count(uswp) from UserWorkspace uswp where uswp.workspace.workspaceId=?1 " +
             "and uswp.user.userId=?2 and uswp.deleted=false")
-    int checkCreator(int workspaceId, int userId);
+    int checkRole(int workspaceId, int userId,String roleName);
 
     @Modifying
     @Transactional
