@@ -1,16 +1,15 @@
-
-import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
-import {HomeWrapper} from "./CustomStyled";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { HomeWrapper } from "./CustomStyled";
 
 const Home = () => {
-
   return (
     <HomeWrapper>
       Home
-      <Link to={'/setting'}>Setting</Link>
+      <Link to={"/setting"}>Setting</Link>
     </HomeWrapper>
-  )
-}
+  );
+};
 
 export default Home;

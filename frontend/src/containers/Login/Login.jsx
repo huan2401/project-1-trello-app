@@ -1,8 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { loginSuccess, loginFailure } from "redux/loginSlice";
+import { login } from "slices/authSlice";
 import "./Login.scss";
 
 function Login({ username, email }) {
@@ -10,10 +10,10 @@ function Login({ username, email }) {
   const [formValues, setFormValues] = useState(initialValues);
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
-  const navigate = useNavigate();
 
-  const isLogin = useSelector((state) => state.login.login);
+  const isLogin = useSelector((state) => state.auth.login);
   const dispatch = useDispatch();
+  console.log("isLogin", isLogin);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,14 +24,11 @@ function Login({ username, email }) {
     e.preventDefault();
     setFormErrors(validate(formValues));
     setIsSubmit(true);
-    dispatch(loginSuccess());
-    navigate("/");
+    dispatch(login(formValues));
   };
 
   useEffect(() => {
-    // console.log(formErrors);
     if (Object.keys(formErrors).length === 0 && isSubmit) {
-      console.log(formValues);
     }
   }, [formErrors]);
   const validate = (values) => {

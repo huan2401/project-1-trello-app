@@ -8,7 +8,7 @@ import I18Provider from "providers/I18Provider";
 import i18n from "i18n";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import store from "redux/store";
+import store from "store";
 
 ReactDOM.render(
   <BrowserRouter>

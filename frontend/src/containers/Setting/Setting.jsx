@@ -6,10 +6,12 @@ import { Input, TextField } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import IconButton from "@mui/material/IconButton";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Setting = ({ username, email }) => {
     const [avatar, setAvatar] = useState();
-
+    
     useEffect(() => {
         return () => {
             avatar && URL.revokeObjectURL(avatar.preview);

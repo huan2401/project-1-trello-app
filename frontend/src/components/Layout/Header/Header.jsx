@@ -1,7 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loginFailure } from "redux/loginSlice";
 import { HeaderWrapper } from "./CustomStyled";
 
 const Header = () => {
@@ -21,7 +20,6 @@ const Header = () => {
         className="logout"
         onClick={() => {
           navigate("/login");
-          dispatch(loginFailure());
         }}
       >
         Log out

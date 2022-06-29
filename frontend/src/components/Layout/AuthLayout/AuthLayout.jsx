@@ -1,22 +1,22 @@
-import React, {Suspense} from "react";
+import React from "react";
 import Header from "components/Layout/Header/Header";
-import { useSelector } from "react-redux";
-import { AuthRoute } from "routes";
-import { useNavigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
-const AuthLayout = () => {
-  const navigate = useNavigate();
-  const isLogin = useSelector((state) => state.login.login);
-  if (!isLogin) {
-    navigate("/login");
+const AuthLayout = ({ isAllowed, children }) => {
+
+  if (!isAllowed) {
+    return <Navigate to={"/login"} replace />;
   }
-  return (
+
+  console.log("child", isAllowed, children);
+
+  return children ? (
     <>
       <Header />
-      <Suspense fallback={null}>
-        <AuthRoute />
-      </Suspense>
+      {children}
     </>
+  ) : (
+    <Outlet />
   );
 };
 export default AuthLayout;
