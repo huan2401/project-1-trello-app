@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @RestController
@@ -32,7 +33,8 @@ public class UserBoardRoleController {
     private UserBoardRoleService userBoardRoleService;
 
     @GetMapping(path = "/find-by-user")
-    public ResponseEntity<?> findByUser(@RequestParam(name = "user_id") int userId)
+    public ResponseEntity<?> findByUser(@RequestParam(name = "user_id") int userId,
+                                        HttpServletRequest request)
     {
         return userService.findByUserId(userId).map(user -> {
             return userBoardRoleService.findByUser(userId).isEmpty()
@@ -42,7 +44,8 @@ public class UserBoardRoleController {
     }
 
     @GetMapping(path = "/find-by-board")
-    public ResponseEntity<?> findByBoard(@RequestParam(name = "board_id")int boardId)
+    public ResponseEntity<?> findByBoard(@RequestParam(name = "board_id")int boardId,
+                                         HttpServletRequest request)
     {
         return boardService.findByBoardId(boardId).map(board -> {
             return userBoardRoleService.findByBoard(boardId).isEmpty()
@@ -53,7 +56,8 @@ public class UserBoardRoleController {
 
     @GetMapping(path = "/find-by-user-and-board")
     public ResponseEntity<?> findByUserAndBoard(@RequestParam(name = "user_id")int userId,
-                                                @RequestParam(name ="board_id")int boardId)
+                                                @RequestParam(name ="board_id")int boardId,
+                                                HttpServletRequest request)
     {
         return userService.findByUserId(userId).map(user -> {
             return boardService.findByBoardId(boardId).map(board -> {
@@ -67,7 +71,8 @@ public class UserBoardRoleController {
     @GetMapping(path = "/add")
     public ResponseEntity<?> add(@RequestParam(name = "user_id") int userId,
                                  @RequestParam(name = "board_id") int boardId,
-                                 @RequestParam(name = "role_name") String roleName)
+                                 @RequestParam(name = "role_name") String roleName,
+                                 HttpServletRequest request)
     {
         if(userBoardRoleService.findByUserAndBoard(userId,boardId).isPresent())
             return ResponseEntity.status(304).body(new MessageResponse("User is in board"));
@@ -91,7 +96,8 @@ public class UserBoardRoleController {
     @PutMapping(path = "/set-role-for-user")
     public ResponseEntity<?> setRoleForUser(@RequestParam(name = "user_id")int userId,
                                             @RequestParam(name = "board_id")int boardId,
-                                            @RequestParam(name = "role_name") String roleName)
+                                            @RequestParam(name = "role_name") String roleName,
+                                            HttpServletRequest request)
     {
         String roleNameSta = "BOARD_"+roleName.toUpperCase();
         if(!roleService.findByRoleName(roleNameSta).isPresent())
@@ -106,7 +112,8 @@ public class UserBoardRoleController {
     }
 
     @DeleteMapping(path = "/delete-by-board")
-    public ResponseEntity<?> deleteByBoard(@RequestParam(name = "board_id") int boardId)
+    public ResponseEntity<?> deleteByBoard(@RequestParam(name = "board_id") int boardId,
+                                           HttpServletRequest request)
     {
         return boardService.findByBoardId(boardId).map(board -> {
             return userBoardRoleService.deleteByBoard(boardId)
@@ -117,7 +124,8 @@ public class UserBoardRoleController {
 
     @DeleteMapping(path = "/delete-user-from-board")
     public ResponseEntity<?> deleteUserFromBoard(@RequestParam(name = "board_id") int boardId,
-                                                 @RequestParam(name = "user_id") int userId)
+                                                 @RequestParam(name = "user_id") int userId,
+                                                 HttpServletRequest request)
     {
         return userService.findByUserId(userId).map(user -> {
             return boardService.findByBoardId(boardId).map(board -> {

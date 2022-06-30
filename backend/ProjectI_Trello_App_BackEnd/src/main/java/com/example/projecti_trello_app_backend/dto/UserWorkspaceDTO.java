@@ -17,5 +17,7 @@ public class UserWorkspaceDTO {
 
     private Integer workspaceId;
 
+    private String roleName;
+
     private Boolean deleted;
 }

@@ -5,6 +5,7 @@ import com.example.projecti_trello_app_backend.dto.WorkSpaceDTO;
 import com.example.projecti_trello_app_backend.entities.combinations.UserWorkspace;
 import com.example.projecti_trello_app_backend.entities.role.Role;
 import com.example.projecti_trello_app_backend.entities.workspace.Workspace;
+import com.example.projecti_trello_app_backend.security.authorization.WorkspaceCreator;
 import com.example.projecti_trello_app_backend.services.combinations.UserWorkspaceService;
 import com.example.projecti_trello_app_backend.services.role.RoleService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @RestController
@@ -34,7 +36,8 @@ public class WorkspaceController {
     private RoleService roleService;
 
     @GetMapping("/find-by-workspace-id")
-    public ResponseEntity<?> findWorkSpaceById(@RequestParam(name = "workspace_id")int workSpaceId)
+    public ResponseEntity<?> findWorkSpaceById(@RequestParam(name = "workspace_id")int workSpaceId,
+                                               HttpServletRequest request)
     {
         return workspaceService.findByWorkspaceId(workSpaceId).isPresent()
                 ?ResponseEntity.ok(workspaceService.findByWorkspaceId(workSpaceId))
@@ -43,7 +46,8 @@ public class WorkspaceController {
 
     @PostMapping("/add")
     public ResponseEntity<?> add(@RequestBody Workspace workspace,
-                                 @RequestParam(name = "creator_id") int creatorId)
+                                 @RequestParam(name = "creator_id") int creatorId,
+                                 HttpServletRequest request)
     {
         Optional<Workspace> userWorkspaceToAdd = workspaceService.add(workspace);
         if(!userWorkspaceToAdd.isPresent()) return ResponseEntity.noContent().build();
@@ -51,7 +55,7 @@ public class WorkspaceController {
         return userService.findByUserId(creatorId).map(user -> {
             userWorkspace.setUser(user);
             userWorkspace.setWorkspace(userWorkspaceToAdd.get());
-            Optional<Role> roleOptional = roleService.findByRoleName("BOARD_ADMIN");
+            Optional<Role> roleOptional = roleService.findByRoleName("WS_CREATOR");
             if(roleOptional.isPresent())
             userWorkspace.setRole(roleOptional.get());
             else return ResponseEntity.status(304).body(new MessageResponse("Role not found"));
@@ -63,12 +67,14 @@ public class WorkspaceController {
     }
 
     @PutMapping("/update")
+    @WorkspaceCreator
     public ResponseEntity<?> update(@RequestBody WorkSpaceDTO workSpaceDTO,
                                     @RequestParam(name = "workspace_id") int workSpaceId,
-                                    @RequestParam(name = "creator_id") int creatorId)
+                                    @RequestParam(name = "creator_id") int creatorId,
+                                    HttpServletRequest request)
     {
         if(userWorkspaceService.checkRole(workSpaceId,creatorId,"WS_CREATOR")==false)
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.status(403).build();
         return workspaceService.findByWorkspaceId(workSpaceId).map(workspace ->
         {
            workSpaceDTO.setWorkspaceId(workSpaceId);
@@ -78,7 +84,8 @@ public class WorkspaceController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<?> delete(@RequestParam(name = "workspace_id") int workSpaceId,
-                                    @RequestParam(name = "creator_id") int creatorId)
+                                    @RequestParam(name = "creator_id") int creatorId,
+                                    HttpServletRequest request)
     {
         return workspaceService.delete(workSpaceId)
                 && userWorkspaceService.checkRole(workSpaceId,creatorId,"WS_CREATOR")

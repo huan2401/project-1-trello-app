@@ -12,11 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("project1/api/column")
+@RequestMapping(value = "project1/api/column")
 public class ColumnController {
 
     @Autowired
@@ -27,7 +28,8 @@ public class ColumnController {
 
 
     @GetMapping("/find-all-by-board")
-    public ResponseEntity<?> findAllByBoard(@RequestParam(name = "board_id") int boardId)
+    public ResponseEntity<?> findAllByBoard(@RequestParam(name = "board_id") int boardId,
+                                            HttpServletRequest request)
     {
         return boardService.findByBoardId(boardId).isPresent()
                 ?ResponseEntity.ok(columnService.findAllByBoard(boardId))
@@ -35,7 +37,8 @@ public class ColumnController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addColumn(@RequestBody Columns column, @RequestParam(name = "board_id") int boardId)
+    public ResponseEntity<?> addColumn(@RequestBody Columns column, @RequestParam(name = "board_id") int boardId,
+                                       HttpServletRequest request)
     {
         if(!boardService.findByBoardId(boardId).isPresent())
             return ResponseEntity.status(204).body(new MessageResponse("Board not found"));
@@ -47,7 +50,8 @@ public class ColumnController {
 
     @PutMapping("/update")
     public ResponseEntity<?> updateColumn(@RequestBody ColumnDTO columnDTO,
-                                          @RequestParam(name = "column_id") int columId)
+                                          @RequestParam(name = "column_id") int columId,
+                                          HttpServletRequest request)
     {
         if(!columnService.findByColumnId(columId).isPresent()) return ResponseEntity.ok(Optional.empty());
         columnDTO.setColumnId(columId);
@@ -57,7 +61,8 @@ public class ColumnController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> delete (@RequestParam(name = "column_id")int columnId)
+    public ResponseEntity<?> delete (@RequestParam(name = "column_id")int columnId,
+                                     HttpServletRequest request)
     {
         return columnService.delete(columnId)
                 ?ResponseEntity.ok(new MessageResponse("Delete column successfully"))

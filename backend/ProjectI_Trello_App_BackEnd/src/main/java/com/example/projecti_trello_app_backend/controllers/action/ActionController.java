@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,8 @@ public class ActionController {
     private TaskService taskService;
 
     @GetMapping(path = "/find-by-id")
-    public ResponseEntity<?> findByActionId(@RequestParam(name = "action_id") int actionId)
+    public ResponseEntity<?> findByActionId(@RequestParam(name = "action_id") int actionId,
+                                            HttpServletRequest request)
     {
         return actionService.findByActionId(actionId).isPresent()
                 ?ResponseEntity.ok(actionService.findByActionId(actionId))
@@ -36,7 +38,8 @@ public class ActionController {
     }
 
     @GetMapping(path = "/find-by-task")
-    public ResponseEntity<?> findByTask(@RequestParam(name = "task_id")int taskId)
+    public ResponseEntity<?> findByTask(@RequestParam(name = "task_id")int taskId,
+                                        HttpServletRequest request)
     {
         return taskService.findByTaskId(taskId).map(task -> {
             List<Action> actions = actionService.findByTask(taskId);
@@ -48,7 +51,8 @@ public class ActionController {
     @PostMapping(path = "/add")
     public ResponseEntity<?> addAction(@RequestBody Action action,
                                        @RequestParam(name = "user_id")int userId,
-                                       @RequestParam(name = "task_id") int taskId)
+                                       @RequestParam(name = "task_id") int taskId,
+                                       HttpServletRequest request)
     {
         return userService.findByUserId(userId).map(user -> {
             action.setUser(user);

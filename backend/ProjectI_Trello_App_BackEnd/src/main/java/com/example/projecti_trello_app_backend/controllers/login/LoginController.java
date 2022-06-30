@@ -19,6 +19,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/project1/api")
 public class LoginController {
@@ -33,7 +35,8 @@ public class LoginController {
     private JWTProvider jwtProvider;
 
     @PostMapping(path = "/auth")
-    public ResponseEntity<?> authenticateUser(@RequestBody @Validated LoginRequest loginRequest){
+    public ResponseEntity<?> authenticateUser(@RequestBody @Validated LoginRequest loginRequest,
+                                              HttpServletRequest request){
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUserName(),loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);

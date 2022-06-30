@@ -16,8 +16,8 @@ import javax.persistence.*;
 public class Workspace {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "work_space_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "work_space_id",unique = true,nullable = false)
     private int workspaceId;
 
     @Column(name = "work_space_title")

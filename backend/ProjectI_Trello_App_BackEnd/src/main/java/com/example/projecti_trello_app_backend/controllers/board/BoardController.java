@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.Message;
 import javax.mail.event.MailEvent;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @RestController
@@ -39,7 +40,8 @@ public class BoardController {
     
     @PostMapping("/add-board")
     public ResponseEntity<?> addBoard(@RequestBody Board board,
-                                      @RequestParam(name = "work_space_id")int workSpaceId){
+                                      @RequestParam(name = "work_space_id")int workSpaceId,
+                                      HttpServletRequest request){
            return workspaceService.findByWorkspaceId(workSpaceId).map(workspace -> {
                board.setWorkspace(workspace);
                return boardService.addBoard(board).isPresent()
@@ -50,7 +52,8 @@ public class BoardController {
 
     @PutMapping("/update")
     public ResponseEntity<?> update(@RequestBody BoardDTO boardDTO,
-                                    @RequestParam(name = "board_id") int boardId) //khi cần có thay đổi về PM
+                                    @RequestParam(name = "board_id") int boardId,
+                                    HttpServletRequest request) //khi cần có thay đổi về PM
     {
         boardDTO.setBoardId(boardId);
         return boardService.update(boardDTO).isPresent()
@@ -59,7 +62,8 @@ public class BoardController {
     }
 
     @DeleteMapping(path = "/delete")
-    public ResponseEntity<?> delete(@RequestParam(name = "board_id")int boardId)
+    public ResponseEntity<?> delete(@RequestParam(name = "board_id")int boardId,
+                                    HttpServletRequest request)
     {
         return boardService.delete(boardId)
                 ? ResponseEntity.ok(new MessageResponse("Delete board successfully"))
@@ -67,7 +71,8 @@ public class BoardController {
     }
 
     @DeleteMapping(path = "/delete-by-work-space")
-    public ResponseEntity<?> deleteByWorkSpace(@RequestParam(name = "workspace_id")int workspaceId)
+    public ResponseEntity<?> deleteByWorkSpace(@RequestParam(name = "workspace_id")int workspaceId,
+                                               HttpServletRequest request)
     {
         return boardService.deleteByWorkspace(workspaceId)
                 ? ResponseEntity.ok(new MessageResponse("Delete board successfully"))

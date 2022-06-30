@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.servlet.http.HttpServletRequest;
 import javax.swing.text.html.HTML;
 import java.util.List;
 import java.util.Optional;
@@ -43,14 +44,16 @@ public class UserNotificationController {
     private UserTaskService userTaskService;
 
     @GetMapping(path = "/find-by-id")
-    public ResponseEntity<?> findById(@RequestParam(name = "id") int id){
+    public ResponseEntity<?> findById(@RequestParam(name = "id") int id,
+                                      HttpServletRequest request){
         Optional<UserNotification> usNotiOptional = userNotificationService.findById(id);
         return usNotiOptional.isPresent()?ResponseEntity.ok(usNotiOptional)
                                          : ResponseEntity.noContent().build();
     }
 
     @GetMapping(path = "/find-by-user")
-    public ResponseEntity<?> findByUser(@RequestParam(name = "user_id")int userId)
+    public ResponseEntity<?> findByUser(@RequestParam(name = "user_id")int userId,
+                                        HttpServletRequest request)
     {
         return userNotificationService.findByUser(userId).isEmpty()
                 ? ResponseEntity.ok(userNotificationService.findByUser(userId))
@@ -60,7 +63,8 @@ public class UserNotificationController {
     // send notifications about a task update to all member of the task (for updates in a task)
     @GetMapping(path = "/send-update-noti")
     public ResponseEntity<?> sendUpdateNotifications(@RequestParam(name = "task_id")int taskId,
-                                                     @RequestBody Notification notification)
+                                                     @RequestBody Notification notification,
+                                                     HttpServletRequest request)
     {
         if(!taskService.findByTaskId(taskId).isPresent())
             return ResponseEntity.noContent().build();
@@ -69,7 +73,7 @@ public class UserNotificationController {
         if(!notificationOptional.isPresent()) return ResponseEntity.noContent().build();
         userNotification.setNotification(notificationOptional.get());
         List<User> userList = userTaskService.findByTask(taskId).stream().map(userTask -> userTask.getUser()).collect(Collectors.toList());
-        for( var user : userList)
+        for( User user : userList)
         {
             userNotification.setUser(user);
             if(!userNotificationService.sendNotification(userNotification).isPresent())
@@ -81,7 +85,8 @@ public class UserNotificationController {
     // send notification to a user who has been added to a board
     @GetMapping(path = "/send-add-to-board-noti")
     public ResponseEntity<?> sendAddToBoardNotifications(@RequestParam(name = "board_id", required = false) int boardId,
-                                                         @RequestParam(name = "user_id") int userId, HttpRequest request)
+                                                         @RequestParam(name = "user_id") int userId,
+                                                         HttpServletRequest request)
     {
         Notification notification = Notification.builder().build();
         UserNotification userNotification = UserNotification.builder().build();
@@ -102,7 +107,8 @@ public class UserNotificationController {
     //send notification to a user who has been add to a task
     @PostMapping(path = "/send-add-to-task-noti")
     public ResponseEntity<?> sendAddToTaskNotification(@RequestParam(name = "task_id")int taskId,
-                                                       @RequestParam(name = "user_id")int userId)
+                                                       @RequestParam(name = "user_id")int userId,
+                                                       HttpServletRequest request)
     {
         Notification notification = Notification.builder().build();
         UserNotification userNotification = UserNotification.builder().build();
@@ -122,7 +128,8 @@ public class UserNotificationController {
 
     @GetMapping(path = "send-remove-from-board-noti")
     public ResponseEntity<?> sendRemoveFromBoardNoti(@RequestParam(name = "board_id", required = false) int boardId,
-                                                     @RequestParam(name = "user_id") int userId)
+                                                     @RequestParam(name = "user_id") int userId,
+                                                     HttpServletRequest request)
     {
         Notification notification = Notification.builder().build();
         UserNotification userNotification = UserNotification.builder().build();
@@ -142,7 +149,8 @@ public class UserNotificationController {
 
     @GetMapping(path = "/send-remove-from-task-noti")
     public ResponseEntity<?> sendRemoveFromTaskNoti(@RequestParam(name = "task_id")int taskId,
-                                                    @RequestParam(name = "user_id")int userId)
+                                                    @RequestParam(name = "user_id")int userId,
+                                                    HttpServletRequest request)
     {
         Notification notification = Notification.builder().build();
         UserNotification userNotification = UserNotification.builder().build();

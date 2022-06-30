@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @RestController
@@ -17,7 +18,8 @@ public class RoleController {
     private RoleService roleService;
 
     @GetMapping(path = "/find-by-role-name")
-    public ResponseEntity<?> findByRoleName(@RequestParam(name = "role_name")String roleName)
+    public ResponseEntity<?> findByRoleName(@RequestParam(name = "role_name")String roleName,
+                                            HttpServletRequest request)
     {
         Optional<Role> roleOptional = roleService.findByRoleName(roleName);
         return roleOptional.isPresent()?ResponseEntity.ok(roleOptional)
@@ -25,7 +27,8 @@ public class RoleController {
     }
 
     @GetMapping(path = "/find-by-role-type")
-    public ResponseEntity<?> findByRoleType (@RequestParam(name = "role_type")String roleType)
+    public ResponseEntity<?> findByRoleType (@RequestParam(name = "role_type")String roleType,
+                                             HttpServletRequest request)
     {
         return roleService.findByRoleType(roleType).isEmpty()
                 ?ResponseEntity.status(204).body(new MessageResponse("Not found any role of this type"))
@@ -33,8 +36,11 @@ public class RoleController {
     }
 
     @PostMapping(path = "/add")
-    public ResponseEntity<?> add(@RequestBody Role role)
+    public ResponseEntity<?> add(@RequestBody Role role,
+                                 HttpServletRequest request)
     {
+        if(role.getRoleType().equals("Workspace"))
+            role.setRoleName("WS_"+role.getRoleName().toUpperCase());
         return roleService.add(role).isPresent()
                 ?ResponseEntity.status(200).body(new MessageResponse("Add role successfully"))
                 :ResponseEntity.status(304).body(new MessageResponse("Add role fail"));

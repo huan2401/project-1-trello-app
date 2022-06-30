@@ -54,6 +54,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             return Optional.ofNullable(workspaceRepo.save(workspace));
         } catch (Exception ex)
         {
+            ex.printStackTrace();
             log.error("add workspace error",ex);
             return Optional.empty();
         }

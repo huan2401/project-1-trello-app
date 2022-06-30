@@ -13,10 +13,13 @@ import java.util.Optional;
 @Repository
 public interface RoleRepo extends JpaRepository<Role, Integer> {
 
+    @Query(value = "from Role role where role.roleId =?1 and role.deleted =false ")
     Optional<Role> findByRoleId(int roleId);
 
+    @Query(value = "from Role role where role.roleName = ?1 and role.deleted =false")
     Optional<Role> findByRoleName(String roleName);
 
+    @Query(value = "from Role role where role.roleType =?1 and role.deleted =false ")
     List<Role> findByRoleType(String roleType);
 
     @Modifying

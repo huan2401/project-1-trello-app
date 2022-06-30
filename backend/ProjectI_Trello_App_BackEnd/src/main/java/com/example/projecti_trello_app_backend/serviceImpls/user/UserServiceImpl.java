@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,7 +45,7 @@ public class UserServiceImpl implements UserService {
 
         } catch(Exception exp){
             exp.printStackTrace();
-            return List.of();
+            return Collections.emptyList();
         }
     }
 

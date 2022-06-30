@@ -9,6 +9,7 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @RestController
@@ -25,21 +26,24 @@ public class ColumnTaskController {
     private TaskService taskService;
 
     @GetMapping("/find-all-by-column")
-    public ResponseEntity<?> findAllByColumn(@RequestParam(name = "column_id") int columId)
+    public ResponseEntity<?> findAllByColumn(@RequestParam(name = "column_id") int columId,
+                                             HttpServletRequest request)
     {
         return ResponseEntity.ok(columnTaskService.findAllByColumn(columId));
     }
 
     @GetMapping("/find-by-column-and-task")
     public ResponseEntity<?> findByComlumnAndTask(@RequestParam(name = "column_id")int columnId,
-                                                  @RequestParam(name = "task_id") int taskId)
+                                                  @RequestParam(name = "task_id") int taskId,
+                                                  HttpServletRequest request)
     {
         return ResponseEntity.ok(columnTaskService.findByColumnAndTask(columnId,taskId));
     }
 
     @GetMapping("/add")
     public ResponseEntity<?> add(@RequestParam(name = "column_id")int columnId,
-                                 @RequestParam(name = "task_id") int taskId)
+                                 @RequestParam(name = "task_id") int taskId,
+                                 HttpServletRequest request)
     {
         ColumnTask columnTask = new ColumnTask();
         columnTask.setStage(true);
@@ -56,7 +60,8 @@ public class ColumnTaskController {
     @GetMapping("/change-stage")
     public ResponseEntity<?> changeStage(@RequestParam(name = "start_col_id") int startColumnId,
                                          @RequestParam(name ="end_col_id") int endColumnId,
-                                         @RequestParam(name = "task_id") int taskId)
+                                         @RequestParam(name = "task_id") int taskId,
+                                         HttpServletRequest request)
     {
         Optional<ColumnTask> columnTask1 = columnTaskService.findByColumnAndTask(startColumnId,taskId);
         if(columnTask1.isPresent()) columnTaskService.update(columnTask1.get().getId());

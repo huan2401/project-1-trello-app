@@ -28,7 +28,8 @@ public class CommentController {
 
 
     @GetMapping("/find-by-task")
-    public ResponseEntity<?> findByTask(@RequestParam(name = "task_id")int taskId)
+    public ResponseEntity<?> findByTask(@RequestParam(name = "task_id")int taskId,
+                                        HttpServletRequest request)
     {
         return taskService.findByTaskId(taskId).map(task ->
             ResponseEntity.ok(commentService.findByTask(taskId))
@@ -38,15 +39,18 @@ public class CommentController {
     @PostMapping("/add")
     public ResponseEntity<?> add(@RequestBody Comment comment,
                                  @RequestParam(name = "task_id")int taskId,
-                                 @RequestParam(name = "user_id") int userId)
+                                 @RequestParam(name = "user_id") int userId,
+                                 HttpServletRequest request)
     {
         return taskService.findByTaskId(taskId).map(task -> {
             comment.setTask(task);
             return userService.findByUserId(userId).map(user -> {
                 comment.setUser(user);
-                return ResponseEntity.ok(commentService.add(comment));
-            }).orElse(ResponseEntity.status(304).build());
-        }).orElse(ResponseEntity.status(304).build());
+                return commentService.add(comment).isPresent()
+                        ?ResponseEntity.status(200).body(new MessageResponse("Add comment successfully"))
+                        :ResponseEntity.status(304).body(new MessageResponse("Add comment fail"));
+            }).orElse(ResponseEntity.status(204).body(new MessageResponse("Add comment fail-User not found")));
+        }).orElse(ResponseEntity.status(204).body(new MessageResponse("Add comment fail-Task not found")));
     }
 
     @PutMapping(path = "/edit")
@@ -62,10 +66,13 @@ public class CommentController {
     }
 
     @DeleteMapping("/delete-by-comment")
-    public ResponseEntity<?> deleteByComment(@RequestParam(name = "comment_id")int commentId)
+    public ResponseEntity<?> deleteByComment(@RequestParam(name = "comment_id")int commentId,
+                                             HttpServletRequest request)
     {
-        return commentService.findByCommentId(commentId).isPresent()?ResponseEntity.ok(commentService.deleteByComment(commentId))
-                                                                    :ResponseEntity.status(304).build();
+        return commentService.findByCommentId(commentId).isPresent()
+                && commentService.deleteByComment(commentId)
+                ?ResponseEntity.status(200).body(new MessageResponse("Delete comment by id successfully"))
+                :ResponseEntity.status(304).body(new MessageResponse("Delete comment by id fail"));
     }
 
 

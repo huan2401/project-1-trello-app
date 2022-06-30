@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @RestController
@@ -29,7 +30,8 @@ public class UserController {
 
     @GetMapping(path = "/find-by-username-email")
     public ResponseEntity<?> findByUserNameOrEmail(@RequestParam(name = "username",required = false) String userName,
-                                                   @RequestParam(name = "email", required = false) String email)
+                                                   @RequestParam(name = "email", required = false) String email,
+                                                   HttpServletRequest request)
     {
         return userService.findByUsernameOrEmail(userName,email).isPresent()
                 ?ResponseEntity.ok(UserDTO.convertToDTO(userService.findByUsernameOrEmail(userName,email).get()))
@@ -37,15 +39,19 @@ public class UserController {
     }
 
     @PostMapping(path = "/signup")
-    public ResponseEntity<?> signUp(@RequestBody User user)
+    public ResponseEntity<?> signUp(@RequestBody User user,
+                                    HttpServletRequest request)
     {
         String siteURL = MailConstants.USER_SITE_URL;
         Optional<User> userOptional = userService.signUp(user,siteURL);
-        return userOptional.isPresent()?ResponseEntity.status(200).build():ResponseEntity.noContent().build();
+        return userOptional.isPresent()
+                ?ResponseEntity.status(200).build()
+                :ResponseEntity.noContent().build();
     }
 
     @GetMapping(path = "/verify")
-    public ResponseEntity<?> verifyUser(@RequestParam(name ="verification-code") String verificationCode)
+    public ResponseEntity<?> verifyUser(@RequestParam(name ="verification-code") String verificationCode,
+                                        HttpServletRequest request)
     {
         Optional<User> verifiedUser = userService.verifyUser(verificationCode);
         return verifiedUser.isPresent()
@@ -55,7 +61,8 @@ public class UserController {
 
     @PutMapping(path = "/update/{user_id}")
     public ResponseEntity<?> update(@RequestBody UserDTO userDTO,
-                                    @PathVariable(name = "user_id") int userId)
+                                    @PathVariable(name = "user_id") int userId,
+                                    HttpServletRequest request)
     {
         if(!userService.findByUserId(userId).isPresent()) return ResponseEntity.ok(Optional.empty());
         userDTO.setUserId(userId);
@@ -64,7 +71,8 @@ public class UserController {
 
     @PatchMapping(path = "/change-password")
     public ResponseEntity<?> changePassWord(@RequestBody UserDTO userDTO,
-                                            @RequestParam("user_id") int userId)
+                                            @RequestParam("user_id") int userId,
+                                            HttpServletRequest request)
     {
         if(!userService.findByUserId(userId).isPresent()) return ResponseEntity.noContent().build();
         User userToUpdate = userService.findByUserId(userId).get();
@@ -79,7 +87,8 @@ public class UserController {
     }
 
     @PostMapping(path = "/reset-password")
-    public ResponseEntity<?> resetPasswordRequest(@RequestParam(name = "email") String email)
+    public ResponseEntity<?> resetPasswordRequest(@RequestParam(name = "email") String email,
+                                                  HttpServletRequest request)
     {
         return userService.findByUsernameOrEmail("username",email).map(user ->
         {
@@ -91,7 +100,8 @@ public class UserController {
 
     @PutMapping(path = "/reset-password/reset")
     public ResponseEntity<?> resetPasswordHandle(@RequestParam(name = "reset_token") String token,
-                                                 @RequestBody UserDTO userDTO)
+                                                 @RequestBody UserDTO userDTO,
+                                                 HttpServletRequest request)
     {
         Optional<ResetPasswordToken> rsPasswordTokenOptional = resetPasswordService.findByToken(token);
         System.out.println(rsPasswordTokenOptional);
