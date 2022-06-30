@@ -43,7 +43,7 @@ public class SecurityUtils {
     private JWTProvider jwtProvider;
 
 
-    String getTokenFromRequest(HttpServletRequest request)
+    public static String  getTokenFromRequest(HttpServletRequest request)
     {
         String authHeader = request.getHeader(SecurityConstants.AUTH_HEADER);
         if(StringUtils.hasText(authHeader) && authHeader.startsWith(SecurityConstants.JWT_TYPE))
@@ -51,7 +51,7 @@ public class SecurityUtils {
         return null;
     }
 
-    User getUserFromRequest(HttpServletRequest request)
+    public  User getUserFromRequest(HttpServletRequest request)
     {
         String accessToken = getTokenFromRequest(request);
         if(accessToken==null) return null;
@@ -60,7 +60,7 @@ public class SecurityUtils {
         return userOptional.isPresent()?userOptional.get():null;
     }
 
-    String getUserBoardRole(HttpServletRequest request, int boardId){
+    public String getUserBoardRole(HttpServletRequest request, int boardId){
         try {
             User user = getUserFromRequest(request);
             if (user == null) return "NOT_HAVE_PERMISSION";
@@ -75,7 +75,7 @@ public class SecurityUtils {
         }
     }
 
-    String getUserWorkspaceRole(HttpServletRequest request, int workspaceId)
+   public  String getUserWorkspaceRole(HttpServletRequest request, int workspaceId)
     {
         User user = getUserFromRequest(request);
         if(user==null) return "NOT_HAVE_PERMISSION";
@@ -92,7 +92,7 @@ public class SecurityUtils {
         }
     }
 
-    String getUserTaskRole(HttpServletRequest request, int taskId)
+    public String getUserTaskRole(HttpServletRequest request, int taskId)
     {
         try {
             int boardId = columnTaskService.findAllByTask(taskId).get(0).getColumn().getBoard().getBoardId();
@@ -109,7 +109,7 @@ public class SecurityUtils {
         }
     }
 
-    boolean checkUserCommentRole(HttpServletRequest request,int commentId)
+   public boolean checkUserCommentRole(HttpServletRequest request,int commentId)
     {
         try {
             User user = getUserFromRequest(request);

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @RestController
@@ -22,13 +23,15 @@ public class TaskController {
     private ColumnService columnService;
 
     @GetMapping("/find-by-task-id")
-    public ResponseEntity<?> findByTaskId(@RequestParam(name = "task_id") int taskId)
+    public ResponseEntity<?> findByTaskId(@RequestParam(name = "task_id") int taskId,
+                                          HttpServletRequest request)
     {
         return ResponseEntity.ok(taskService.findByTaskId(taskId));
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody Task task, @RequestParam(name = "column_id")int columnId){
+    public ResponseEntity<?> add(@RequestBody Task task, @RequestParam(name = "column_id")int columnId,
+                                 HttpServletRequest request){
         return columnService.findByColumnId(columnId).map(column -> {
             return ResponseEntity.ok(taskService.add(task,column.getColumnId()));
         }).orElse(ResponseEntity.ok(Optional.empty()));
@@ -36,7 +39,8 @@ public class TaskController {
 
     @PutMapping("/update")
     public ResponseEntity<?> update(@RequestBody TaskDTO taskDTO,
-                                    @RequestParam(name = "task_id") int taskId)
+                                    @RequestParam(name = "task_id") int taskId,
+                                    HttpServletRequest request)
     {
         if(!taskService.findByTaskId(taskId).isPresent()) return ResponseEntity.ok(Optional.empty());
         taskDTO.setTaskId(taskId);

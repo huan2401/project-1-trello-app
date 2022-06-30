@@ -145,7 +145,7 @@ public class ColumnTaskServiceImpl implements ColumnTaskService {
     @Override
     public boolean deleteByColumn(int columnId) {
         try{
-            for(var coltask: columnTaskRepo.findAllByColumn(columnId))
+            for(ColumnTask coltask: columnTaskRepo.findAllByColumn(columnId))
             {
                 taskRepo.delete(coltask.getTask().getTaskId());
             }

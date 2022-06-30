@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 public class LoginInfomation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int loginId;
 
     @ManyToOne

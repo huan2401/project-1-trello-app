@@ -30,6 +30,9 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
     @Autowired
     private JWTAuthenticationFilter jwtAuthenticationFilter;
 
+    @Autowired
+    private AccessDenyExceptionHandler accessDenyHandler;
+
     @Bean
     public PasswordEncoder passwordEncoder()
     {
@@ -65,7 +68,9 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
                     .permitAll()
                     .anyRequest().authenticated()
                     .and()
-                    .exceptionHandling().authenticationEntryPoint(authEntryPoint);
+                    .exceptionHandling().authenticationEntryPoint(authEntryPoint)
+                        .and()
+                        .exceptionHandling().accessDeniedHandler(accessDenyHandler);
                 http.addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class);
 
     }

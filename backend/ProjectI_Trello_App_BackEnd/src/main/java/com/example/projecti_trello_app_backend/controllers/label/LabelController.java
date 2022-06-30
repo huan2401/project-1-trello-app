@@ -1,6 +1,7 @@
 package com.example.projecti_trello_app_backend.controllers.label;
 
 import com.example.projecti_trello_app_backend.dto.LabelDTO;
+import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.entities.label.Label;
 import com.example.projecti_trello_app_backend.services.label.LabelService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -28,7 +30,8 @@ public class LabelController {
     }
 
     @GetMapping("/find-by-task")
-    public ResponseEntity<?> findAllByTask(@RequestParam(name = "task_id") int taskId)
+    public ResponseEntity<?> findAllByTask(@RequestParam(name = "task_id") int taskId,
+                                           HttpServletRequest request)
     {
         return taskService.findByTaskId(taskId).map(task -> {
             return ResponseEntity.ok(labelService.findAllByTask(taskId));
@@ -36,7 +39,9 @@ public class LabelController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestParam(name = "task_id") int taskId, @RequestBody Label label)
+    public ResponseEntity<?> add(@RequestParam(name = "task_id") int taskId,
+                                 @RequestBody Label label,
+                                 HttpServletRequest request)
     {
         return taskService.findByTaskId(taskId).map(task -> {
             label.setTask(task);
@@ -46,7 +51,8 @@ public class LabelController {
 
     @PutMapping("/update")
     public ResponseEntity<?> update(@RequestBody LabelDTO labelDTO,
-                                    @RequestParam(name="label_id") int labelId)
+                                    @RequestParam(name="label_id") int labelId,
+                                    HttpServletRequest request)
     {
         return labelService.findByLabelId(labelId).map(label -> {
             labelDTO.setLabelId(labelId);
@@ -55,21 +61,25 @@ public class LabelController {
     }
 
     @GetMapping("/find-by-id")
-    public ResponseEntity<?> findByLabelId(@RequestParam(name = "id") int labelId){
+    public ResponseEntity<?> findByLabelId(@RequestParam(name = "id") int labelId,
+                                           HttpServletRequest request){
          return ResponseEntity.ok(labelService.findByLabelId(labelId));
     }
 
     @DeleteMapping("/delete-by-id")
     public ResponseEntity<?> deleteById(@RequestParam(name ="label_id")int labelId)
     {
-        return labelService.delete(labelId)?ResponseEntity.status(200).build()
-                                            :ResponseEntity.status(304).build();
+        return  labelService.findByLabelId(labelId).isPresent() && labelService.delete(labelId)
+                ?ResponseEntity.status(200).body(new MessageResponse("Delete label by id successfully"))
+                :ResponseEntity.status(204).body(new MessageResponse("Delete label fail"));
     }
 
     @DeleteMapping("/delete-by-task")
-    public ResponseEntity<?> deleteByTask(@RequestParam(name = "task_id")int taskId)
+    public ResponseEntity<?> deleteByTask(@RequestParam(name = "task_id")int taskId,
+                                          HttpServletRequest request)
     {
-        return labelService.deleteByTask(taskId)?ResponseEntity.status(200).build()
-                :ResponseEntity.status(304).build();
+        return  taskService.findByTaskId(taskId).isPresent()&&labelService.deleteByTask(taskId)
+                ?ResponseEntity.status(200).body(new MessageResponse("Delete label by task successfully"))
+                :ResponseEntity.status(304).body(new MessageResponse("Delete label by task fail"));
     }
 }
