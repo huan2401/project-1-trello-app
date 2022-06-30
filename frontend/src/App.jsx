@@ -20,7 +20,7 @@ function App() {
       <Route
         path="setting"
         element={
-          <AuthLayout isAllowed={isLogin}>
+          <AuthLayout isAllowed={true}>
             <Setting />
           </AuthLayout>
         }
@@ -28,7 +28,7 @@ function App() {
       <Route
         path="/"
         element={
-          <AuthLayout isAllowed={isLogin}>
+          <AuthLayout isAllowed={true}>
             <Home />
           </AuthLayout>
         }
