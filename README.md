@@ -1,7 +1,7 @@
-# Đồ án 1 - Trello App
+# Project I : Project Management 
+## Side : Back-end
+## Language : Java
+## Framework : Spring FrameWork
+## Database : MySQL
+## Tools : IntelliJ IDEA, DataGrip, MySQL Workbench , Postman
 
-# Thành viên đóng góp
-  ### Nguyễn Văn Huân
-  ### Ninh Đức Toàn
-  ### Đào Huy Chiến
-  ### Tạ Quang Minh

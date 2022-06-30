@@ -1,0 +1,13 @@
+package com.example.projecti_trello_app_backend;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class ProjectITrelloAppBackEndApplicationTests {
+
+    @Test
+    void contextLoads() {
+    }
+
+}
