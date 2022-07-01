@@ -31,6 +31,7 @@ public class UserTaskController {
     private UserService userService;
 
     @GetMapping("/find-by-task")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findAllByTask(@RequestParam(name = "task_id")int taskId,
                                            HttpServletRequest request)
     {
@@ -40,6 +41,7 @@ public class UserTaskController {
     }
 
     @GetMapping("/add")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> add(@RequestParam(name = "user_id")int userId,
                                  @RequestParam(name = "task_id")int taskId,
                                  HttpServletRequest request)
@@ -68,6 +70,7 @@ public class UserTaskController {
     }
 
     @DeleteMapping("/delete-user-from-task")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> deleteUserFromTask (@RequestParam(name = "task_id")int taskId,
                                                  @RequestParam(name= "user_id") int userId,
                                                  HttpServletRequest request)

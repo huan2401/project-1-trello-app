@@ -16,7 +16,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/project1/api/label")
-@SecurityRequirement(name = "bearerAuth")
 public class LabelController {
 
     @Autowired
@@ -26,12 +25,14 @@ public class LabelController {
     private TaskService taskService;
 
     @GetMapping("/find-all")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findAll()
     {
         return ResponseEntity.ok(labelService.findAll());
     }
 
     @GetMapping("/find-by-task")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findAllByTask(@RequestParam(name = "task_id") int taskId,
                                            HttpServletRequest request)
     {
@@ -41,6 +42,7 @@ public class LabelController {
     }
 
     @PostMapping("/add")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> add(@RequestParam(name = "task_id") int taskId,
                                  @RequestBody Label label,
                                  HttpServletRequest request)
@@ -52,6 +54,7 @@ public class LabelController {
     }
 
     @PutMapping("/update")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> update(@RequestBody LabelDTO labelDTO,
                                     @RequestParam(name="label_id") int labelId,
                                     HttpServletRequest request)
@@ -63,12 +66,14 @@ public class LabelController {
     }
 
     @GetMapping("/find-by-id")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByLabelId(@RequestParam(name = "id") int labelId,
                                            HttpServletRequest request){
          return ResponseEntity.ok(labelService.findByLabelId(labelId));
     }
 
     @DeleteMapping("/delete-by-id")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> deleteById(@RequestParam(name ="label_id")int labelId)
     {
         return  labelService.findByLabelId(labelId).isPresent() && labelService.delete(labelId)
@@ -77,6 +82,7 @@ public class LabelController {
     }
 
     @DeleteMapping("/delete-by-task")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> deleteByTask(@RequestParam(name = "task_id")int taskId,
                                           HttpServletRequest request)
     {

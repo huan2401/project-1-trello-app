@@ -14,7 +14,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.awt.desktop.OpenFilesEvent;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;

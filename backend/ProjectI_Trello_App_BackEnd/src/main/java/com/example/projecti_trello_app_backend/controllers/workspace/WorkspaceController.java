@@ -23,7 +23,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/project1/api/workspace")
-@SecurityRequirement(name = "bearerAuth")
 public class WorkspaceController {
 
     @Autowired
@@ -42,6 +41,7 @@ public class WorkspaceController {
     private SecurityUtils util;
 
     @GetMapping("/find-by-workspace-id")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findWorkSpaceById(@RequestParam(name = "workspace_id")int workSpaceId,
                                                HttpServletRequest request)
     {
@@ -51,15 +51,15 @@ public class WorkspaceController {
     }
 
     @PostMapping("/add")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> add(@RequestBody Workspace workspace,
                                  HttpServletRequest request)
     {
         Optional<Workspace> userWorkspaceToAdd = workspaceService.add(workspace);
         if(!userWorkspaceToAdd.isPresent()) return ResponseEntity.noContent().build();
-        UserWorkspace userWorkspace = new UserWorkspace();
+        UserWorkspace userWorkspace = UserWorkspace.builder().build();
         int creatorId = util.getUserFromRequest(request).getUserId();
-        return userService.findByUserId(creatorId).map(user -> {
-            userWorkspace.setUser(user);
+            userWorkspace.setUser(userService.findByUserId(creatorId).get());
             userWorkspace.setWorkspace(userWorkspaceToAdd.get());
             Optional<Role> roleOptional = roleService.findByRoleName("WS_CREATOR");
             if(roleOptional.isPresent())
@@ -68,12 +68,11 @@ public class WorkspaceController {
             return userWorkspaceService.add(userWorkspace).isPresent()
                     ?ResponseEntity.status(200).body(new MessageResponse("Add workspace successfully"))
                     :ResponseEntity.status(304).body(new MessageResponse("Add workspace fail"));
-        }).orElse(ResponseEntity.status(204).body(new MessageResponse("User not found")));
-
     }
 
     @PutMapping("/update")
     @RequireWorkspaceCreator
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> update(@RequestBody WorkSpaceDTO workSpaceDTO,
                                     @RequestParam(name = "workspace_id") int workSpaceId,
                                     HttpServletRequest request)
@@ -87,6 +86,7 @@ public class WorkspaceController {
 
     @DeleteMapping("/delete")
     @RequireWorkspaceCreator
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> delete(@RequestParam(name = "workspace_id") int workSpaceId,
                                     HttpServletRequest request)
     {

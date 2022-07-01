@@ -13,13 +13,13 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("project1/api/role")
-@SecurityRequirement(name = "bearerAuth")
 public class RoleController {
 
     @Autowired
     private RoleService roleService;
 
     @GetMapping(path = "/find-by-role-name")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByRoleName(@RequestParam(name = "role_name")String roleName,
                                             HttpServletRequest request)
     {
@@ -29,6 +29,7 @@ public class RoleController {
     }
 
     @GetMapping(path = "/find-by-role-type")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByRoleType (@RequestParam(name = "role_type")String roleType,
                                              HttpServletRequest request)
     {
@@ -38,11 +39,14 @@ public class RoleController {
     }
 
     @PostMapping(path = "/add")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> add(@RequestBody Role role,
                                  HttpServletRequest request)
     {
         if(role.getRoleType().equals("Workspace"))
             role.setRoleName("WS_"+role.getRoleName().toUpperCase());
+        else if(role.getRoleType().equals("Board"))
+            role.setRoleName("BOARD_"+role.getRoleName());
         return roleService.add(role).isPresent()
                 ?ResponseEntity.status(200).body(new MessageResponse("Add role successfully"))
                 :ResponseEntity.status(304).body(new MessageResponse("Add role fail"));

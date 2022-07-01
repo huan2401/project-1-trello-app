@@ -10,18 +10,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.awt.desktop.OpenFilesEvent;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("project1/api/notification")
-@SecurityRequirement(name = "bearerAuth")
 public class NotificationController {
 
     @Autowired
     private NotificationService notificationService;
 
     @GetMapping(path = "/find-all")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findAll(){
         return notificationService.findAll().isEmpty()
                 ?ResponseEntity.noContent().build()
@@ -29,6 +28,7 @@ public class NotificationController {
     }
 
     @GetMapping(path = "/find-by-id")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByNotificationId(@RequestParam(name = "noti_id") int notificationId,
                                                   HttpServletRequest request)
     {
@@ -38,6 +38,7 @@ public class NotificationController {
     }
 
     @PostMapping(path = "/add")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> add(@RequestBody Notification notification,
                                  HttpServletRequest request)
     {

@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("project1/api/comment")
-@SecurityRequirement(name = "bearerAuth")
 public class CommentController {
 
     @Autowired
@@ -34,6 +33,7 @@ public class CommentController {
 
 
     @GetMapping("/find-by-task")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByTask(@RequestParam(name = "task_id")int taskId,
                                         HttpServletRequest request)
     {
@@ -43,6 +43,7 @@ public class CommentController {
     }
 
     @PostMapping("/add")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> add(@RequestBody Comment comment,
                                  @RequestParam(name = "task_id")int taskId,
                                  @RequestParam(name = "user_id") int userId,
@@ -60,6 +61,7 @@ public class CommentController {
     }
 
     @PutMapping(path = "/edit")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> edit(@RequestParam(name = "comment_id")int commentId,
                                   @RequestBody CommentDTO commentDTO,
                                   HttpServletRequest request)
@@ -74,6 +76,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/delete-by-comment")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> deleteByComment(@RequestParam(name = "comment_id")int commentId,
                                              HttpServletRequest request)
     {
@@ -82,11 +85,4 @@ public class CommentController {
                 ?ResponseEntity.status(200).body(new MessageResponse("Delete comment by id successfully"))
                 :ResponseEntity.status(304).body(new MessageResponse("Delete comment by id fail"));
     }
-
-
-
-
-
-
-
 }

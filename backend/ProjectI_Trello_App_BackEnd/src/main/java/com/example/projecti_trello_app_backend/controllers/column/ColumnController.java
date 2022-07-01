@@ -4,6 +4,7 @@ import com.example.projecti_trello_app_backend.dto.ColumnDTO;
 import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.entities.board.Board;
 import com.example.projecti_trello_app_backend.entities.column.Columns;
+import com.example.projecti_trello_app_backend.security.authorization.RequireBoardAdmin;
 import com.example.projecti_trello_app_backend.services.board.BoardService;
 import com.example.projecti_trello_app_backend.services.column.ColumnService;
 import com.example.projecti_trello_app_backend.services.combinations.ColumnTaskService;
@@ -19,7 +20,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "project1/api/column")
-@SecurityRequirement(name = "bearerAuth")
 public class ColumnController {
 
     @Autowired
@@ -30,6 +30,7 @@ public class ColumnController {
 
 
     @GetMapping("/find-all-by-board")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findAllByBoard(@RequestParam(name = "board_id") int boardId,
                                             HttpServletRequest request)
     {
@@ -39,6 +40,8 @@ public class ColumnController {
     }
 
     @PostMapping("/add")
+    @RequireBoardAdmin
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> addColumn(@RequestBody Columns column, @RequestParam(name = "board_id") int boardId,
                                        HttpServletRequest request)
     {
@@ -51,6 +54,8 @@ public class ColumnController {
     }
 
     @PutMapping("/update")
+    @RequireBoardAdmin
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> updateColumn(@RequestBody ColumnDTO columnDTO,
                                           @RequestParam(name = "column_id") int columId,
                                           HttpServletRequest request)
@@ -63,6 +68,8 @@ public class ColumnController {
     }
 
     @DeleteMapping("/delete")
+    @RequireBoardAdmin
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> delete (@RequestParam(name = "column_id")int columnId,
                                      HttpServletRequest request)
     {
@@ -70,7 +77,4 @@ public class ColumnController {
                 ?ResponseEntity.ok(new MessageResponse("Delete column successfully"))
                 :ResponseEntity.status(304).body(new MessageResponse("Delete column fail"));
     }
-
-
-
 }

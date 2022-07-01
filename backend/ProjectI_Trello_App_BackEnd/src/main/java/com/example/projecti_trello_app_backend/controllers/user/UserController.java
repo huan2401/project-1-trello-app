@@ -7,6 +7,7 @@ import com.example.projecti_trello_app_backend.entities.token.ResetPasswordToken
 import com.example.projecti_trello_app_backend.entities.user.User;
 import com.example.projecti_trello_app_backend.services.reset_password.ResetPasswordService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
+import com.example.projecti_trello_app_backend.utils.SecurityUtils;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +30,11 @@ public class UserController {
     @Autowired
     private ResetPasswordService resetPasswordService;
 
+    @Autowired
+    private SecurityUtils util;
+
     @GetMapping(path = "/find-by-username-email")
-    @SecurityRequirement(name = "${method.bearer}")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByUserNameOrEmail(@RequestParam(name = "username",required = false) String userName,
                                                    @RequestParam(name = "email", required = false) String email,
                                                    HttpServletRequest request)
@@ -44,7 +48,8 @@ public class UserController {
     public ResponseEntity<?> signUp(@RequestBody User user,
                                     HttpServletRequest request)
     {
-        String siteURL = MailConstants.USER_SITE_URL;
+        String url = request.getRequestURL().toString();
+        String siteURL = url.substring(0,url.length()-7); // get to request url
         Optional<User> userOptional = userService.signUp(user,siteURL);
         return userOptional.isPresent()
                 ?ResponseEntity.status(200).build()
@@ -61,12 +66,12 @@ public class UserController {
                 :ResponseEntity.status(204).body(new MessageResponse("Activate user fail"));
     }
 
-    @PutMapping(path = "/update/{user_id}")
-    @SecurityRequirement(name="${method.bearer}")
+    @PutMapping(path = "/update")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> update(@RequestBody UserDTO userDTO,
-                                    @PathVariable(name = "user_id") int userId,
                                     HttpServletRequest request)
     {
+        int userId = util.getUserFromRequest(request).getUserId();
         if(!userService.findByUserId(userId).isPresent()) return ResponseEntity.ok(Optional.empty());
         userDTO.setUserId(userId);
         return ResponseEntity.ok(userService.update(userDTO));
@@ -74,10 +79,11 @@ public class UserController {
 
     @PatchMapping(path = "/change-password")
     public ResponseEntity<?> changePassWord(@RequestBody UserDTO userDTO,
-                                            @RequestParam("user_id") int userId,
                                             HttpServletRequest request)
     {
-        if(!userService.findByUserId(userId).isPresent()) return ResponseEntity.noContent().build();
+        int userId = util.getUserFromRequest(request).getUserId();
+        if(!userService.findByUserId(userId).isPresent())
+            return ResponseEntity.noContent().build();
         User userToUpdate = userService.findByUserId(userId).get();
         if(!userDTO.getPreviousPassword().equals(userDTO.getPreviousPassword()))
             return ResponseEntity.noContent().build();

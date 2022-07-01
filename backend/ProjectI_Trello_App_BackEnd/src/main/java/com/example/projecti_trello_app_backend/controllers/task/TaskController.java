@@ -2,6 +2,7 @@ package com.example.projecti_trello_app_backend.controllers.task;
 
 import com.example.projecti_trello_app_backend.dto.TaskDTO;
 import com.example.projecti_trello_app_backend.entities.task.Task;
+import com.example.projecti_trello_app_backend.security.authorization.RequireBoardAdmin;
 import com.example.projecti_trello_app_backend.services.column.ColumnService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -15,7 +16,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("project1/api/task")
-@SecurityRequirement(name = "bearerAuth")
 public class TaskController {
 
     @Autowired
@@ -25,6 +25,7 @@ public class TaskController {
     private ColumnService columnService;
 
     @GetMapping("/find-by-task-id")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByTaskId(@RequestParam(name = "task_id") int taskId,
                                           HttpServletRequest request)
     {
@@ -32,6 +33,8 @@ public class TaskController {
     }
 
     @PostMapping("/add")
+    @RequireBoardAdmin
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> add(@RequestBody Task task, @RequestParam(name = "column_id")int columnId,
                                  HttpServletRequest request){
         return columnService.findByColumnId(columnId).map(column -> {
@@ -40,6 +43,8 @@ public class TaskController {
     }
 
     @PutMapping("/update")
+    @RequireBoardAdmin
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> update(@RequestBody TaskDTO taskDTO,
                                     @RequestParam(name = "task_id") int taskId,
                                     HttpServletRequest request)
