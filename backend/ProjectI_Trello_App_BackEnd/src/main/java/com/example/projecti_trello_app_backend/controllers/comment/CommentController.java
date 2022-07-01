@@ -6,6 +6,8 @@ import com.example.projecti_trello_app_backend.entities.comment.Comment;
 import com.example.projecti_trello_app_backend.services.comment.CommentService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
+import com.example.projecti_trello_app_backend.utils.SecurityUtils;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("project1/api/comment")
+@SecurityRequirement(name = "bearerAuth")
 public class CommentController {
 
     @Autowired
@@ -25,6 +28,9 @@ public class CommentController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SecurityUtils util;
 
 
     @GetMapping("/find-by-task")
@@ -58,6 +64,8 @@ public class CommentController {
                                   @RequestBody CommentDTO commentDTO,
                                   HttpServletRequest request)
     {
+        if(!util.checkUserCommentRole(request,commentId))
+            return ResponseEntity.status(403).body(new MessageResponse("User don't have permission to edit comment"));
         if(!commentService.findByCommentId(commentId).isPresent())
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new MessageResponse("Not found comment"));
         return commentService.update(commentDTO).isPresent()

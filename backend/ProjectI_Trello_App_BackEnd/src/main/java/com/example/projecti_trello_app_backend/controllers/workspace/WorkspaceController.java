@@ -5,15 +5,17 @@ import com.example.projecti_trello_app_backend.dto.WorkSpaceDTO;
 import com.example.projecti_trello_app_backend.entities.combinations.UserWorkspace;
 import com.example.projecti_trello_app_backend.entities.role.Role;
 import com.example.projecti_trello_app_backend.entities.workspace.Workspace;
-import com.example.projecti_trello_app_backend.security.authorization.WorkspaceCreator;
+import com.example.projecti_trello_app_backend.security.authorization.RequireWorkspaceCreator;
 import com.example.projecti_trello_app_backend.services.combinations.UserWorkspaceService;
 import com.example.projecti_trello_app_backend.services.role.RoleService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
 import com.example.projecti_trello_app_backend.services.workspace.WorkspaceService;
+import com.example.projecti_trello_app_backend.utils.SecurityUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/project1/api/workspace")
+@SecurityRequirement(name = "bearerAuth")
 public class WorkspaceController {
 
     @Autowired
@@ -35,6 +38,9 @@ public class WorkspaceController {
     @Autowired
     private RoleService roleService;
 
+    @Autowired
+    private SecurityUtils util;
+
     @GetMapping("/find-by-workspace-id")
     public ResponseEntity<?> findWorkSpaceById(@RequestParam(name = "workspace_id")int workSpaceId,
                                                HttpServletRequest request)
@@ -46,12 +52,12 @@ public class WorkspaceController {
 
     @PostMapping("/add")
     public ResponseEntity<?> add(@RequestBody Workspace workspace,
-                                 @RequestParam(name = "creator_id") int creatorId,
                                  HttpServletRequest request)
     {
         Optional<Workspace> userWorkspaceToAdd = workspaceService.add(workspace);
         if(!userWorkspaceToAdd.isPresent()) return ResponseEntity.noContent().build();
         UserWorkspace userWorkspace = new UserWorkspace();
+        int creatorId = util.getUserFromRequest(request).getUserId();
         return userService.findByUserId(creatorId).map(user -> {
             userWorkspace.setUser(user);
             userWorkspace.setWorkspace(userWorkspaceToAdd.get());
@@ -67,14 +73,11 @@ public class WorkspaceController {
     }
 
     @PutMapping("/update")
-    @WorkspaceCreator
+    @RequireWorkspaceCreator
     public ResponseEntity<?> update(@RequestBody WorkSpaceDTO workSpaceDTO,
                                     @RequestParam(name = "workspace_id") int workSpaceId,
-                                    @RequestParam(name = "creator_id") int creatorId,
                                     HttpServletRequest request)
     {
-        if(userWorkspaceService.checkRole(workSpaceId,creatorId,"WS_CREATOR")==false)
-            return ResponseEntity.status(403).build();
         return workspaceService.findByWorkspaceId(workSpaceId).map(workspace ->
         {
            workSpaceDTO.setWorkspaceId(workSpaceId);
@@ -83,12 +86,11 @@ public class WorkspaceController {
     }
 
     @DeleteMapping("/delete")
+    @RequireWorkspaceCreator
     public ResponseEntity<?> delete(@RequestParam(name = "workspace_id") int workSpaceId,
-                                    @RequestParam(name = "creator_id") int creatorId,
                                     HttpServletRequest request)
     {
         return workspaceService.delete(workSpaceId)
-                && userWorkspaceService.checkRole(workSpaceId,creatorId,"WS_CREATOR")
                 ?ResponseEntity.status(200).build()
                 :ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
     }

@@ -20,6 +20,8 @@ public interface UserWorkspaceService {
 
     boolean checkRole(int workspaceId, int userId, String roleName);
 
+    boolean existsByUserAndWorkspace(int userId, int workSpaceId);
+
     Optional<UserWorkspace> add(UserWorkspace userWorkspace);// add a new user to workspace
 
     Optional<UserWorkspace> update (UserWorkspaceDTO userWorkspaceDTO);

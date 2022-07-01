@@ -58,7 +58,9 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
         String [] listURLPermitAll= {"/**/api/auth",
                                     "/**/api/user/signup",
                                     "/**/api/user/verify/**",
-                                    "/**/api/user/reset-password/**"};
+                                    "/**/api/user/reset-password/**",
+                                    "/swagger-ui/**",
+                                    "/**/v3/api-docs/**"};
         http.csrf().disable();
                 http
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

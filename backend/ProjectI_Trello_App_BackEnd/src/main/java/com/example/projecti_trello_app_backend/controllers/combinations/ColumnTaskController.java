@@ -4,8 +4,8 @@ import com.example.projecti_trello_app_backend.entities.combinations.ColumnTask;
 import com.example.projecti_trello_app_backend.services.column.ColumnService;
 import com.example.projecti_trello_app_backend.services.combinations.ColumnTaskService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("project1/api/column_task")
+@SecurityRequirement(name = "bearerAuth")
 public class ColumnTaskController {
 
     @Autowired

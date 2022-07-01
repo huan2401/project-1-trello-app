@@ -1,6 +1,5 @@
 package com.example.projecti_trello_app_backend.constants;
 
-import org.springframework.beans.factory.annotation.Value;
 
 public class SecurityConstants {
     public static final String SECURITY_KEY ="@Project$1@Project$Management@Zalo@hHw63Hdjiow9";
@@ -9,5 +8,5 @@ public class SecurityConstants {
 
     public static final String AUTH_HEADER = "Authorization";
 
-    public static final String JWT_TYPE ="Bearer ";
+    public static final String TOKEN_TYPE ="Bearer ";
 }

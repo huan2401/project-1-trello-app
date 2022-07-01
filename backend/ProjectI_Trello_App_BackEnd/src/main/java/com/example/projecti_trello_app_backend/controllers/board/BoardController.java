@@ -4,9 +4,12 @@ import com.example.projecti_trello_app_backend.dto.BoardDTO;
 import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.entities.board.Board;
 import com.example.projecti_trello_app_backend.entities.workspace.Workspace;
+import com.example.projecti_trello_app_backend.security.authorization.RequireBoardAdmin;
+import com.example.projecti_trello_app_backend.security.authorization.RequireWorkspaceCreator;
 import com.example.projecti_trello_app_backend.services.board.BoardService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
 import com.example.projecti_trello_app_backend.services.workspace.WorkspaceService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("project1/api/board")
+@SecurityRequirement(name = "bearerAuth")
 public class BoardController {
 
     @Autowired
@@ -39,6 +43,7 @@ public class BoardController {
 //    }
     
     @PostMapping("/add-board")
+    @RequireWorkspaceCreator
     public ResponseEntity<?> addBoard(@RequestBody Board board,
                                       @RequestParam(name = "work_space_id")int workSpaceId,
                                       HttpServletRequest request){
@@ -51,6 +56,7 @@ public class BoardController {
     }
 
     @PutMapping("/update")
+    @RequireBoardAdmin
     public ResponseEntity<?> update(@RequestBody BoardDTO boardDTO,
                                     @RequestParam(name = "board_id") int boardId,
                                     HttpServletRequest request) //khi cần có thay đổi về PM
@@ -62,6 +68,7 @@ public class BoardController {
     }
 
     @DeleteMapping(path = "/delete")
+    @RequireBoardAdmin
     public ResponseEntity<?> delete(@RequestParam(name = "board_id")int boardId,
                                     HttpServletRequest request)
     {
@@ -71,6 +78,7 @@ public class BoardController {
     }
 
     @DeleteMapping(path = "/delete-by-work-space")
+    @RequireWorkspaceCreator
     public ResponseEntity<?> deleteByWorkSpace(@RequestParam(name = "workspace_id")int workspaceId,
                                                HttpServletRequest request)
     {

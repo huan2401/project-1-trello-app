@@ -2,11 +2,16 @@ package com.example.projecti_trello_app_backend.controllers.combinations;
 
 import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.entities.combinations.UserBoardRole;
+import com.example.projecti_trello_app_backend.entities.combinations.UserWorkspace;
 import com.example.projecti_trello_app_backend.entities.role.Role;
+import com.example.projecti_trello_app_backend.security.authorization.RequireBoardAdmin;
 import com.example.projecti_trello_app_backend.services.board.BoardService;
 import com.example.projecti_trello_app_backend.services.combinations.UserBoardRoleService;
+import com.example.projecti_trello_app_backend.services.combinations.UserWorkspaceService;
 import com.example.projecti_trello_app_backend.services.role.RoleService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
+import com.example.projecti_trello_app_backend.services.workspace.WorkspaceService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +23,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("project1/api/user-board-role")
+@SecurityRequirement(name = "bearerAuth")
 public class UserBoardRoleController {
 
     @Autowired
@@ -31,6 +37,12 @@ public class UserBoardRoleController {
 
     @Autowired
     private UserBoardRoleService userBoardRoleService;
+
+    @Autowired
+    private UserWorkspaceService userWorkspaceService;
+
+    @Autowired
+    private WorkspaceService workspaceService;
 
     @GetMapping(path = "/find-by-user")
     public ResponseEntity<?> findByUser(@RequestParam(name = "user_id") int userId,
@@ -69,6 +81,7 @@ public class UserBoardRoleController {
     }
 
     @GetMapping(path = "/add")
+    @RequireBoardAdmin
     public ResponseEntity<?> add(@RequestParam(name = "user_id") int userId,
                                  @RequestParam(name = "board_id") int boardId,
                                  @RequestParam(name = "role_name") String roleName,
@@ -86,6 +99,15 @@ public class UserBoardRoleController {
             return boardService.findByBoardId(boardId).map(board -> {
                 userBoardRoleToAdd.setBoard(board);
                 Optional<UserBoardRole> userBoardRoleAdded = userBoardRoleService.add(userBoardRoleToAdd);
+                if(!userWorkspaceService.existsByUserAndWorkspace(userId,board.getWorkspace().getWorkspaceId()))
+                {
+                    UserWorkspace userWorkspace = UserWorkspace.builder().build();
+                    userWorkspace.setWorkspace(workspaceService.findByWorkspaceId(board.getWorkspace().getWorkspaceId()).get());
+                    userWorkspace.setUser(user);
+                    userWorkspace.setRole(roleService.findByRoleName("WS_GUESS").get());
+                    if(!userWorkspaceService.add(userWorkspace).isPresent())
+                        return ResponseEntity.status(304).body(new MessageResponse("Set new guess user of workspace fail"));
+                }
                 return userBoardRoleAdded.isPresent()
                         ?ResponseEntity.status(200).body(new MessageResponse("Add user to board successfully"))
                         : ResponseEntity.status(204).body(new MessageResponse("Add user to board fail"));
@@ -94,6 +116,7 @@ public class UserBoardRoleController {
     }
 
     @PutMapping(path = "/set-role-for-user")
+    @RequireBoardAdmin
     public ResponseEntity<?> setRoleForUser(@RequestParam(name = "user_id")int userId,
                                             @RequestParam(name = "board_id")int boardId,
                                             @RequestParam(name = "role_name") String roleName,
@@ -112,6 +135,7 @@ public class UserBoardRoleController {
     }
 
     @DeleteMapping(path = "/delete-by-board")
+    @RequireBoardAdmin
     public ResponseEntity<?> deleteByBoard(@RequestParam(name = "board_id") int boardId,
                                            HttpServletRequest request)
     {
@@ -122,8 +146,9 @@ public class UserBoardRoleController {
         }).orElse(ResponseEntity.status(204).body(new MessageResponse("Delete by board fail - Not found board")));
     }
 
-    @DeleteMapping(path = "/delete-user-from-board")
-    public ResponseEntity<?> deleteUserFromBoard(@RequestParam(name = "board_id") int boardId,
+    @DeleteMapping(path = "/remove-user-from-board")
+    @RequireBoardAdmin
+    public ResponseEntity<?> removeUserFromBoard(@RequestParam(name = "board_id") int boardId,
                                                  @RequestParam(name = "user_id") int userId,
                                                  HttpServletRequest request)
     {

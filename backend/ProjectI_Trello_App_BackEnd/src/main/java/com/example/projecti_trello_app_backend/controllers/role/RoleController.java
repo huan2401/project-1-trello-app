@@ -3,6 +3,7 @@ package com.example.projecti_trello_app_backend.controllers.role;
 import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.entities.role.Role;
 import com.example.projecti_trello_app_backend.services.role.RoleService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("project1/api/role")
+@SecurityRequirement(name = "bearerAuth")
 public class RoleController {
 
     @Autowired

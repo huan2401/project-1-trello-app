@@ -5,6 +5,7 @@ import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.entities.label.Label;
 import com.example.projecti_trello_app_backend.services.label.LabelService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/project1/api/label")
+@SecurityRequirement(name = "bearerAuth")
 public class LabelController {
 
     @Autowired
