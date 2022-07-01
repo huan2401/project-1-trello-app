@@ -46,7 +46,7 @@ public class SecurityUtils {
     public static String  getTokenFromRequest(HttpServletRequest request)
     {
         String authHeader = request.getHeader(SecurityConstants.AUTH_HEADER);
-        if(StringUtils.hasText(authHeader) && authHeader.startsWith(SecurityConstants.JWT_TYPE))
+        if(StringUtils.hasText(authHeader) && authHeader.startsWith(SecurityConstants.TOKEN_TYPE))
             return authHeader.substring(7);
         return null;
     }
@@ -80,8 +80,6 @@ public class SecurityUtils {
         User user = getUserFromRequest(request);
         if(user==null) return "NOT_HAVE_PERMISSION";
         Optional<UserWorkspace> userWorkspaceOptional = userWorkspaceRepo.findByUserAndWorkspace(user.getUserId(),workspaceId);
-        if(!userWorkspaceOptional.isPresent())
-            return "WS_GUESS";
         try {
            return userWorkspaceOptional.get().getRole().getRoleName();
         }

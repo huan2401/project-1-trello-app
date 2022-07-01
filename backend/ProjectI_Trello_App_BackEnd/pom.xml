@@ -65,6 +65,15 @@
             <version>2.7.1</version>
         </dependency>
 
+<!--        OpenAPI 3.0 for API Documentation-->
+
+        <!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-ui -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.6.9</version>
+        </dependency>
+
 
         <!--   JSON  maven :https://mvnrepository.com/artifact/org.json/json/20220320 -->
         <dependency>

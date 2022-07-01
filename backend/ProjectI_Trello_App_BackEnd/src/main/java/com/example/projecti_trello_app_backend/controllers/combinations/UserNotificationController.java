@@ -9,6 +9,7 @@ import com.example.projecti_trello_app_backend.services.combinations.UserTaskSer
 import com.example.projecti_trello_app_backend.services.notification.NotificationService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("project1/api/user-notification")
+@SecurityRequirement(name = "bearerAuth")
 public class UserNotificationController {
 
     @Autowired

@@ -7,6 +7,7 @@ import com.example.projecti_trello_app_backend.entities.token.ResetPasswordToken
 import com.example.projecti_trello_app_backend.entities.user.User;
 import com.example.projecti_trello_app_backend.services.reset_password.ResetPasswordService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +30,7 @@ public class UserController {
     private ResetPasswordService resetPasswordService;
 
     @GetMapping(path = "/find-by-username-email")
+    @SecurityRequirement(name = "${method.bearer}")
     public ResponseEntity<?> findByUserNameOrEmail(@RequestParam(name = "username",required = false) String userName,
                                                    @RequestParam(name = "email", required = false) String email,
                                                    HttpServletRequest request)
@@ -60,6 +62,7 @@ public class UserController {
     }
 
     @PutMapping(path = "/update/{user_id}")
+    @SecurityRequirement(name="${method.bearer}")
     public ResponseEntity<?> update(@RequestBody UserDTO userDTO,
                                     @PathVariable(name = "user_id") int userId,
                                     HttpServletRequest request)

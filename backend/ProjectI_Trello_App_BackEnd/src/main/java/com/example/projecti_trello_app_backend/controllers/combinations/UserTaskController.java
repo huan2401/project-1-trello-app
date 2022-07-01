@@ -6,6 +6,7 @@ import com.example.projecti_trello_app_backend.entities.combinations.UserTask;
 import com.example.projecti_trello_app_backend.services.combinations.UserTaskService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("project1/api/user_task")
+@SecurityRequirement(name = "bearerAuth")
 public class UserTaskController {
 
     @Autowired

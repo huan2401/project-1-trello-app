@@ -76,6 +76,17 @@ public class UserWorkspaceServiceImpl implements UserWorkspaceService {
     }
 
     @Override
+    public boolean existsByUserAndWorkspace(int userId, int workSpaceId) {
+        try{
+            return userWorkspaceRepo.existsByUserAndWorkspace(userId,workSpaceId);
+        } catch (Exception ex)
+        {
+            log.error("Check existed user in workspace error",ex);
+            return false;
+        }
+    }
+
+    @Override
     public Optional<UserWorkspace> add(UserWorkspace userWorkspace) {
         try {
             return Optional.ofNullable(userWorkspaceRepo.save(userWorkspace));

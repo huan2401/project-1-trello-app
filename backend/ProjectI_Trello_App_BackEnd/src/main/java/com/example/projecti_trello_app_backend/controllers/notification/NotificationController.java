@@ -3,6 +3,7 @@ package com.example.projecti_trello_app_backend.controllers.notification;
 import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.entities.notification.Notification;
 import com.example.projecti_trello_app_backend.services.notification.NotificationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("project1/api/notification")
+@SecurityRequirement(name = "bearerAuth")
 public class NotificationController {
 
     @Autowired

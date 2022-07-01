@@ -4,12 +4,13 @@ import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.dto.UserWorkspaceDTO;
 import com.example.projecti_trello_app_backend.entities.combinations.UserWorkspace;
 import com.example.projecti_trello_app_backend.entities.role.Role;
-import com.example.projecti_trello_app_backend.entities.user.User;
+import com.example.projecti_trello_app_backend.security.authorization.RequireWorkspaceCreator;
 import com.example.projecti_trello_app_backend.services.combinations.UserWorkspaceService;
 import com.example.projecti_trello_app_backend.services.role.RoleService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
 import com.example.projecti_trello_app_backend.services.workspace.WorkspaceService;
-import org.springframework.beans.factory.ObjectProvider;
+import com.example.projecti_trello_app_backend.utils.SecurityUtils;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/project1/api/user-workspace")
+@SecurityRequirement(name = "bearerAuth")
 public class UserWorkspaceController {
 
     @Autowired
@@ -34,10 +36,13 @@ public class UserWorkspaceController {
     @Autowired
     private RoleService roleService;
 
+    @Autowired
+    private SecurityUtils util;
+
     @GetMapping(path = "/find-by-user")
-    public ResponseEntity<?> findByUser(@RequestParam(name = "user_id") int userId,
-                                        HttpServletRequest request)
+    public ResponseEntity<?> findByUser(HttpServletRequest request)
     {
+        int userId = util.getUserFromRequest(request).getUserId();
         return userWorkspaceService.findByUser(userId).isEmpty()
                 ?ResponseEntity.status(204).body(new MessageResponse("This user doesn't belong to any board"))
                 :ResponseEntity.ok(userWorkspaceService.findByWorkspace(userId));
@@ -53,6 +58,7 @@ public class UserWorkspaceController {
     }
 
     @PostMapping(path = "/add")
+    @RequireWorkspaceCreator
     public ResponseEntity<?> add (@RequestParam(name = "user_id") int userId,
                                   @RequestParam(name = "workspace_id")int workspaceId,
                                   @RequestParam(name = "role") String roleName,
@@ -78,6 +84,7 @@ public class UserWorkspaceController {
     }
 
     @PutMapping(path = "/update")
+    @RequireWorkspaceCreator
     public ResponseEntity<?> update(@RequestBody UserWorkspaceDTO userWorkspaceDTO,
                                     HttpServletRequest request)
     {
@@ -85,6 +92,7 @@ public class UserWorkspaceController {
     }
 
     @DeleteMapping(path = "/delete-by-workspace")
+    @RequireWorkspaceCreator
     public ResponseEntity<?> deleteByWorkspace(@RequestParam(name = "workspace_id") int workspaceId,
                                                HttpServletRequest request)
     {
@@ -95,6 +103,7 @@ public class UserWorkspaceController {
 
 
     @DeleteMapping(path = "/remove-user-from-workspace")
+    @RequireWorkspaceCreator
     public ResponseEntity<?> removeUserFromWorkspace(@RequestParam(name = "user_id") int userId,
                                                      @RequestParam(name = "workspace_id") int workspaceId,
                                                      HttpServletRequest request)
