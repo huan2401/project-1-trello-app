@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,7 +44,7 @@ public class LoginController {
             CustomUserDetails userDetails = (CustomUserDetails) userDetailService.loadUserByUsername(loginRequest.getUserName());
             if(userDetails == null) {
                 System.out.println("Error at this point");
-               // throw new BadCredentialsException("Wrong username or email!");
+                throw new BadCredentialsException("Wrong username or email!");
             }
             String accessToken = jwtProvider.generateToken(userDetails);
             return ResponseEntity.ok(new JWTResponse(accessToken,

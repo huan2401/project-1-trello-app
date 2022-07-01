@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("project1/api/user-notification")
-@SecurityRequirement(name = "bearerAuth")
 public class UserNotificationController {
 
     @Autowired
@@ -46,6 +45,7 @@ public class UserNotificationController {
     private UserTaskService userTaskService;
 
     @GetMapping(path = "/find-by-id")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findById(@RequestParam(name = "id") int id,
                                       HttpServletRequest request){
         Optional<UserNotification> usNotiOptional = userNotificationService.findById(id);
@@ -54,6 +54,7 @@ public class UserNotificationController {
     }
 
     @GetMapping(path = "/find-by-user")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByUser(@RequestParam(name = "user_id")int userId,
                                         HttpServletRequest request)
     {
@@ -64,6 +65,7 @@ public class UserNotificationController {
 
     // send notifications about a task update to all member of the task (for updates in a task)
     @GetMapping(path = "/send-update-noti")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> sendUpdateNotifications(@RequestParam(name = "task_id")int taskId,
                                                      @RequestBody Notification notification,
                                                      HttpServletRequest request)
@@ -86,6 +88,7 @@ public class UserNotificationController {
 
     // send notification to a user who has been added to a board
     @GetMapping(path = "/send-add-to-board-noti")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> sendAddToBoardNotifications(@RequestParam(name = "board_id", required = false) int boardId,
                                                          @RequestParam(name = "user_id") int userId,
                                                          HttpServletRequest request)
@@ -108,6 +111,7 @@ public class UserNotificationController {
 
     //send notification to a user who has been add to a task
     @PostMapping(path = "/send-add-to-task-noti")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> sendAddToTaskNotification(@RequestParam(name = "task_id")int taskId,
                                                        @RequestParam(name = "user_id")int userId,
                                                        HttpServletRequest request)
@@ -129,6 +133,7 @@ public class UserNotificationController {
     }
 
     @GetMapping(path = "send-remove-from-board-noti")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> sendRemoveFromBoardNoti(@RequestParam(name = "board_id", required = false) int boardId,
                                                      @RequestParam(name = "user_id") int userId,
                                                      HttpServletRequest request)
@@ -150,6 +155,7 @@ public class UserNotificationController {
     }
 
     @GetMapping(path = "/send-remove-from-task-noti")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> sendRemoveFromTaskNoti(@RequestParam(name = "task_id")int taskId,
                                                     @RequestParam(name = "user_id")int userId,
                                                     HttpServletRequest request)

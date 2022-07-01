@@ -1,6 +1,7 @@
 package com.example.projecti_trello_app_backend.controllers.combinations;
 
 import com.example.projecti_trello_app_backend.entities.combinations.ColumnTask;
+import com.example.projecti_trello_app_backend.security.authorization.RequireBoardAdmin;
 import com.example.projecti_trello_app_backend.services.column.ColumnService;
 import com.example.projecti_trello_app_backend.services.combinations.ColumnTaskService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
@@ -14,7 +15,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("project1/api/column_task")
-@SecurityRequirement(name = "bearerAuth")
 public class ColumnTaskController {
 
     @Autowired
@@ -27,6 +27,7 @@ public class ColumnTaskController {
     private TaskService taskService;
 
     @GetMapping("/find-all-by-column")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findAllByColumn(@RequestParam(name = "column_id") int columId,
                                              HttpServletRequest request)
     {
@@ -34,6 +35,7 @@ public class ColumnTaskController {
     }
 
     @GetMapping("/find-by-column-and-task")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByComlumnAndTask(@RequestParam(name = "column_id")int columnId,
                                                   @RequestParam(name = "task_id") int taskId,
                                                   HttpServletRequest request)
@@ -42,6 +44,7 @@ public class ColumnTaskController {
     }
 
     @GetMapping("/add")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> add(@RequestParam(name = "column_id")int columnId,
                                  @RequestParam(name = "task_id") int taskId,
                                  HttpServletRequest request)
@@ -59,6 +62,7 @@ public class ColumnTaskController {
 
 
     @GetMapping("/change-stage")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> changeStage(@RequestParam(name = "start_col_id") int startColumnId,
                                          @RequestParam(name ="end_col_id") int endColumnId,
                                          @RequestParam(name = "task_id") int taskId,

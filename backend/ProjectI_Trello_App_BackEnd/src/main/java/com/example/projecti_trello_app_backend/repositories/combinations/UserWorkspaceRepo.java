@@ -18,8 +18,9 @@ public interface UserWorkspaceRepo extends JpaRepository<UserWorkspace,Integer> 
     @Query(value = "from UserWorkspace userWorkspace where userWorkspace.id=?1 and userWorkspace.deleted=false")
     Optional<UserWorkspace> findById(int id);
 
-    @Query(value = "from UserWorkspace  uswp where uswp.user.userId=?1 and" +
-                   " uswp.deleted =false")
+    @Query(value = "from UserWorkspace  uswp where uswp.user.userId=?1 and " +
+                    "uswp.role.roleName<>'WS_GUESS'" +
+                   " and uswp.deleted =false")
     List<UserWorkspace> findByUser(int userId);
 
     @Query(value = "from UserWorkspace uswp where uswp.workspace.workspaceId=?1 and " +

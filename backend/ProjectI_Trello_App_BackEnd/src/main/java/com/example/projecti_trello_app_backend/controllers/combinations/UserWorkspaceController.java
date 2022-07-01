@@ -21,7 +21,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/project1/api/user-workspace")
-@SecurityRequirement(name = "bearerAuth")
 public class UserWorkspaceController {
 
     @Autowired
@@ -40,15 +39,17 @@ public class UserWorkspaceController {
     private SecurityUtils util;
 
     @GetMapping(path = "/find-by-user")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByUser(HttpServletRequest request)
     {
         int userId = util.getUserFromRequest(request).getUserId();
         return userWorkspaceService.findByUser(userId).isEmpty()
-                ?ResponseEntity.status(204).body(new MessageResponse("This user doesn't belong to any board"))
-                :ResponseEntity.ok(userWorkspaceService.findByWorkspace(userId));
+                ?ResponseEntity.status(204).body(new MessageResponse("This user doesn't belong to any workspace"))
+                :ResponseEntity.ok(userWorkspaceService.findByUser(userId));
     }
 
     @GetMapping(path = "/find-by-workspace")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByWorkspace(@RequestParam(name = "workspace_id")int workspaceId,
                                              HttpServletRequest request)
     {
@@ -59,6 +60,7 @@ public class UserWorkspaceController {
 
     @PostMapping(path = "/add")
     @RequireWorkspaceCreator
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> add (@RequestParam(name = "user_id") int userId,
                                   @RequestParam(name = "workspace_id")int workspaceId,
                                   @RequestParam(name = "role") String roleName,
@@ -85,6 +87,7 @@ public class UserWorkspaceController {
 
     @PutMapping(path = "/update")
     @RequireWorkspaceCreator
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> update(@RequestBody UserWorkspaceDTO userWorkspaceDTO,
                                     HttpServletRequest request)
     {
@@ -93,6 +96,7 @@ public class UserWorkspaceController {
 
     @DeleteMapping(path = "/delete-by-workspace")
     @RequireWorkspaceCreator
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> deleteByWorkspace(@RequestParam(name = "workspace_id") int workspaceId,
                                                HttpServletRequest request)
     {
@@ -104,6 +108,7 @@ public class UserWorkspaceController {
 
     @DeleteMapping(path = "/remove-user-from-workspace")
     @RequireWorkspaceCreator
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> removeUserFromWorkspace(@RequestParam(name = "user_id") int userId,
                                                      @RequestParam(name = "workspace_id") int workspaceId,
                                                      HttpServletRequest request)

@@ -35,7 +35,13 @@ public class JWTProvider {
     //get claims
     public Claims getClaims (String token)
     {
-        return Jwts.parser().setSigningKey(SecurityConstants.SECURITY_KEY).parseClaimsJws(token).getBody();
+        try {
+            return Jwts.parser().setSigningKey(SecurityConstants.SECURITY_KEY).parseClaimsJws(token).getBody();
+        }catch (Exception ex)
+        {
+            log.error("parse claims error",ex);
+            return null;
+        }
     }
 
     // get userName from jwt

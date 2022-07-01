@@ -27,6 +27,9 @@ public class Workspace {
     @Column(name = "work_space_type")
     private String workspaceType;
 
+    @Column(name = "visibility")
+    private String visibility;
+
     @Column(name ="work_space_description")
     private String workspaceDescription;
 

@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +33,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             return workspaceRepo.findAll();
         } catch (Exception ex){
             log.error("find all workspace error",ex);
-            return List.of();
+            return Collections.emptyList();
         }
     }
 

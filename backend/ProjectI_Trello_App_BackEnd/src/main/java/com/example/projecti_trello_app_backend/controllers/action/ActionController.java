@@ -6,6 +6,7 @@ import com.example.projecti_trello_app_backend.services.action.ActionService;
 import com.example.projecti_trello_app_backend.services.combinations.UserTaskService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
+import com.example.projecti_trello_app_backend.utils.SecurityUtils;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("project1/api/action")
-@SecurityRequirement(name = "bearerAuth")
 public class ActionController {
 
     @Autowired
@@ -29,7 +29,11 @@ public class ActionController {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private SecurityUtils util;
+
     @GetMapping(path = "/find-by-id")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByActionId(@RequestParam(name = "action_id") int actionId,
                                             HttpServletRequest request)
     {
@@ -39,6 +43,7 @@ public class ActionController {
     }
 
     @GetMapping(path = "/find-by-task")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByTask(@RequestParam(name = "task_id")int taskId,
                                         HttpServletRequest request)
     {
@@ -50,11 +55,12 @@ public class ActionController {
     }
 
     @PostMapping(path = "/add")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> addAction(@RequestBody Action action,
-                                       @RequestParam(name = "user_id")int userId,
                                        @RequestParam(name = "task_id") int taskId,
                                        HttpServletRequest request)
     {
+        int userId = util.getUserFromRequest(request).getUserId();
         return userService.findByUserId(userId).map(user -> {
             action.setUser(user);
             return taskService.findByTaskId(taskId).map(task -> {

@@ -23,7 +23,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("project1/api/user-board-role")
-@SecurityRequirement(name = "bearerAuth")
 public class UserBoardRoleController {
 
     @Autowired
@@ -45,6 +44,7 @@ public class UserBoardRoleController {
     private WorkspaceService workspaceService;
 
     @GetMapping(path = "/find-by-user")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByUser(@RequestParam(name = "user_id") int userId,
                                         HttpServletRequest request)
     {
@@ -56,6 +56,7 @@ public class UserBoardRoleController {
     }
 
     @GetMapping(path = "/find-by-board")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByBoard(@RequestParam(name = "board_id")int boardId,
                                          HttpServletRequest request)
     {
@@ -67,6 +68,7 @@ public class UserBoardRoleController {
     }
 
     @GetMapping(path = "/find-by-user-and-board")
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByUserAndBoard(@RequestParam(name = "user_id")int userId,
                                                 @RequestParam(name ="board_id")int boardId,
                                                 HttpServletRequest request)
@@ -82,6 +84,7 @@ public class UserBoardRoleController {
 
     @GetMapping(path = "/add")
     @RequireBoardAdmin
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> add(@RequestParam(name = "user_id") int userId,
                                  @RequestParam(name = "board_id") int boardId,
                                  @RequestParam(name = "role_name") String roleName,
@@ -117,6 +120,7 @@ public class UserBoardRoleController {
 
     @PutMapping(path = "/set-role-for-user")
     @RequireBoardAdmin
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> setRoleForUser(@RequestParam(name = "user_id")int userId,
                                             @RequestParam(name = "board_id")int boardId,
                                             @RequestParam(name = "role_name") String roleName,
@@ -136,6 +140,7 @@ public class UserBoardRoleController {
 
     @DeleteMapping(path = "/delete-by-board")
     @RequireBoardAdmin
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> deleteByBoard(@RequestParam(name = "board_id") int boardId,
                                            HttpServletRequest request)
     {
@@ -148,6 +153,7 @@ public class UserBoardRoleController {
 
     @DeleteMapping(path = "/remove-user-from-board")
     @RequireBoardAdmin
+    @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> removeUserFromBoard(@RequestParam(name = "board_id") int boardId,
                                                  @RequestParam(name = "user_id") int userId,
                                                  HttpServletRequest request)

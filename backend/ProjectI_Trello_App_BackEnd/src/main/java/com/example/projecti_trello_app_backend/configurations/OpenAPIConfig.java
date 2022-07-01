@@ -35,15 +35,15 @@ public class OpenAPIConfig {
                         .email("chiendao1808@gmail.com")
                         .name("Chien Dao - Hanoi University of Science and Technology"))
                         .license(new License().name("Apache 2.0").url("http://www.apache.org/licenses/LICENSE-2.0.html"))
-                        .version("1.0.0"))
-                .addSecurityItem(new SecurityRequirement()
-                                    .addList("bearerAuth"))
-                                    .components(new Components()
-                                                .addSecuritySchemes("bearerAuth",
-                                                                    new SecurityScheme().name("bearerAuth")
-                                                                    .type(SecurityScheme.Type.HTTP)
-                                                                    .bearerFormat("JWT")
-                                                                    .scheme("bearer")));
+                        .version("1.0.0"));
+//                .addSecurityItem(new SecurityRequirement()
+//                                    .addList("bearerAuth"))
+//                                    .components(new Components()
+//                                                .addSecuritySchemes("bearerAuth",
+//                                                                    new SecurityScheme().name("bearerAuth")
+//                                                                    .type(SecurityScheme.Type.HTTP)
+//                                                                    .bearerFormat("JWT")
+//                                                                    .scheme("bearer")));
 
     }
 }
