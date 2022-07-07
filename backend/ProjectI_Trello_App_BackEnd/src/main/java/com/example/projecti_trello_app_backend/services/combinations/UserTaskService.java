@@ -16,6 +16,8 @@ public interface UserTaskService {
 
     List<UserTask> findByUser(int userId);
 
+    boolean existsUserTask(int userId, int taskId);
+
     Optional<UserTask> add(UserTask userTask);
 
     Optional<UserTask> update(UserTaskDTO userTaskDTO);

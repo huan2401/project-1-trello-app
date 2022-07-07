@@ -1,6 +1,5 @@
 package com.example.projecti_trello_app_backend.entities.notification;
 
-import jdk.jfr.Enabled;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

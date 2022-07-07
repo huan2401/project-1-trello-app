@@ -3,6 +3,7 @@ package com.example.projecti_trello_app_backend.controllers.comment;
 import com.example.projecti_trello_app_backend.dto.CommentDTO;
 import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.entities.comment.Comment;
+import com.example.projecti_trello_app_backend.security.authorization.RequireCommentCreator;
 import com.example.projecti_trello_app_backend.services.comment.CommentService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
@@ -61,12 +62,13 @@ public class CommentController {
     }
 
     @PutMapping(path = "/edit")
+    @RequireCommentCreator
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> edit(@RequestParam(name = "comment_id")int commentId,
                                   @RequestBody CommentDTO commentDTO,
                                   HttpServletRequest request)
     {
-        if(!util.checkUserCommentRole(request,commentId))
+        if(!util.checkUserComment(request,commentId))
             return ResponseEntity.status(403).body(new MessageResponse("User don't have permission to edit comment"));
         if(!commentService.findByCommentId(commentId).isPresent())
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new MessageResponse("Not found comment"));
@@ -76,6 +78,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/delete-by-comment")
+    @RequireCommentCreator
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> deleteByComment(@RequestParam(name = "comment_id")int commentId,
                                              HttpServletRequest request)

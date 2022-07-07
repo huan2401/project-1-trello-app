@@ -59,6 +59,18 @@ public class UserTaskServiceImpl implements UserTaskService {
     }
 
     @Override
+    public boolean existsUserTask(int userId, int taskId) {
+        try {
+            if(userTaskRepo.existsUserAndTask(userId, taskId))
+                return true;
+            else return false;
+        } catch (Exception ex){
+            log.error("check UserTask existed?", ex);
+            return false;
+        }
+    }
+
+    @Override
     public Optional<UserTask> add(UserTask userTask) {
         try{
             userTask.setAssignedAt(new Timestamp(System.currentTimeMillis()));

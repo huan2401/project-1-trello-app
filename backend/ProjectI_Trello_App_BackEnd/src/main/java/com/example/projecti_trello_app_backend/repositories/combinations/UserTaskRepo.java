@@ -25,6 +25,10 @@ public interface UserTaskRepo extends JpaRepository<UserTask,Integer> {
     @Query("from UserTask ustk where ustk.user.userId=?1 and ustk.task.taskId=?2 and ustk.deleted =false")
     Optional<UserTask> findByUserAndTask(int userId, int taskId);
 
+    @Query(value = "select ustk from UserTask ustk where " +
+            "ustk.user.userId =?1 and ustk.task.taskId =?2 and ustk.deleted =false")
+    Boolean existsUserAndTask(int userId, int taskId);
+
     @Modifying
     @Transactional
     @Query (value =" update UserTask userTask set userTask.deleted =true " +
@@ -35,7 +39,7 @@ public interface UserTaskRepo extends JpaRepository<UserTask,Integer> {
     @Transactional
     @Query(value = "update UserTask userTask set userTask.deleted=true where userTask.task.taskId=?1" +
             " and userTask.deleted=false ")
-     int deleteByTask(int taskId); // delete all when the task was deleted
+    int deleteByTask(int taskId); // delete all when the task was deleted
 
     @Modifying
     @Transactional
