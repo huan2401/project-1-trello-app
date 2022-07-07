@@ -37,6 +37,6 @@ public class BoardAuthorizer {
           //  return ResponseEntity.status(403).body(new MessageResponse("Access Denied"));
             throw new AccessDeniedException("Access Denied");
         }
-        return joinPoint.proceed();
+        return joinPoint.proceed(); // the main method is handled
     }
 }

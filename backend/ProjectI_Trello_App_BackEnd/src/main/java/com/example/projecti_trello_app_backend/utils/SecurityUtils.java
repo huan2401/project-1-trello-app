@@ -10,6 +10,7 @@ import com.example.projecti_trello_app_backend.repositories.comment.CommentRepo;
 import com.example.projecti_trello_app_backend.repositories.user.UserRepo;
 import com.example.projecti_trello_app_backend.security.JWTProvider;
 import com.example.projecti_trello_app_backend.services.combinations.ColumnTaskService;
+import com.example.projecti_trello_app_backend.services.combinations.UserTaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,9 @@ public class SecurityUtils {
 
     @Autowired
     private UserWorkspaceRepo userWorkspaceRepo;
+
+    @Autowired
+    private UserTaskService userTaskService;
 
     @Autowired
     private CommentRepo commentRepo;
@@ -107,7 +111,19 @@ public class SecurityUtils {
         }
     }
 
-   public boolean checkUserCommentRole(HttpServletRequest request,int commentId)
+    public boolean checkTaskMember(HttpServletRequest request, int taskId)
+    {
+        try{
+            User user = getUserFromRequest(request);
+            if(user==null) return false;
+            return userTaskService.existsUserTask(user.getUserId(),taskId);
+        } catch (Exception ex){
+            log.error("check task member error",ex);
+            return false;
+        }
+    }
+
+   public boolean checkUserComment(HttpServletRequest request,int commentId)
     {
         try {
             User user = getUserFromRequest(request);
