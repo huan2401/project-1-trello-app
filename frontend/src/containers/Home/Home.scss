@@ -1,0 +1,30 @@
+* {
+    padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+}
+.home {
+    width: 1000px;
+    margin: 0 auto;
+    margin-top: 50px;
+    .title {
+        font-size: 30px;
+    }
+    .board_list {
+        display: flex;
+        a {
+            img {
+                width: 150px;
+                height: 150px;
+                object-fit: cover;
+                border-radius: 5px;
+            }
+        }
+    }
+    a {
+        margin-left: 20px;
+    }
+    .recent {
+        margin-bottom: 50px;
+    }
+}
