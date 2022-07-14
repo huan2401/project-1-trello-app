@@ -25,6 +25,11 @@ const Header = () => {
                     navigate("/");
                 }}
             />
+
+            <div class="button-border">
+                <button class="button">New</button>
+            </div>
+
             <div className="header_search">
                 <input type="text" placeholder="Searching..." />
                 <button className="search-btn">
@@ -39,7 +44,7 @@ const Header = () => {
                 className="avatar1"
                 alt="Remy Sharp"
                 src="/static/images/avatar/1.jpg"
-                sx={{ width: 40, height: 40, left: 850 }}
+                sx={{ width: 40, height: 40, left: 700 }}
             />
 
             <FontAwesomeIcon
