@@ -120,6 +120,23 @@
 <!--            <artifactId>testng</artifactId>-->
 <!--            <version>7.6.0</version>-->
 <!--        </dependency>-->
+
+<!--        Cloudinary -->
+        <!-- https://mvnrepository.com/artifact/com.cloudinary/cloudinary-core -->
+        <dependency>
+            <groupId>com.cloudinary</groupId>
+            <artifactId>cloudinary-core</artifactId>
+            <version>1.32.2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.cloudinary/cloudinary-http44 -->
+        <dependency>
+            <groupId>com.cloudinary</groupId>
+            <artifactId>cloudinary-http44</artifactId>
+            <version>1.32.2</version>
+        </dependency>
+
+
     </dependencies>
     <build>
         <plugins>

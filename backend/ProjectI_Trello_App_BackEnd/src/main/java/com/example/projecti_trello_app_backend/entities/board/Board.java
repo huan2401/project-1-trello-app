@@ -32,6 +32,9 @@ public class Board {
     @Column(name = "board_title")
     private String boardTitle;
 
+    @Column(name = "board_background")
+    private String boardBackground;
+
     @Column(name = "created_at")
     private Timestamp createdAt;
 

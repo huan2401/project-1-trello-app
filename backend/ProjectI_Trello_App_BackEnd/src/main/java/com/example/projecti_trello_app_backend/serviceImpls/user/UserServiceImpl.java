@@ -61,6 +61,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> findByUserName(String userName) {
+        try {
+            return userRepo.findByUserName(userName);
+        } catch (Exception ex)
+        {
+            log.error("find user by username error",ex);
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        try {
+            return userRepo.findByEmail(email);
+        } catch (Exception ex)
+        {
+            log.error("find user by email error",ex);
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public Optional<User> findByUsernameOrEmail(String userName, String email) {
         try {
             return userRepo.findByUserNameOrEmail(userName,email).isPresent()?userRepo.findByUserNameOrEmail(userName,email)

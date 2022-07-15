@@ -1,4 +1,4 @@
-package com.example.projecti_trello_app_backend.configurations;
+package com.example.projecti_trello_app_backend.configurations.api_docs;
 
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;

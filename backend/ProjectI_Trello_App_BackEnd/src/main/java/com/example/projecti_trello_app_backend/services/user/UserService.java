@@ -18,6 +18,10 @@ public interface UserService {
 
     Optional<User> findByUserId(int userId);
 
+    Optional<User> findByUserName(String userName);
+
+    Optional<User> findByEmail(String email);
+
     Optional<User> findByUsernameOrEmail(String userName, String email);
 
     Optional<User> signUp(User user, String siteURL); // add new user

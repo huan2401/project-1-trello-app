@@ -47,7 +47,7 @@ public class SecurityUtils {
     private JWTProvider jwtProvider;
 
 
-    public static String  getTokenFromRequest(HttpServletRequest request)
+    public static String getTokenFromRequest(HttpServletRequest request)
     {
         String authHeader = request.getHeader(SecurityConstants.AUTH_HEADER);
         if(StringUtils.hasText(authHeader) && authHeader.startsWith(SecurityConstants.TOKEN_TYPE))
