@@ -17,6 +17,9 @@ public interface UserRepo extends JpaRepository<User,Integer> {
      @Query(value = "from User user where user.userId=?1 and user.activated = true")
      Optional<User> findByUserId(int userId);
 
+     @Query(value = "from User user where user.email =?1 and user.activated =true")
+     Optional<User> findByEmail(String email);
+
      @Query(value = "from User user where (user.userName=?1 or user.email=?2) and user.activated=true")
      Optional<User> findByUserNameOrEmail(String userName, String email);
 
