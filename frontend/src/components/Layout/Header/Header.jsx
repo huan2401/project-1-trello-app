@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { HeaderWrapper } from "./CustomStyled";
+import {logout} from "slices/authSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -19,7 +20,7 @@ const Header = () => {
       <div
         className="logout"
         onClick={() => {
-          navigate("/login");
+          dispatch(logout());
         }}
       >
         Log out
