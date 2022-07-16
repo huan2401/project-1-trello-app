@@ -1,6 +1,5 @@
 package com.example.projecti_trello_app_backend.dto.loginDTO;
 
-import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,16 +11,12 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class JWTResponse {
+public class RefreshTokenResponse {
 
-    private String accessToken;
+   private String newAccessToken ;
 
-    private String refreshToken;
+   private String refreshToken;
 
-    private String tokenType ;
-
-    private Date issuedAt;
-
-    private Date expireAt;
-
+   private Date refreshedAt;
+    
 }

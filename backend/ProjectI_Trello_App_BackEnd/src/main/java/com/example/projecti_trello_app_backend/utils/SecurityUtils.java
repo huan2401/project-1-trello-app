@@ -59,8 +59,8 @@ public class SecurityUtils {
     {
         String accessToken = getTokenFromRequest(request);
         if(accessToken==null) return null;
-        String userName = jwtProvider.getUserNameFromJwt(accessToken);
-        Optional<User> userOptional = userRepo.findByUserNameOrEmail(userName,"");
+        String loginAcc = jwtProvider.getUserNameOrEmailFromJwt(accessToken);
+        Optional<User> userOptional = userRepo.findByUserNameOrEmail(loginAcc,loginAcc);
         return userOptional.isPresent()?userOptional.get():null;
     }
 
