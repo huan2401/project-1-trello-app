@@ -1,6 +1,5 @@
 package com.example.projecti_trello_app_backend.dto.loginDTO;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,13 +12,11 @@ import javax.validation.constraints.NotNull;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginRequest {
-
-    private String userName;
-
-    private String email;
+public class RefreshTokenRequest {
 
     @NotBlank
     @NotNull
-    private String password;
+    private String refreshToken;
+
+    private String tokenType;
 }

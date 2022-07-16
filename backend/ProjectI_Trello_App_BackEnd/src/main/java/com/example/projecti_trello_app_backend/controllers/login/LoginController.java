@@ -4,9 +4,14 @@ import com.auth0.jwt.JWT;
 import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.dto.loginDTO.JWTResponse;
 import com.example.projecti_trello_app_backend.dto.loginDTO.LoginRequest;
+import com.example.projecti_trello_app_backend.dto.loginDTO.RefreshTokenRequest;
+import com.example.projecti_trello_app_backend.dto.loginDTO.RefreshTokenResponse;
+import com.example.projecti_trello_app_backend.entities.token.RefreshToken;
 import com.example.projecti_trello_app_backend.security.CustomUserDetailService;
 import com.example.projecti_trello_app_backend.security.CustomUserDetails;
 import com.example.projecti_trello_app_backend.security.JWTProvider;
+import com.example.projecti_trello_app_backend.services.token.RefreshTokenService;
+import com.example.projecti_trello_app_backend.services.user.UserService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -21,9 +26,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/project1/api")
+@RequestMapping("/project1/api/auth")
 public class LoginController {
 
     @Autowired
@@ -35,31 +44,51 @@ public class LoginController {
     @Autowired
     private JWTProvider jwtProvider;
 
-    @PostMapping(path = "/auth")
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
+    @PostMapping(path = "/login")
     public ResponseEntity<?> authenticateUser(@RequestBody @Validated LoginRequest loginRequest,
                                               HttpServletRequest request){
         try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUserName(),loginRequest.getPassword()));
+            String loginInAcc = loginRequest.getUserName()!=null && !loginRequest.getUserName().equals("string")
+                    ?loginRequest.getUserName():loginRequest.getEmail();
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginInAcc,loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            CustomUserDetails userDetails = (CustomUserDetails) userDetailService.loadUserByUsername(loginRequest.getUserName());
+            // get UserDetails by userName or email
+           // CustomUserDetails userDetails = (CustomUserDetails) userDetailService.loadUserByUsername(loginInAcc);
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
             if(userDetails == null) {
                 System.out.println("Error at this point");
-                throw new BadCredentialsException("Wrong username or email!");
+                throw new BadCredentialsException("Wrong username/email or password !");
             }
-            String accessToken = jwtProvider.generateToken(userDetails);
+            String accessToken = jwtProvider.generateAccessToken(userDetails.getUser());
+            String refreshToken = refreshTokenService.generateRefreshToken(userDetails.getUser());
+            if(refreshToken==null) return ResponseEntity.status(204).body(new MessageResponse("Generate Refresh token fail"));
             return ResponseEntity.ok(new JWTResponse(accessToken,
+                                                    refreshToken,
                                             "Bearer",
                                                     jwtProvider.getClaims(accessToken).getIssuedAt(),
                                                     jwtProvider.getClaims(accessToken).getExpiration()));
         } catch (Exception ex)
         {
             ex.printStackTrace();
-            return ResponseEntity.badRequest().body(new MessageResponse("Wrong username or email !"));
+            return ResponseEntity.badRequest().body(new MessageResponse("Wrong username/email or password !"));
         }
     }
 
-    @GetMapping(path ="/login")
-    public void login(){
-        System.out.println("Login");
+    @PostMapping(path = "/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest,
+                                          HttpServletRequest request)
+    {
+        String refreshToken = refreshTokenRequest.getRefreshToken();
+        Optional<RefreshToken> refreshTokenOptional = refreshTokenService.findByToken(refreshToken);
+        if(!refreshTokenOptional.isPresent() || !refreshTokenService.verifyRefreshToken(refreshToken))
+            return ResponseEntity.status(204).body(new MessageResponse("Refresh token is not valid"));
+        String newAccessToken = jwtProvider.generateAccessToken(refreshTokenOptional.get().getUser());
+        return ResponseEntity.ok(new RefreshTokenResponse(newAccessToken,refreshToken,new Date()));
     }
 }

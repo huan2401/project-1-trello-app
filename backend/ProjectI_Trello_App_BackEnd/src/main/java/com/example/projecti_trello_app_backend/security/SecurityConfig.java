@@ -59,7 +59,7 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
     // sercurity request config
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        String [] listURLPermitAll= {"/**/api/auth",
+        String [] listURLPermitAll= {"/**/api/auth/**",
                                     "/**/api/user/signup",
                                     "/**/api/user/verify/**",
                                     "/**/api/user/reset-password/**",

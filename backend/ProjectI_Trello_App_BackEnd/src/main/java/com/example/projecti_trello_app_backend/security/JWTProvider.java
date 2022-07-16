@@ -1,6 +1,7 @@
 package com.example.projecti_trello_app_backend.security;
 
 import com.example.projecti_trello_app_backend.constants.SecurityConstants;
+import com.example.projecti_trello_app_backend.entities.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -16,14 +17,14 @@ import java.util.Map;
 public class JWTProvider {
 
     // generate jwt
-    public String generateToken(CustomUserDetails userDetails)
+    public String generateAccessToken(User user)
     {
         Date now = new Date(System.currentTimeMillis());
         Map<String, Object> claims = new HashMap<>();
-        claims.put("username",userDetails.getUsername());
-        claims.put("userid",String.valueOf(userDetails.getUser().getUserId()));
-        claims.put("email",userDetails.getUserEmail());
-        String jwt = Jwts.builder().setSubject(userDetails.getUsername())
+        claims.put("username",user.getUserName());
+        claims.put("userid",String.valueOf(user.getUserId()));
+        claims.put("email",user.getEmail());
+        String jwt = Jwts.builder().setSubject(user.getUserName())
                                     .setClaims(claims)
                                     .setIssuedAt(now)
                                     .setExpiration(new Date (now.getTime() +SecurityConstants.EXPIRE_TIME))
@@ -45,16 +46,20 @@ public class JWTProvider {
     }
 
     // get userName from jwt
-    public String getUserNameFromJwt(String token)
+    public String getUserNameOrEmailFromJwt(String token)
     {
         try{
             Claims claims = getClaims(token);
-            return claims.get("username").toString();
+            String loginAcc = claims.get("username").toString()!=null
+                    ?claims.get("username").toString()
+                    :claims.get("email").toString();
+            return loginAcc;
         } catch (Exception ex) {
             log.error("get username from jwt error :", ex);
             return null;
         }
     }
+
 
     public Integer getUserIdFromJwt(String token){
         try{
