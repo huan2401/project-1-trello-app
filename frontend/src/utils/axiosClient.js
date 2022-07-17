@@ -23,6 +23,7 @@ axiosClient.interceptors.response.use(
   function (response) {
     if(response.data.accessToken){
       localStorage.setItem("token",response.data.accessToken)
+      localStorage.setItem("login",true)
     }
     return response;
   },

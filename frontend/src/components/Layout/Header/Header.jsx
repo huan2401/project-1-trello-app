@@ -1,8 +1,9 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { HeaderWrapper } from "./CustomStyled";
-import {logout} from "slices/authSlice";
+import { logout } from "slices/authSlice";
+import { useSelector } from "react-redux";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -17,12 +18,7 @@ const Header = () => {
       >
         Back to Home
       </p>
-      <div
-        className="logout"
-        onClick={() => {
-          dispatch(logout());
-        }}
-      >
+      <div className="logout" onClick={() => dispatch(logout())}>
         Log out
       </div>
     </HeaderWrapper>

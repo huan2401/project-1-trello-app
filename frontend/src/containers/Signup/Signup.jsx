@@ -1,18 +1,26 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import {register} from "slices/authSlice";
 import "./Signup.scss";
 
 function App() {
     const initialValues = {
-        username: "",
+        userName: "",
+        firstName: "",
+        lastName: "",
         email: "",
         password: "",
         confirm: "",
+        sex: ""
     };
     const [formValues, setFormValues] = useState(initialValues);
     const [formErrors, setFormErrors] = useState({});
     const [isSubmit, setIsSubmit] = useState(false);
+    const dispatch = useDispatch();
+
+    console.log("signup data", formValues);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -23,6 +31,7 @@ function App() {
         e.preventDefault();
         setFormErrors(validate(formValues));
         setIsSubmit(true);
+        dispatch(register(formValues))
     };
 
     useEffect(() => {
@@ -34,8 +43,8 @@ function App() {
     const validate = (values) => {
         const errors = {};
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-        if (!values.username) {
-            errors.username = "Username is required!";
+        if (!values.userName) {
+            errors.userName = "Username is required!";
         }
         if (!values.email) {
             errors.email = "Email is required!";
@@ -73,13 +82,51 @@ function App() {
                                 {/* <label>Username</label> */}
                                 <input
                                     type="text"
-                                    name="username"
+                                    name="userName"
                                     placeholder="Username"
-                                    value={formValues.username}
+                                    value={formValues.userName}
                                     onChange={handleChange}
                                 />
                             </div>
-                            <p className="message">{formErrors.username}</p>
+                            <p className="message">{formErrors.userName}</p>
+
+
+                            {/* First Name */}
+                            <div className="inputBox">
+                                <input
+                                    type="text"
+                                    name="firstName"
+                                    placeholder="First Name"
+                                    value={formValues.firstName}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <p className="message">{formErrors.firstName}</p>
+
+
+                            {/* Last Name */}
+                            <div className="inputBox">
+                                <input
+                                    type="text"
+                                    name="lastName"
+                                    placeholder="Last Name"
+                                    value={formValues.lastName}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <p className="message">{formErrors.lastName}</p>
+
+                            {/* Sex */}
+                            <div className="inputBox">
+                                <input
+                                    type="text"
+                                    name="sex"
+                                    placeholder="Sex"
+                                    value={formValues.sex}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <p className="message">{formErrors.lastName}</p>
 
                             {/* Email */}
 

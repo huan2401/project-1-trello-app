@@ -7,7 +7,7 @@ import { HomeWrapper } from "./CustomStyled";
 const Home = () => {
   useEffect(() => {
     axiosClient
-      .post("/auth", {
+      .post("/auth/login", {
         userName: "huan2401",
         password: "123456789",
       })
@@ -16,7 +16,12 @@ const Home = () => {
   return (
     <HomeWrapper>
       Home
+      <br />
       <Link to={"/setting"}>Setting</Link>
+      <br />
+      <Link to={"/test"}>Test</Link>
+      <br />
+      <Link to={"/board"}>Board</Link>
     </HomeWrapper>
   );
 };

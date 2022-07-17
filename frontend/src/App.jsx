@@ -4,7 +4,7 @@ import "./App.less";
 import { useSelector, useDispatch } from "react-redux";
 import { checkLogin } from "slices/authSlice";
 import AuthLayout from "components/Layout/AuthLayout/AuthLayout";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "containers/Home/Home";
 import Setting from "containers/Setting/Setting";
 import Login from "containers/Login/Login";
@@ -16,6 +16,7 @@ import Test from "containers/Test/Test";
 function App() {
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.auth.login);
+  console.log("isLogin", isLogin);
   useEffect(() => {
     if (localStorage.getItem("token")) {
       dispatch(checkLogin(true));
