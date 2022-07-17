@@ -1,19 +1,30 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { login } from "slices/authSlice";
+import { checkLogin, login } from "slices/authSlice";
+import { Navigate } from "react-router-dom";
 import "./Login.scss";
 
-function Login({ username, email }) {
+function Login() {
   const initialValues = { username: "", password: "" };
   const [formValues, setFormValues] = useState(initialValues);
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
+  const navigate = useNavigate();
 
   const isLogin = useSelector((state) => state.auth.login);
   const dispatch = useDispatch();
+  useEffect(() => {
+    // if (localStorage.getItem("token")) {
+    //   dispatch(checkLogin(true));
+    // }
+    if (isLogin) {
+      navigate("/", { replace: true });
+    }
+  }, [isLogin]);
   console.log("isLogin", isLogin);
+  console.log("formValues", formValues);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
