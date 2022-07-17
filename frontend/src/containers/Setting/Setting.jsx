@@ -6,12 +6,20 @@ import { Input, TextField } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import IconButton from "@mui/material/IconButton";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 
-const Setting = ({ username, email }) => {
+const Setting = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [avatar, setAvatar] = useState();
-    
+    const [dataPost, setDataPost] = useState({
+        email: "",
+        username: "",
+        password: "",
+        confirmPassword: "",
+    });
+
     useEffect(() => {
         return () => {
             avatar && URL.revokeObjectURL(avatar.preview);
@@ -23,7 +31,17 @@ const Setting = ({ username, email }) => {
         file.preview = URL.createObjectURL(file);
         setAvatar(file);
     };
-
+    const handleEventClick = (e) => {
+        if (dataPost.password === dataPost.confirmPassword) console.log(dataPost)
+    };
+    const handleOnchange = (event, field) => {
+        setDataPost((prev) => {
+            return {
+                ...prev,
+                [field]: event.target.value,
+            };
+        });
+    };
     return (
         <div className="setting">
             <div className="setting__avatar">
@@ -95,18 +113,20 @@ const Setting = ({ username, email }) => {
                     <h3>Email</h3>
                     <p>Cập nhật email</p>
                     <TextField
-                        id="outlined-basic"
                         label="Email mới"
                         variant="outlined"
+                        value={dataPost.email}
+                        onChange={(e) => handleOnchange(e, "email")}
                     />
                 </div>
                 <div className="setting__detail-more3">
                     <h3>Username</h3>
                     <p>Cập nhật username</p>
                     <TextField
-                        id="outlined-basic"
                         label="Username mới"
                         variant="outlined"
+                        value={dataPost.username}
+                        onChange={(e) => handleOnchange(e, "username")}
                     />
                 </div>
                 <div className="setting__detail-more4">
@@ -114,15 +134,21 @@ const Setting = ({ username, email }) => {
                     <p>Nhập mật khẩu mới</p>
                     <div className="test">
                         <TextField
-                            id="outlined-basic1"
                             label="Mật khẩu mới"
+                            type="password"
                             variant="outlined"
+                            value={dataPost.password}
+                            onChange={(e) => handleOnchange(e, "password")}
                         />
                         <TextField
                             sx={{ marginLeft: "30px" }}
-                            id="outlined-basic2"
+                            type="password"
                             label="Xác nhận mật khẩu mới"
                             variant="outlined"
+                            value={dataPost.confirmPassword}
+                            onChange={(e) =>
+                                handleOnchange(e, "confirmPassword")
+                            }
                         />
                     </div>
                 </div>
@@ -131,12 +157,20 @@ const Setting = ({ username, email }) => {
                         sx={{ marginTop: "30px" }}
                         variant="contained"
                         endIcon={<SendIcon />}
+                        onClick={handleEventClick}
                     >
                         Lưu lại
                     </Button>
                 </div>
                 <div className="setting__detail-more5">
-                    <Button className="logout" variant="contained">
+                    <Button
+                        className="logout"
+                        variant="contained"
+                        onClick={() => {
+                            navigate("/login");
+                            // dispatch(loginFailure());
+                        }}
+                    >
                         Đăng xuất
                     </Button>
                 </div>
