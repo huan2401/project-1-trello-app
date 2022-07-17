@@ -26,8 +26,8 @@ const Header = () => {
                 }}
             />
 
-            <div class="button-border">
-                <button class="button">New</button>
+            <div className="button-border">
+                <button className="button">New</button>
             </div>
 
             <div className="header_search">
