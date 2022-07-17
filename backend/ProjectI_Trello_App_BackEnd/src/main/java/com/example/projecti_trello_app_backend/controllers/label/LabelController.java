@@ -5,7 +5,9 @@ import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.entities.label.Label;
 import com.example.projecti_trello_app_backend.services.label.LabelService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.Optional;
 
+@Tag(name = "Label Controller")
 @RestController
 @RequestMapping("/project1/api/label")
 public class LabelController {
@@ -24,6 +27,7 @@ public class LabelController {
     @Autowired
     private TaskService taskService;
 
+    @Operation(summary = "Find all labels")
     @GetMapping("/find-all")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findAll()
@@ -31,6 +35,15 @@ public class LabelController {
         return ResponseEntity.ok(labelService.findAll());
     }
 
+    @Operation(summary = "Find a label by id")
+    @GetMapping("/find-by-id")
+    @SecurityRequirement(name = "methodBearerAuth")
+    public ResponseEntity<?> findByLabelId(@RequestParam(name = "id") int labelId,
+                                           HttpServletRequest request){
+        return ResponseEntity.ok(labelService.findByLabelId(labelId));
+    }
+
+    @Operation(summary = "Find all labels of a task")
     @GetMapping("/find-by-task")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findAllByTask(@RequestParam(name = "task_id") int taskId,
@@ -41,9 +54,10 @@ public class LabelController {
         }).orElse(ResponseEntity.ok(Collections.emptyList()));
     }
 
+    @Operation(summary = "Add a new label to a task")
     @PostMapping("/add")
     @SecurityRequirement(name = "methodBearerAuth")
-    public ResponseEntity<?> add(@RequestParam(name = "task_id") int taskId,
+    public synchronized ResponseEntity<?> add(@RequestParam(name = "task_id") int taskId,
                                  @RequestBody Label label,
                                  HttpServletRequest request)
     {
@@ -53,9 +67,10 @@ public class LabelController {
         }).orElse(ResponseEntity.ok(Optional.empty()));
     }
 
+    @Operation(summary = "Update a label's infomation")
     @PutMapping("/update")
     @SecurityRequirement(name = "methodBearerAuth")
-    public ResponseEntity<?> update(@RequestBody LabelDTO labelDTO,
+    public synchronized ResponseEntity<?> update(@RequestBody LabelDTO labelDTO,
                                     @RequestParam(name="label_id") int labelId,
                                     HttpServletRequest request)
     {
@@ -65,25 +80,20 @@ public class LabelController {
         }).orElse(ResponseEntity.ok(Optional.empty()));
     }
 
-    @GetMapping("/find-by-id")
-    @SecurityRequirement(name = "methodBearerAuth")
-    public ResponseEntity<?> findByLabelId(@RequestParam(name = "id") int labelId,
-                                           HttpServletRequest request){
-         return ResponseEntity.ok(labelService.findByLabelId(labelId));
-    }
-
+    @Operation(summary = "Delete a label")
     @DeleteMapping("/delete-by-id")
     @SecurityRequirement(name = "methodBearerAuth")
-    public ResponseEntity<?> deleteById(@RequestParam(name ="label_id")int labelId)
+    public synchronized ResponseEntity<?> deleteById(@RequestParam(name ="label_id")int labelId)
     {
         return  labelService.findByLabelId(labelId).isPresent() && labelService.delete(labelId)
                 ?ResponseEntity.status(200).body(new MessageResponse("Delete label by id successfully"))
                 :ResponseEntity.status(204).body(new MessageResponse("Delete label fail"));
     }
 
+    @Operation(summary = "Delete all labels of a task when it was deleted")
     @DeleteMapping("/delete-by-task")
     @SecurityRequirement(name = "methodBearerAuth")
-    public ResponseEntity<?> deleteByTask(@RequestParam(name = "task_id")int taskId,
+    public synchronized ResponseEntity<?> deleteByTask(@RequestParam(name = "task_id")int taskId,
                                           HttpServletRequest request)
     {
         return  taskService.findByTaskId(taskId).isPresent()&&labelService.deleteByTask(taskId)

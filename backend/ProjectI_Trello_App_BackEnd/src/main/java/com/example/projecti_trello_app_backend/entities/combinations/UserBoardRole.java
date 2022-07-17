@@ -36,7 +36,7 @@ public class UserBoardRole {
     @NonNull
     private Role role;
 
-    @Column(name = "delted")
+    @Column(name = "deleted")
     private boolean deleted;
 
 

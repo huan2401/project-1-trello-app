@@ -1,5 +1,8 @@
 package com.example.projecti_trello_app_backend.security;
 
+import com.example.projecti_trello_app_backend.security.entry_point.AuthEntryPoint;
+import com.example.projecti_trello_app_backend.security.jwt.JWTAuthenticationFilter;
+import com.example.projecti_trello_app_backend.security.user_detail.CustomUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +22,6 @@ import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -63,7 +65,7 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
                                     "/**/api/user/signup",
                                     "/**/api/user/verify/**",
                                     "/**/api/user/reset-password/**",
-                                    "/swagger-ui/**",
+                                    "/**/swagger-ui/**",
                                     "/**/v3/api-docs/**"};
         http.csrf().disable();
                 http

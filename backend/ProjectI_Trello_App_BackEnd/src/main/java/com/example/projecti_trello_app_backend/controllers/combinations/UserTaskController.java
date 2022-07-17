@@ -6,7 +6,9 @@ import com.example.projecti_trello_app_backend.entities.combinations.UserTask;
 import com.example.projecti_trello_app_backend.services.combinations.UserTaskService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.swing.text.html.parser.Entity;
 import java.util.Optional;
 
+@Tag(name = "UserTask Controller",
+description = "Use to represent the relationship between users and tasks")
 @RestController
-@RequestMapping("project1/api/user_task")
+@RequestMapping("project1/api/user-task")
 @SecurityRequirement(name = "bearerAuth")
 public class UserTaskController {
 
@@ -30,6 +34,7 @@ public class UserTaskController {
     @Autowired
     private UserService userService;
 
+    @Operation(summary = "Find all user_task_s by task's id")
     @GetMapping("/find-by-task")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findAllByTask(@RequestParam(name = "task_id")int taskId,
@@ -40,6 +45,7 @@ public class UserTaskController {
         }).orElse(ResponseEntity.noContent().build());
     }
 
+    @Operation(summary = "Add a new user to a task <=> Add a new user_task")
     @GetMapping("/add")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> add(@RequestParam(name = "user_id")int userId,
@@ -56,7 +62,10 @@ public class UserTaskController {
         }).orElse(ResponseEntity.status(204).build());
     }
 
-    public ResponseEntity<?> update(@RequestBody UserTaskDTO userTaskDTO,
+    @Operation(summary = "Update user_task's infomation")
+    @PutMapping(path = "/update")
+    @SecurityRequirement(name="methodBearerAuth")
+    public synchronized ResponseEntity<?> update(@RequestBody UserTaskDTO userTaskDTO,
                                     @RequestParam(name = "id")int id,
                                     HttpServletRequest request)
     {
@@ -69,9 +78,10 @@ public class UserTaskController {
                 :ResponseEntity.status(304).body(new MessageResponse("Update UserTask fail"));
     }
 
+    @Operation(summary = "Remove a user from a task")
     @DeleteMapping("/delete-user-from-task")
     @SecurityRequirement(name = "methodBearerAuth")
-    public ResponseEntity<?> deleteUserFromTask (@RequestParam(name = "task_id")int taskId,
+    public synchronized ResponseEntity<?> deleteUserFromTask (@RequestParam(name = "task_id")int taskId,
                                                  @RequestParam(name= "user_id") int userId,
                                                  HttpServletRequest request)
     {

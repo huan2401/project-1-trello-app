@@ -86,7 +86,8 @@ public class ColumnServiceImpl implements ColumnService {
     public boolean delete(int columnId) {
         try
         {
-            return columnRepo.delete(columnId)>0 && columnTaskService.deleteByColumn(columnId) ?true:false;
+            return columnRepo.delete(columnId)>0
+                    && columnTaskService.deleteByColumn(columnId) ?true:false;
         } catch (Exception ex)
         {
             log.error("delete column error",ex);

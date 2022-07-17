@@ -27,14 +27,14 @@ public class RefreshToken {
     @NotNull
     private String token;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id",nullable = false)
-    @NotNull
-    private User user;
-
     @Column(name = "expiration_time")
     private Timestamp expirationTime;
 
     @Column(name="expired")
     private boolean expired;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id",nullable = false)
+    @NotNull
+    private User user;
 }

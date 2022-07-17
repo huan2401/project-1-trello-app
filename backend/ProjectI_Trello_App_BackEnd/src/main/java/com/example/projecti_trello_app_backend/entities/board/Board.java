@@ -25,9 +25,6 @@ public class Board {
     @Column(name = "board_id", unique = true, nullable = false)
     private int boardId;
 
-    @ManyToOne
-    @JoinColumn(name = "work_space_id")
-    private Workspace workspace;
 
     @Column(name = "board_title")
     private String boardTitle;
@@ -46,5 +43,9 @@ public class Board {
 
     @Column(name = "deleted")
     private boolean deleted ;
+
+    @ManyToOne
+    @JoinColumn(name = "work_space_id")
+    private Workspace workspace;
 
 }

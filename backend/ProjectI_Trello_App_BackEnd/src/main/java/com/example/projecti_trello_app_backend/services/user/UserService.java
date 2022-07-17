@@ -24,13 +24,7 @@ public interface UserService {
 
     Optional<User> findByUsernameOrEmail(String userName, String email);
 
-    Optional<User> signUp(User user, String siteURL); // add new user
-
     Boolean existsByUsernameOrEmail(String userName, String email);
-
-    void sendVerificationEmail(User user, String siteURL);
-
-    Optional<User> verifyUser(String verificationCode);
 
     Optional<?> update(UserDTO userDTO);
 

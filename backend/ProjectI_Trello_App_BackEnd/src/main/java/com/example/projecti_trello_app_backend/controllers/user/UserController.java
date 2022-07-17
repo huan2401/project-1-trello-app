@@ -8,7 +8,9 @@ import com.example.projecti_trello_app_backend.entities.user.User;
 import com.example.projecti_trello_app_backend.services.reset_password.ResetPasswordService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
 import com.example.projecti_trello_app_backend.utils.SecurityUtils;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
+@Tag(name = "User Controller")
 @RestController
 @RequestMapping("/project1/api/user")
 public class UserController {
@@ -33,6 +36,7 @@ public class UserController {
     @Autowired
     private SecurityUtils util;
 
+    @Operation(summary = "Find a user by username or email")
     @GetMapping(path = "/find-by-username-email")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByUserNameOrEmail(@RequestParam(name = "username",required = false) String userName,
@@ -44,28 +48,8 @@ public class UserController {
                 :ResponseEntity.ok(Optional.empty());
     }
 
-    @PostMapping(path = "/signup")
-    public ResponseEntity<?> signUp(@RequestBody User user,
-                                    HttpServletRequest request)
-    {
-        String url = request.getRequestURL().toString();
-        String siteURL = url.substring(0,url.length()-7); // get to request url
-        Optional<User> userOptional = userService.signUp(user,siteURL);
-        return userOptional.isPresent()
-                ?ResponseEntity.status(200).build()
-                :ResponseEntity.noContent().build();
-    }
 
-    @GetMapping(path = "/verify")
-    public ResponseEntity<?> verifyUser(@RequestParam(name ="verification-code") String verificationCode,
-                                        HttpServletRequest request)
-    {
-        Optional<User> verifiedUser = userService.verifyUser(verificationCode);
-        return verifiedUser.isPresent()
-                ?ResponseEntity.status(200).body(new MessageResponse("Activate user successfully"))
-                :ResponseEntity.status(204).body(new MessageResponse("Activate user fail"));
-    }
-
+    @Operation(summary = "Update user's information")
     @PutMapping(path = "/update")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> update(@RequestBody UserDTO userDTO,
@@ -77,24 +61,28 @@ public class UserController {
         return ResponseEntity.ok(userService.update(userDTO));
     }
 
+    @Operation(summary = "Change user's password")
     @PatchMapping(path = "/change-password")
     public ResponseEntity<?> changePassWord(@RequestBody UserDTO userDTO,
                                             HttpServletRequest request)
     {
         int userId = util.getUserFromRequest(request).getUserId();
         if(!userService.findByUserId(userId).isPresent())
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.status(204).body(new MessageResponse("User not found"));
         User userToUpdate = userService.findByUserId(userId).get();
-        if(!userDTO.getPreviousPassword().equals(userDTO.getPreviousPassword()))
-            return ResponseEntity.noContent().build();
-        if(passwordEncoder.matches(userDTO.getPassWord(),userToUpdate.getPassword()))
-            return ResponseEntity.status(304).build();
+//        if(!userDTO.getPreviousPassword().equals(userDTO.getPreviousPassword()))
+//            return ResponseEntity.status(204).body(new MessageResponse("This Password is similar to the previous password," +
+//                    "please choose a new password"));
+        if(passwordEncoder.matches(userDTO.getPreviousPassword(),userToUpdate.getPassword()))
+            return ResponseEntity.status(304).body(new MessageResponse("This Password is similar to the previous password," +
+                    "please choose a new password"));
         else {
             userToUpdate.setPassword(passwordEncoder.encode(userDTO.getPassWord()));
             return ResponseEntity.ok(Optional.of(UserDTO.convertToDTO(userService.changePassWord(userToUpdate).get())));
         }
     }
 
+    @Operation(summary = "Reset user's password")
     @PostMapping(path = "/reset-password")
     public ResponseEntity<?> resetPasswordRequest(@RequestParam(name = "email") String email,
                                                   HttpServletRequest request)
@@ -107,6 +95,7 @@ public class UserController {
         }).orElse(ResponseEntity.noContent().build());
     }
 
+    @Operation(summary = "Handle reset user's password")
     @PutMapping(path = "/reset-password/reset")
     public ResponseEntity<?> resetPasswordHandle(@RequestParam(name = "reset_token") String token,
                                                  @RequestBody UserDTO userDTO,

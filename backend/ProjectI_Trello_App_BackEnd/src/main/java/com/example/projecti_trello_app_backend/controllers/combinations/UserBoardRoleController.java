@@ -11,7 +11,9 @@ import com.example.projecti_trello_app_backend.services.combinations.UserWorkspa
 import com.example.projecti_trello_app_backend.services.role.RoleService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
 import com.example.projecti_trello_app_backend.services.workspace.WorkspaceService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
+@Tag(name = "UserBoardRole Controller",
+description = "Use to represent the relationship between users and boards with diffenrent roles")
 @RestController
 @RequestMapping("project1/api/user-board-role")
 public class UserBoardRoleController {
@@ -43,6 +47,7 @@ public class UserBoardRoleController {
     @Autowired
     private WorkspaceService workspaceService;
 
+    @Operation(summary = "Find all user_board_role_s of a user")
     @GetMapping(path = "/find-by-user")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByUser(@RequestParam(name = "user_id") int userId,
@@ -55,6 +60,7 @@ public class UserBoardRoleController {
         }).orElse(ResponseEntity.noContent().build());
     }
 
+    @Operation(summary = "Find all user_board_role_s of board")
     @GetMapping(path = "/find-by-board")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByBoard(@RequestParam(name = "board_id")int boardId,
@@ -67,6 +73,7 @@ public class UserBoardRoleController {
         }).orElse(ResponseEntity.noContent().build());
     }
 
+    @Operation(summary = "Find user_board_role  by both a user and a board")
     @GetMapping(path = "/find-by-user-and-board")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByUserAndBoard(@RequestParam(name = "user_id")int userId,
@@ -82,10 +89,11 @@ public class UserBoardRoleController {
         }).orElse(ResponseEntity.noContent().build());
     }
 
+    @Operation(summary = "Add a new user to a board <=> Add a new user_board_role")
     @GetMapping(path = "/add")
     @RequireBoardAdmin
     @SecurityRequirement(name = "methodBearerAuth")
-    public ResponseEntity<?> add(@RequestParam(name = "user_id") int userId,
+    public synchronized ResponseEntity<?> add(@RequestParam(name = "user_id") int userId,
                                  @RequestParam(name = "board_id") int boardId,
                                  @RequestParam(name = "role_name") String roleName,
                                  HttpServletRequest request)
@@ -118,10 +126,11 @@ public class UserBoardRoleController {
         }).orElse(ResponseEntity.status(304).body(new MessageResponse("Add user to board fail - user not found")));
     }
 
+    @Operation(summary = "Set role for a user in a board")
     @PutMapping(path = "/set-role-for-user")
     @RequireBoardAdmin
     @SecurityRequirement(name = "methodBearerAuth")
-    public ResponseEntity<?> setRoleForUser(@RequestParam(name = "user_id")int userId,
+    public synchronized ResponseEntity<?> setRoleForUser(@RequestParam(name = "user_id")int userId,
                                             @RequestParam(name = "board_id")int boardId,
                                             @RequestParam(name = "role_name") String roleName,
                                             HttpServletRequest request)
@@ -138,10 +147,11 @@ public class UserBoardRoleController {
                 : ResponseEntity.status(304).body(new MessageResponse("Set role in board for user fail"));
     }
 
+    @Operation(summary = "Delete all user_board_role of a board after it was deleted")
     @DeleteMapping(path = "/delete-by-board")
     @RequireBoardAdmin
     @SecurityRequirement(name = "methodBearerAuth")
-    public ResponseEntity<?> deleteByBoard(@RequestParam(name = "board_id") int boardId,
+    public synchronized ResponseEntity<?> deleteByBoard(@RequestParam(name = "board_id") int boardId,
                                            HttpServletRequest request)
     {
         return boardService.findByBoardId(boardId).map(board -> {
@@ -151,10 +161,11 @@ public class UserBoardRoleController {
         }).orElse(ResponseEntity.status(204).body(new MessageResponse("Delete by board fail - Not found board")));
     }
 
+    @Operation(summary = "Remove a board's member from the board")
     @DeleteMapping(path = "/remove-user-from-board")
     @RequireBoardAdmin
     @SecurityRequirement(name = "methodBearerAuth")
-    public ResponseEntity<?> removeUserFromBoard(@RequestParam(name = "board_id") int boardId,
+    public synchronized ResponseEntity<?> removeUserFromBoard(@RequestParam(name = "board_id") int boardId,
                                                  @RequestParam(name = "user_id") int userId,
                                                  HttpServletRequest request)
     {

@@ -9,7 +9,9 @@ import com.example.projecti_trello_app_backend.services.combinations.UserTaskSer
 import com.example.projecti_trello_app_backend.services.notification.NotificationService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Tag(name = "User Notification Controller",
+description = "Use to represent the relationship between users and notifications")
 @RestController
 @RequestMapping("project1/api/user-notification")
 public class UserNotificationController {
@@ -44,6 +48,7 @@ public class UserNotificationController {
     @Autowired
     private UserTaskService userTaskService;
 
+    @Operation(summary = "Find all user_noti_s by id")
     @GetMapping(path = "/find-by-id")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findById(@RequestParam(name = "id") int id,
@@ -53,6 +58,7 @@ public class UserNotificationController {
                                          : ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Find all user_noti_s of a user")
     @GetMapping(path = "/find-by-user")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByUser(@RequestParam(name = "user_id")int userId,
@@ -64,6 +70,7 @@ public class UserNotificationController {
     }
 
     // send notifications about a task update to all member of the task (for updates in a task)
+    @Operation(summary = "Send notifications about task update to all member of the task (for updates in a task)")
     @GetMapping(path = "/send-update-noti")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> sendUpdateNotifications(@RequestParam(name = "task_id")int taskId,
@@ -87,6 +94,7 @@ public class UserNotificationController {
     }
 
     // send notification to a user who has been added to a board
+    @Operation(summary = "Send notifications to a user who has been added to a board")
     @GetMapping(path = "/send-add-to-board-noti")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> sendAddToBoardNotifications(@RequestParam(name = "board_id", required = false) int boardId,
@@ -110,6 +118,7 @@ public class UserNotificationController {
     }
 
     //send notification to a user who has been add to a task
+    @Operation(summary = "Send notification to a user who has been added to a task")
     @PostMapping(path = "/send-add-to-task-noti")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> sendAddToTaskNotification(@RequestParam(name = "task_id")int taskId,
@@ -132,6 +141,7 @@ public class UserNotificationController {
         }).orElse(ResponseEntity.status(304).build());
     }
 
+    @Operation(summary = "Send a notification to a user who has been removed from a board")
     @GetMapping(path = "send-remove-from-board-noti")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> sendRemoveFromBoardNoti(@RequestParam(name = "board_id", required = false) int boardId,
@@ -154,6 +164,7 @@ public class UserNotificationController {
         }).orElse(ResponseEntity.status(304).build());
     }
 
+    @Operation(summary = "Send a notification to a user who has been removed from a task")
     @GetMapping(path = "/send-remove-from-task-noti")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> sendRemoveFromTaskNoti(@RequestParam(name = "task_id")int taskId,

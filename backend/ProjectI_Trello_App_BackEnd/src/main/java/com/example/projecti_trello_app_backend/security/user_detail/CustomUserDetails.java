@@ -1,4 +1,4 @@
-package com.example.projecti_trello_app_backend.security;
+package com.example.projecti_trello_app_backend.security.user_detail;
 
 import com.example.projecti_trello_app_backend.entities.user.User;
 import lombok.AllArgsConstructor;

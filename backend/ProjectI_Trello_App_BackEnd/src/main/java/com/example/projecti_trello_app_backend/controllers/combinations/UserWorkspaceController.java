@@ -10,7 +10,9 @@ import com.example.projecti_trello_app_backend.services.role.RoleService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
 import com.example.projecti_trello_app_backend.services.workspace.WorkspaceService;
 import com.example.projecti_trello_app_backend.utils.SecurityUtils;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
+@Tag(name = "UserWorkspace Controller",
+description = "Use to represent the relationship between users and workspaces with diffenrent role")
 @RestController
 @RequestMapping("/project1/api/user-workspace")
 public class UserWorkspaceController {
@@ -38,6 +42,7 @@ public class UserWorkspaceController {
     @Autowired
     private SecurityUtils util;
 
+    @Operation(summary = "Find all user_workspaces of a user")
     @GetMapping(path = "/find-by-user")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByUser(HttpServletRequest request)
@@ -48,6 +53,7 @@ public class UserWorkspaceController {
                 :ResponseEntity.ok(userWorkspaceService.findByUser(userId));
     }
 
+    @Operation(summary = "Find all user_workspace_s of a workspace")
     @GetMapping(path = "/find-by-workspace")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByWorkspace(@RequestParam(name = "workspace_id")int workspaceId,
@@ -58,10 +64,11 @@ public class UserWorkspaceController {
                 :ResponseEntity.ok(userWorkspaceService.findByWorkspace(workspaceId));
     }
 
+    @Operation(summary = "Add a new user to a workspace <=> Add a new user_workspace")
     @PostMapping(path = "/add")
     @RequireWorkspaceCreator
     @SecurityRequirement(name = "methodBearerAuth")
-    public ResponseEntity<?> add (@RequestParam(name = "user_id") int userId,
+    public synchronized ResponseEntity<?> add (@RequestParam(name = "user_id") int userId,
                                   @RequestParam(name = "workspace_id")int workspaceId,
                                   @RequestParam(name = "role") String roleName,
                                   HttpServletRequest request)
@@ -85,19 +92,21 @@ public class UserWorkspaceController {
         }).orElse(ResponseEntity.status(204).body(new MessageResponse("User not found")));
     }
 
+
     @PutMapping(path = "/update")
     @RequireWorkspaceCreator
     @SecurityRequirement(name = "methodBearerAuth")
-    public ResponseEntity<?> update(@RequestBody UserWorkspaceDTO userWorkspaceDTO,
+    public synchronized ResponseEntity<?> update(@RequestBody UserWorkspaceDTO userWorkspaceDTO,
                                     HttpServletRequest request)
     {
            return ResponseEntity.ok("");
     }
 
+    @Operation(summary = "Delete after a workspace was deleted")
     @DeleteMapping(path = "/delete-by-workspace")
     @RequireWorkspaceCreator
     @SecurityRequirement(name = "methodBearerAuth")
-    public ResponseEntity<?> deleteByWorkspace(@RequestParam(name = "workspace_id") int workspaceId,
+    public synchronized ResponseEntity<?> deleteByWorkspace(@RequestParam(name = "workspace_id") int workspaceId,
                                                HttpServletRequest request)
     {
         return userWorkspaceService.deleteByWorkSpace(workspaceId)
@@ -106,10 +115,11 @@ public class UserWorkspaceController {
     }
 
 
+    @Operation(summary = "Remove a user from a workspace")
     @DeleteMapping(path = "/remove-user-from-workspace")
     @RequireWorkspaceCreator
     @SecurityRequirement(name = "methodBearerAuth")
-    public ResponseEntity<?> removeUserFromWorkspace(@RequestParam(name = "user_id") int userId,
+    public synchronized ResponseEntity<?> removeUserFromWorkspace(@RequestParam(name = "user_id") int userId,
                                                      @RequestParam(name = "workspace_id") int workspaceId,
                                                      HttpServletRequest request)
     {
