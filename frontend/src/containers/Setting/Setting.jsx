@@ -16,6 +16,8 @@ const Setting = () => {
     const [dataPost, setDataPost] = useState({
         email: "",
         username: "",
+        firstName: "",
+        lastName: "",
         password: "",
         confirmPassword: "",
     });
@@ -45,7 +47,7 @@ const Setting = () => {
     return (
         <div className="setting">
             <div className="setting__avatar">
-                <p>Thay đổi avatar</p>
+                <p>Update Avatar</p>
                 <label htmlFor="contained-button-file">
                     <Input
                         accept="image/*"
@@ -60,7 +62,7 @@ const Setting = () => {
                         variant="contained"
                         component="span"
                     >
-                        Chọn tệp
+                        Attachment
                     </Button>
                 </label>
                 <label htmlFor="icon-button-file">
@@ -91,9 +93,9 @@ const Setting = () => {
             </div>
             <div className="setting__detail">
                 <div className="setting__detail-more1">
-                    <h3>Chi tiết tài khoản</h3>
+                    <h3>Account Details</h3>
                     <div className="language">
-                        <p>Thay đổi ngôn ngữ: </p>
+                        <p>Language: </p>
                         <Button
                             sx={{
                                 marginLeft: "20px",
@@ -111,9 +113,9 @@ const Setting = () => {
                 </div>
                 <div className="setting__detail-more2">
                     <h3>Email</h3>
-                    <p>Cập nhật email</p>
+                    <p>Enter Email: </p>
                     <TextField
-                        label="Email mới"
+                        label="New Email"
                         variant="outlined"
                         value={dataPost.email}
                         onChange={(e) => handleOnchange(e, "email")}
@@ -121,20 +123,49 @@ const Setting = () => {
                 </div>
                 <div className="setting__detail-more3">
                     <h3>Username</h3>
-                    <p>Cập nhật username</p>
+                    <p>Enter Username: </p>
                     <TextField
-                        label="Username mới"
+                        label="New Username"
                         variant="outlined"
                         value={dataPost.username}
                         onChange={(e) => handleOnchange(e, "username")}
                     />
                 </div>
+                <div className="setting__detail-more3">
+                    <h3>Fullname</h3>
+                    <p>Enter Fullname: </p>
+                    <TextField
+                        label="First Name"
+                        variant="outlined"
+                        value={dataPost.firstName}
+                        onChange={(e) => handleOnchange(e, "firstName")}
+                    />
+                    <TextField
+                        sx={{ marginLeft: "30px" }}
+                        label="Last Name"
+                        variant="outlined"
+                        value={dataPost.lastName}
+                        onChange={(e) => handleOnchange(e, "lastName")}
+                    />
+                </div>
+                <div className="setting__detail-more3">
+                    <h3>Sex</h3>
+                    {/* <p>Enter Sex: </p> */}
+                    <TextField
+                        disabled
+                        label="Male"
+                        variant="outlined"
+                        value={dataPost.username}
+                        onChange={(e) => handleOnchange(e, "username")}
+                    />
+
+                </div>
                 <div className="setting__detail-more4">
-                    <h3>Đổi mật khẩu</h3>
-                    <p>Nhập mật khẩu mới</p>
+                    <h3>Change Password</h3>
+                    <p>Enter Password: </p>
                     <div className="test">
                         <TextField
-                            label="Mật khẩu mới"
+                            label="Password"
                             type="password"
                             variant="outlined"
                             value={dataPost.password}
@@ -143,7 +174,7 @@ const Setting = () => {
                         <TextField
                             sx={{ marginLeft: "30px" }}
                             type="password"
-                            label="Xác nhận mật khẩu mới"
+                            label="Confirm Password"
                             variant="outlined"
                             value={dataPost.confirmPassword}
                             onChange={(e) =>
@@ -159,7 +190,7 @@ const Setting = () => {
                         endIcon={<SendIcon />}
                         onClick={handleEventClick}
                     >
-                        Lưu lại
+                        Save
                     </Button>
                 </div>
                 <div className="setting__detail-more5">
@@ -171,7 +202,7 @@ const Setting = () => {
                             // dispatch(loginFailure());
                         }}
                     >
-                        Đăng xuất
+                        Log Out
                     </Button>
                 </div>
             </div>
