@@ -46,6 +46,15 @@ function App() {
         if (!values.userName) {
             errors.userName = "Username is required!";
         }
+        if (!values.firstName) {
+            errors.firstName = "First Name is required!";
+        }
+        if (!values.lastName) {
+            errors.lastName = "Last Name is required!";
+        }
+        if (!values.sex) {
+            errors.sex = "Sex is required!";
+        }
         if (!values.email) {
             errors.email = "Email is required!";
         } else if (!regex.test(values.email)) {
@@ -69,8 +78,8 @@ function App() {
             <form onSubmit={handleSubmit} className="box">
                 <div className="square" style={{ "--i": 0 }}></div>
                 <div className="square" style={{ "--i": 1 }}></div>
-                <div className="square" style={{ "--i": 2 }}></div>
-                <div className="square" style={{ "--i": 3 }}></div>
+                {/* <div className="square" style={{ "--i": 2 }}></div> */}
+                {/* <div className="square" style={{ "--i": 3 }}></div> */}
                 <div className="square" style={{ "--i": 4 }}></div>
 
                 <div className="container">

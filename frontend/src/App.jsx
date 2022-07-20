@@ -30,7 +30,7 @@ function App() {
       <Route
         path="board"
         element={
-          <AuthLayout isAllowed={isLogin}>
+          <AuthLayout isAllowed={true}>
             <Board />
           </AuthLayout>
         }
