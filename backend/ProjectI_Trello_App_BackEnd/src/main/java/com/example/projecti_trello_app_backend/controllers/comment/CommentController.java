@@ -8,7 +8,9 @@ import com.example.projecti_trello_app_backend.services.comment.CommentService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
 import com.example.projecti_trello_app_backend.utils.SecurityUtils;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+@Tag(name = "Comment Controller")
 @RestController
 @RequestMapping("project1/api/comment")
 public class CommentController {
@@ -32,7 +35,7 @@ public class CommentController {
     @Autowired
     private SecurityUtils util;
 
-
+    @Operation(summary = "Find all comments of a task")
     @GetMapping("/find-by-task")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByTask(@RequestParam(name = "task_id")int taskId,
@@ -43,6 +46,7 @@ public class CommentController {
         ).orElse(ResponseEntity.noContent().build());
     }
 
+    @Operation(summary = "Add a new comment of a user to a task")
     @PostMapping("/add")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> add(@RequestBody Comment comment,
@@ -61,6 +65,7 @@ public class CommentController {
         }).orElse(ResponseEntity.status(204).body(new MessageResponse("Add comment fail-Task not found")));
     }
 
+    @Operation(summary = "Edit a comment of a user in a task")
     @PutMapping(path = "/edit")
     @RequireCommentCreator
     @SecurityRequirement(name = "methodBearerAuth")
@@ -77,6 +82,7 @@ public class CommentController {
                 :ResponseEntity.status(304).body(new MessageResponse("Edit comment fail"));
     }
 
+    @Operation(summary = "Delete by comment's id")
     @DeleteMapping("/delete-by-comment")
     @RequireCommentCreator
     @SecurityRequirement(name = "methodBearerAuth")

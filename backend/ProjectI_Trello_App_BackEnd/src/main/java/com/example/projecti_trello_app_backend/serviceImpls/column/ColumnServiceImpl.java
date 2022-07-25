@@ -54,6 +54,8 @@ public class ColumnServiceImpl implements ColumnService {
     public Optional<Columns> add(Columns column) {
         try {
             column.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            int newPosition = columnRepo.getMaxCurrentPosition(column.getBoard().getBoardId())+1;
+            column.setPosition(newPosition);
             return Optional.ofNullable(columnRepo.save(column));
         } catch (Exception ex){
             log.error("add column error ",ex);
@@ -86,7 +88,8 @@ public class ColumnServiceImpl implements ColumnService {
     public boolean delete(int columnId) {
         try
         {
-            return columnRepo.delete(columnId)>0 && columnTaskService.deleteByColumn(columnId) ?true:false;
+            return columnRepo.delete(columnId)>0
+                    && columnTaskService.deleteByColumn(columnId) ?true:false;
         } catch (Exception ex)
         {
             log.error("delete column error",ex);

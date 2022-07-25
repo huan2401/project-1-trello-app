@@ -10,9 +10,11 @@ import com.example.projecti_trello_app_backend.services.task.TaskService;
 import com.example.projecti_trello_app_backend.services.upload_files.CloudinaryService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
 import com.example.projecti_trello_app_backend.utils.SecurityUtils;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,7 @@ import java.util.Optional;
 
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
+@Tag(name = "Upload Image Controller")
 @RestController
 @RequestMapping(path = "project1/api/upload")
 public class CloudinaryController {
@@ -41,6 +44,7 @@ public class CloudinaryController {
     @Autowired
     private SecurityUtils util;
 
+    @Operation(summary = "Upload user's avatar")
     @PostMapping(path = "/avatar-upload", consumes = {MULTIPART_FORM_DATA_VALUE})
     @SecurityRequirement(name = "methodBearerAuth")
     @ApiResponse(content = {@Content(mediaType = "multipart/form-data")})
@@ -53,6 +57,7 @@ public class CloudinaryController {
         return ResponseEntity.ok(cloudinaryService.uploadAvatar(avatar,user.getUserId()));
     }
 
+    @Operation(summary = "Upload task's background")
     @PostMapping(path = "/task-backgr-upload", consumes = {MULTIPART_FORM_DATA_VALUE})
     @SecurityRequirement(name = "methodBearerAuth")
     @RequireBoardAdmin
@@ -67,6 +72,7 @@ public class CloudinaryController {
         return ResponseEntity.ok(cloudinaryService.uploadTaskBackground(file,taskId));
     }
 
+    @Operation(summary = "Uplaod board's background")
     @PostMapping(path = "/board-backgr-upload", consumes = {MULTIPART_FORM_DATA_VALUE})
     @SecurityRequirement(name="methodBearerAuth")
     @RequireBoardAdmin

@@ -1,4 +1,4 @@
-package com.example.projecti_trello_app_backend.security;
+package com.example.projecti_trello_app_backend.security.jwt;
 
 import com.example.projecti_trello_app_backend.constants.SecurityConstants;
 import com.example.projecti_trello_app_backend.entities.user.User;
@@ -27,7 +27,7 @@ public class JWTProvider {
         String jwt = Jwts.builder().setSubject(user.getUserName())
                                     .setClaims(claims)
                                     .setIssuedAt(now)
-                                    .setExpiration(new Date (now.getTime() +SecurityConstants.EXPIRE_TIME))
+                                    .setExpiration(new Date (now.getTime() +SecurityConstants.ACCESS_TOKEN_EXPIRATION_TIME))
                                     .signWith(SignatureAlgorithm.HS256,SecurityConstants.SECURITY_KEY)
                                     .compact();
         return jwt;
@@ -60,7 +60,7 @@ public class JWTProvider {
         }
     }
 
-
+    // get user from jwt
     public Integer getUserIdFromJwt(String token){
         try{
             Claims claims = getClaims(token);
@@ -85,7 +85,7 @@ public class JWTProvider {
         }
     }
 
-    //validate token
+    //validate jwt
     public boolean validateToken(String token)
     {
         try {

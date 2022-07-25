@@ -6,7 +6,9 @@ import com.example.projecti_trello_app_backend.services.action.ActionService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
 import com.example.projecti_trello_app_backend.utils.SecurityUtils;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
+@Tag(name="Action Controller")
 @RestController
 @RequestMapping("project1/api/action")
 public class ActionController {
@@ -31,6 +34,7 @@ public class ActionController {
     @Autowired
     private SecurityUtils util;
 
+    @Operation(summary = "Find actions by action's id")
     @GetMapping(path = "/find-by-id")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByActionId(@RequestParam(name = "action_id") int actionId,
@@ -38,9 +42,10 @@ public class ActionController {
     {
         return actionService.findByActionId(actionId).isPresent()
                 ?ResponseEntity.ok(actionService.findByActionId(actionId))
-                :ResponseEntity.status(200).body(new MessageResponse("Action not found"));
+                :ResponseEntity.status(204).body(new MessageResponse("Action not found"));
     }
 
+    @Operation(summary = "Find all actions of a task")
     @GetMapping(path = "/find-by-task")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByTask(@RequestParam(name = "task_id")int taskId,
@@ -53,9 +58,10 @@ public class ActionController {
         }).orElse(ResponseEntity.status(204).body(new MessageResponse("Task not found")));
     }
 
+    @Operation(summary = "Add a action to a task")
     @PostMapping(path = "/add")
     @SecurityRequirement(name = "methodBearerAuth")
-    public ResponseEntity<?> addAction(@RequestBody Action action,
+    public synchronized ResponseEntity<?> addAction(@RequestBody Action action,
                                        @RequestParam(name = "task_id") int taskId,
                                        HttpServletRequest request)
     {

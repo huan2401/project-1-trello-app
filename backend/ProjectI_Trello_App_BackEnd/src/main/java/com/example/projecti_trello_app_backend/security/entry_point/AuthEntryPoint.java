@@ -1,4 +1,4 @@
-package com.example.projecti_trello_app_backend.security;
+package com.example.projecti_trello_app_backend.security.entry_point;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;

@@ -8,7 +8,7 @@ import com.example.projecti_trello_app_backend.repositories.combinations.UserBoa
 import com.example.projecti_trello_app_backend.repositories.combinations.UserWorkspaceRepo;
 import com.example.projecti_trello_app_backend.repositories.comment.CommentRepo;
 import com.example.projecti_trello_app_backend.repositories.user.UserRepo;
-import com.example.projecti_trello_app_backend.security.JWTProvider;
+import com.example.projecti_trello_app_backend.security.jwt.JWTProvider;
 import com.example.projecti_trello_app_backend.services.combinations.ColumnTaskService;
 import com.example.projecti_trello_app_backend.services.combinations.UserTaskService;
 import lombok.extern.slf4j.Slf4j;

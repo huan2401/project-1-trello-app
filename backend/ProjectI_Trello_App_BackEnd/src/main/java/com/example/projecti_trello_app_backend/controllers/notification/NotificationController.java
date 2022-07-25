@@ -3,7 +3,9 @@ package com.example.projecti_trello_app_backend.controllers.notification;
 import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.entities.notification.Notification;
 import com.example.projecti_trello_app_backend.services.notification.NotificationService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
+@Tag(name = "Notification Controller")
 @RestController
 @RequestMapping("project1/api/notification")
 public class NotificationController {
@@ -19,6 +22,7 @@ public class NotificationController {
     @Autowired
     private NotificationService notificationService;
 
+    @Operation(summary = "Find all notifications")
     @GetMapping(path = "/find-all")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findAll(){
@@ -27,6 +31,7 @@ public class NotificationController {
                 :ResponseEntity.ok(notificationService.findAll());
     }
 
+    @Operation(summary = "Find a notification by id")
     @GetMapping(path = "/find-by-id")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findByNotificationId(@RequestParam(name = "noti_id") int notificationId,
@@ -37,6 +42,7 @@ public class NotificationController {
                 :ResponseEntity.status(204).body(new MessageResponse("Not found notification"));
     }
 
+    @Operation(summary = "Add a new notification")
     @PostMapping(path = "/add")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> add(@RequestBody Notification notification,

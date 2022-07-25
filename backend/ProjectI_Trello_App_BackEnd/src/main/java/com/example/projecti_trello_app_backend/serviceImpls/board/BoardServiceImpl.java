@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +28,16 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     private UserBoardRoleRepo userBoardRoleRepo;
 
+    @Override
+    public List<Board> findAll() {
+        try {
+            return boardRepo.findAll();
+        } catch (Exception ex)
+        {
+            log.error("Find all board error",ex);
+            return Collections.emptyList();
+        }
+    }
 
     @Override
     public Optional<Board> findByBoardId(int boardId) {
