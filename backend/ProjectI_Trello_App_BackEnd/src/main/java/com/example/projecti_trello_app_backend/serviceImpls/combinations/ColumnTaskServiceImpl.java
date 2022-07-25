@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.rmi.server.ExportException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -76,9 +75,9 @@ public class ColumnTaskServiceImpl implements ColumnTaskService {
     public Optional<ColumnTask> findByColumnAndTask(int columnId, int taskId) {
         try {
             return columnRepo.findByColumnId(columnId).map(columns -> {
-                 return taskRepo.findByTaskId(taskId).map(task -> {
-                     return columnTaskRepo.findByColumnAndTask(columnId,taskId);
-                 }).orElse(Optional.empty());
+                return taskRepo.findByTaskId(taskId).map(task -> {
+                    return columnTaskRepo.findByColumnAndTask(columnId,taskId);
+                }).orElse(Optional.empty());
             }).orElse(Optional.empty());
         } catch (Exception ex)
         {
@@ -90,6 +89,8 @@ public class ColumnTaskServiceImpl implements ColumnTaskService {
     @Override
     public Optional<ColumnTask> add(ColumnTask columnTask) {
         try {
+            int newPosition = columnTaskRepo.getMaxCurrentPosition(columnTask.getColumn().getColumnId())+1;
+            columnTask.setPosition(newPosition);
             return Optional.ofNullable(columnTaskRepo.save(columnTask));
         } catch (Exception ex)
         {
@@ -99,9 +100,8 @@ public class ColumnTaskServiceImpl implements ColumnTaskService {
     }
 
     @Override
-    public Optional<ColumnTask> update(int columnTaskId) {
+    public Optional<ColumnTask> changeStage(int columnTaskId) {
         try{
-            if(!columnTaskRepo.findById(columnTaskId).isPresent()) return Optional.empty();
             ColumnTask columnTaskToUpdate = columnTaskRepo.findById(columnTaskId).get();
             if(columnTaskToUpdate.isStage()) columnTaskToUpdate.setStage(false);
             else columnTaskToUpdate.setStage(true);
@@ -120,9 +120,9 @@ public class ColumnTaskServiceImpl implements ColumnTaskService {
             if(!columnTaskRepo.findByColumnAndTask(columnTaskDTO.getColumnId(),columnTaskDTO.getTaskId()).isPresent())
                 return Optional.empty();
             ColumnTask columnTaskToUpdate = columnTaskRepo.findByColumnAndTask(
-                                                            columnTaskDTO.getColumnId(),columnTaskDTO.getTaskId()).get();
+                    columnTaskDTO.getColumnId(),columnTaskDTO.getTaskId()).get();
             columnTaskToUpdate.setStage(columnTaskDTO.getStaged()!=null?columnTaskDTO.getStaged()
-                                                                        :columnTaskToUpdate.isStage());
+                    :columnTaskToUpdate.isStage());
             return Optional.ofNullable(columnTaskRepo.save(columnTaskToUpdate));
         }catch (Exception ex)
         {
@@ -132,9 +132,43 @@ public class ColumnTaskServiceImpl implements ColumnTaskService {
     }
 
     @Override
+    public boolean changePosition(int columnId, int position, String action) {
+        try{
+            List<ColumnTask> afterList = columnTaskRepo.getByAfterAPosition(columnId,position);
+            if(afterList.isEmpty()) return false;
+            switch (action) {
+                case "move":{
+                    afterList.stream().forEach(columnTask -> {
+                        columnTask.setPosition(columnTask.getPosition()+1);
+                        columnTaskRepo.save(columnTask);
+                    });
+                    break;
+                }
+                case "remove":{
+                    afterList.stream().forEach(columnTask -> {
+                        columnTask.setPosition(columnTask.getPosition()-1);
+                        columnTaskRepo.save(columnTask);
+                    });
+                    break;
+                }
+            }
+            return true;
+        } catch (Exception ex)
+        {
+            log.error("change columnTask ' position error",ex);
+            return false;
+        }
+    }
+
+    @Override
     public boolean deleteByTask(int taskId) {
         try{
-            return columnTaskRepo.deleteByTask(taskId)>0?true:false;
+            ColumnTask columnTask = columnTaskRepo.findAllByTask(taskId).get(0);
+            return columnTaskRepo.deleteByTask(taskId)>0
+                    && changePosition(columnTask.getColumn().getColumnId(),
+                                      columnTask.getPosition(),
+                                     "remove")
+                    ?true:false;
         } catch (Exception ex)
         {
             log.error("delete column_task by task error",ex);

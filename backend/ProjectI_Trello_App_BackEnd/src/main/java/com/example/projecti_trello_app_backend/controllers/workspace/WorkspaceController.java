@@ -56,7 +56,7 @@ public class WorkspaceController {
     @Operation(summary = "Add a new workspace")
     @PostMapping("/add")
     @SecurityRequirement(name = "methodBearerAuth")
-    public ResponseEntity<?> add(@RequestBody Workspace workspace,
+    public synchronized ResponseEntity<?> add(@RequestBody Workspace workspace,
                                  HttpServletRequest request)
     {
         Optional<Workspace> userWorkspaceToAdd = workspaceService.add(workspace);

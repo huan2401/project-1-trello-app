@@ -50,6 +50,24 @@ public class BoardController {
     @Autowired
     private RoleService roleService;
 
+    @Operation(summary = "Find all board")
+    @SecurityRequirement(name = "methodBearerAuth")
+    @GetMapping("/find-all")
+    public ResponseEntity<?> findAll(HttpServletRequest request)
+    {
+        return ResponseEntity.ok(boardService.findAll());
+    }
+
+
+    @Operation(summary = "Find a board by id")
+    @GetMapping(path = "/find-by-board-id")
+    public ResponseEntity<?> findByBoardId(@RequestParam(name = "boardId") int boardId)
+    {
+        return boardService.findByBoardId(boardId).isPresent()
+                ? ResponseEntity.ok(boardService.findByBoardId(boardId))
+                : ResponseEntity.status(204).body(new MessageResponse("Board not found"));
+    }
+
     @Operation(summary = "Add a board to a workspace")
     @PostMapping("/add-board")
     @RequireWorkspaceCreator

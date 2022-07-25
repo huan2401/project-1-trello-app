@@ -54,6 +54,8 @@ public class ColumnServiceImpl implements ColumnService {
     public Optional<Columns> add(Columns column) {
         try {
             column.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            int newPosition = columnRepo.getMaxCurrentPosition(column.getBoard().getBoardId())+1;
+            column.setPosition(newPosition);
             return Optional.ofNullable(columnRepo.save(column));
         } catch (Exception ex){
             log.error("add column error ",ex);

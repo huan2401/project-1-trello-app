@@ -4,6 +4,7 @@ import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.entities.combinations.UserBoardRole;
 import com.example.projecti_trello_app_backend.entities.combinations.UserWorkspace;
 import com.example.projecti_trello_app_backend.entities.role.Role;
+import com.example.projecti_trello_app_backend.entities.user.User;
 import com.example.projecti_trello_app_backend.security.authorization.RequireBoardAdmin;
 import com.example.projecti_trello_app_backend.services.board.BoardService;
 import com.example.projecti_trello_app_backend.services.combinations.UserBoardRoleService;
@@ -11,6 +12,7 @@ import com.example.projecti_trello_app_backend.services.combinations.UserWorkspa
 import com.example.projecti_trello_app_backend.services.role.RoleService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
 import com.example.projecti_trello_app_backend.services.workspace.WorkspaceService;
+import com.example.projecti_trello_app_backend.utils.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @Tag(name = "UserBoardRole Controller",
-description = "Use to represent the relationship between users and boards with diffenrent roles")
+        description = "Use to represent the relationship between users and boards with diffenrent roles")
 @RestController
 @RequestMapping("project1/api/user-board-role")
 public class UserBoardRoleController {
@@ -47,6 +49,9 @@ public class UserBoardRoleController {
     @Autowired
     private WorkspaceService workspaceService;
 
+    @Autowired
+    private SecurityUtils util;
+
     @Operation(summary = "Find all user_board_role_s of a user")
     @GetMapping(path = "/find-by-user")
     @SecurityRequirement(name = "methodBearerAuth")
@@ -58,6 +63,16 @@ public class UserBoardRoleController {
                     ?ResponseEntity.noContent().build()
                     :ResponseEntity.ok(userBoardRoleService.findByUser(userId));
         }).orElse(ResponseEntity.noContent().build());
+    }
+
+    @Operation(summary = "Find all my user_board_role_s")
+    @SecurityRequirement(name = "methodBearerAuth")
+    @GetMapping("/find-my-board")
+    public ResponseEntity<?> findMyBoards(HttpServletRequest request)
+    {
+        User user = util.getUserFromRequest(request);
+        if(user == null) return ResponseEntity.status(204).body(new MessageResponse("User is not found"));
+        return ResponseEntity.ok(userBoardRoleService.findByUser(user.getUserId()));
     }
 
     @Operation(summary = "Find all user_board_role_s of board")
@@ -94,9 +109,9 @@ public class UserBoardRoleController {
     @RequireBoardAdmin
     @SecurityRequirement(name = "methodBearerAuth")
     public synchronized ResponseEntity<?> add(@RequestParam(name = "user_id") int userId,
-                                 @RequestParam(name = "board_id") int boardId,
-                                 @RequestParam(name = "role_name") String roleName,
-                                 HttpServletRequest request)
+                                              @RequestParam(name = "board_id") int boardId,
+                                              @RequestParam(name = "role_name") String roleName,
+                                              HttpServletRequest request)
     {
         if(userBoardRoleService.findByUserAndBoard(userId,boardId).isPresent())
             return ResponseEntity.status(304).body(new MessageResponse("User is in board"));
@@ -131,9 +146,9 @@ public class UserBoardRoleController {
     @RequireBoardAdmin
     @SecurityRequirement(name = "methodBearerAuth")
     public synchronized ResponseEntity<?> setRoleForUser(@RequestParam(name = "user_id")int userId,
-                                            @RequestParam(name = "board_id")int boardId,
-                                            @RequestParam(name = "role_name") String roleName,
-                                            HttpServletRequest request)
+                                                         @RequestParam(name = "board_id")int boardId,
+                                                         @RequestParam(name = "role_name") String roleName,
+                                                         HttpServletRequest request)
     {
         String roleNameSta = "BOARD_"+roleName.toUpperCase();
         if(!roleService.findByRoleName(roleNameSta).isPresent())
@@ -152,7 +167,7 @@ public class UserBoardRoleController {
     @RequireBoardAdmin
     @SecurityRequirement(name = "methodBearerAuth")
     public synchronized ResponseEntity<?> deleteByBoard(@RequestParam(name = "board_id") int boardId,
-                                           HttpServletRequest request)
+                                                        HttpServletRequest request)
     {
         return boardService.findByBoardId(boardId).map(board -> {
             return userBoardRoleService.deleteByBoard(boardId)
@@ -166,14 +181,14 @@ public class UserBoardRoleController {
     @RequireBoardAdmin
     @SecurityRequirement(name = "methodBearerAuth")
     public synchronized ResponseEntity<?> removeUserFromBoard(@RequestParam(name = "board_id") int boardId,
-                                                 @RequestParam(name = "user_id") int userId,
-                                                 HttpServletRequest request)
+                                                              @RequestParam(name = "user_id") int userId,
+                                                              HttpServletRequest request)
     {
         return userService.findByUserId(userId).map(user -> {
             return boardService.findByBoardId(boardId).map(board -> {
-               return userBoardRoleService.deleteUserFromBoard(userId,boardId)
-                       ? ResponseEntity.status(200).body(new MessageResponse("Delete user from board successfully"))
-                       : ResponseEntity.status(304).body(new MessageResponse("Delete user from board fail"));
+                return userBoardRoleService.deleteUserFromBoard(userId,boardId)
+                        ? ResponseEntity.status(200).body(new MessageResponse("Delete user from board successfully"))
+                        : ResponseEntity.status(304).body(new MessageResponse("Delete user from board fail"));
             }).orElse(ResponseEntity.status(204).body(new MessageResponse("Delete user from board fail - board not found")));
         }).orElse(ResponseEntity.status(304).body(new MessageResponse("Delete user from board fail - user not found")));
     }
