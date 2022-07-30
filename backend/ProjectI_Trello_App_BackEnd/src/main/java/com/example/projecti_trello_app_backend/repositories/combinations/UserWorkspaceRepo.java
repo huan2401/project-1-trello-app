@@ -38,7 +38,7 @@ public interface UserWorkspaceRepo extends JpaRepository<UserWorkspace,Integer> 
     @Query(value = "from UserWorkspace  uswp where uswp.user.userId =?1" +
             " and uswp.workspace.workspaceId=?2 " +
             "and uswp.role.roleName<> 'WS_GUESS' and uswp.deleted =false")
-    Boolean existsByUserAndWorkspace(int userId, int workSpaceId);
+    boolean existsByUserAndWorkspace(int userId, int workSpaceId);
 
     @Modifying
     @Transactional

@@ -18,15 +18,15 @@ public class UserNotification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id", unique = true, nullable = false)
     private int id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @NotNull
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "notification_id", nullable = false)
     @NotNull
     private Notification notification;
@@ -34,6 +34,6 @@ public class UserNotification {
     @Column(name = "sent_at")
     private Timestamp sentAt;
 
-    @Column(name = "read")
-    private boolean read;
+    @Column(name = "is_read")
+    private boolean isRead;
 }

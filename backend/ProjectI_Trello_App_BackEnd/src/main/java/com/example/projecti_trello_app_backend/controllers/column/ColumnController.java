@@ -2,22 +2,18 @@ package com.example.projecti_trello_app_backend.controllers.column;
 
 import com.example.projecti_trello_app_backend.dto.ColumnDTO;
 import com.example.projecti_trello_app_backend.dto.MessageResponse;
-import com.example.projecti_trello_app_backend.entities.board.Board;
 import com.example.projecti_trello_app_backend.entities.column.Columns;
 import com.example.projecti_trello_app_backend.security.authorization.RequireBoardAdmin;
 import com.example.projecti_trello_app_backend.services.board.BoardService;
 import com.example.projecti_trello_app_backend.services.column.ColumnService;
-import com.example.projecti_trello_app_backend.services.combinations.ColumnTaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Tag(name = "Column Controller")
@@ -30,7 +26,6 @@ public class ColumnController {
 
     @Autowired
     private BoardService boardService;
-
 
     @Operation(summary = "Find all columns of a board")
     @GetMapping("/find-all-by-board")
