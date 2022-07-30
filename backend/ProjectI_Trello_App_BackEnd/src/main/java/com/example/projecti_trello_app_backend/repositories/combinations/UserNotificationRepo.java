@@ -20,11 +20,11 @@ public interface UserNotificationRepo extends JpaRepository<UserNotification,Int
     @Query(value = "select userNoti from UserNotification userNoti where userNoti.id =?1 ")
     Optional<UserNotification> findById(int id);
 
-    @Query(value = " select count (UserNotification) from UserNotification usNoti where usNoti.read=false")
+    @Query(value = " select count (usNoti) from UserNotification usNoti where usNoti.isRead=false")
     int countUnreadNotification(int userId);
 
     @Transactional
     @Modifying
-    @Query(value = "update UserNotification userNoti set userNoti.read =true where userNoti.id =?1")
+    @Query(value = "update UserNotification userNoti set userNoti.isRead =true where userNoti.id =?1")
     int setRead(int id);
 }

@@ -33,7 +33,7 @@ public class UserBoardRole {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
-    @NonNull
+    @NotNull
     private Role role;
 
     @Column(name = "deleted")

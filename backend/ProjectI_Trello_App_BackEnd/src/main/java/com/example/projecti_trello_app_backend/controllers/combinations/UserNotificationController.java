@@ -1,5 +1,6 @@
 package com.example.projecti_trello_app_backend.controllers.combinations;
 
+import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.entities.combinations.UserNotification;
 import com.example.projecti_trello_app_backend.entities.notification.Notification;
 import com.example.projecti_trello_app_backend.entities.user.User;
@@ -9,6 +10,7 @@ import com.example.projecti_trello_app_backend.services.combinations.UserTaskSer
 import com.example.projecti_trello_app_backend.services.notification.NotificationService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
+import com.example.projecti_trello_app_backend.utils.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -48,6 +50,9 @@ public class UserNotificationController {
     @Autowired
     private UserTaskService userTaskService;
 
+    @Autowired
+    private SecurityUtils util;
+
     @Operation(summary = "Find all user_noti_s by id")
     @GetMapping(path = "/find-by-id")
     @SecurityRequirement(name = "methodBearerAuth")
@@ -77,6 +82,7 @@ public class UserNotificationController {
                                                      @RequestBody Notification notification,
                                                      HttpServletRequest request)
     {
+        User byUser = util.getUserFromRequest(request);
         if(!taskService.findByTaskId(taskId).isPresent())
             return ResponseEntity.noContent().build();
         UserNotification userNotification = UserNotification.builder().build();
@@ -89,6 +95,7 @@ public class UserNotificationController {
             userNotification.setUser(user);
             if(!userNotificationService.sendNotification(userNotification).isPresent())
                 return ResponseEntity.noContent().build();
+            userNotificationService.sendNotificationEmail(byUser,user,taskService.findByTaskId(taskId).get(),"update");
         }
         return ResponseEntity.status(200).build();
     }
@@ -101,7 +108,8 @@ public class UserNotificationController {
                                                          @RequestParam(name = "user_id") int userId,
                                                          HttpServletRequest request)
     {
-        Notification notification = Notification.builder().build();
+        User byUser = util.getUserFromRequest(request);
+        Notification notification = new Notification();
         UserNotification userNotification = UserNotification.builder().build();
         return boardService.findByBoardId(boardId).map(board -> {
             return userService.findByUserId(userId).map(user -> {
@@ -111,7 +119,8 @@ public class UserNotificationController {
                 userNotification.setNotification(notiOptional.get());
                 userNotification.setUser(user);
                 return userNotificationService.sendNotification(userNotification).isPresent()
-                        ?ResponseEntity.status(200).build()
+                        && userNotificationService.sendNotificationEmail(byUser,user,board,"add")
+                        ?ResponseEntity.status(200).body(new MessageResponse("Send email successfully"))
                         :ResponseEntity.status(304).build();
             }).orElse(ResponseEntity.status(304).build());
         }).orElse(ResponseEntity.status(304).build());
@@ -125,6 +134,7 @@ public class UserNotificationController {
                                                        @RequestParam(name = "user_id")int userId,
                                                        HttpServletRequest request)
     {
+        User byUser = util.getUserFromRequest(request);
         Notification notification = Notification.builder().build();
         UserNotification userNotification = UserNotification.builder().build();
         return taskService.findByTaskId(taskId).map(task -> {
@@ -135,7 +145,8 @@ public class UserNotificationController {
                 userNotification.setNotification(notiOptional.get());
                 userNotification.setUser(user);
                 return userNotificationService.sendNotification(userNotification).isPresent()
-                        ?ResponseEntity.status(200).build()
+                        && userNotificationService.sendNotificationEmail(byUser,user,task,"add")
+                        ?ResponseEntity.status(200).body(new MessageResponse("Send email successfully"))
                         :ResponseEntity.status(304).build();
             }).orElse(ResponseEntity.status(304).build());
         }).orElse(ResponseEntity.status(304).build());
@@ -148,6 +159,7 @@ public class UserNotificationController {
                                                      @RequestParam(name = "user_id") int userId,
                                                      HttpServletRequest request)
     {
+        User byUser = util.getUserFromRequest(request);
         Notification notification = Notification.builder().build();
         UserNotification userNotification = UserNotification.builder().build();
         return boardService.findByBoardId(boardId).map(board -> {
@@ -158,19 +170,22 @@ public class UserNotificationController {
                 userNotification.setNotification(notiOptional.get());
                 userNotification.setUser(user);
                 return userNotificationService.sendNotification(userNotification).isPresent()
-                        ?ResponseEntity.status(200).build()
+                        && userNotificationService.sendNotificationEmail(byUser,user,board,"remove")
+                        ?ResponseEntity.status(200).body("Send email successfully")
                         :ResponseEntity.status(304).build();
             }).orElse(ResponseEntity.status(304).build());
         }).orElse(ResponseEntity.status(304).build());
     }
 
-    @Operation(summary = "Send a notification to a user who has been removed from a task")
+    @Operation(summary = "Send a notification to a user who has been removed from a task" +
+            " an email will be sent to the user")
     @GetMapping(path = "/send-remove-from-task-noti")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> sendRemoveFromTaskNoti(@RequestParam(name = "task_id")int taskId,
                                                     @RequestParam(name = "user_id")int userId,
                                                     HttpServletRequest request)
     {
+        User byUser = util.getUserFromRequest(request);
         Notification notification = Notification.builder().build();
         UserNotification userNotification = UserNotification.builder().build();
         return taskService.findByTaskId(taskId).map(task -> {
@@ -181,7 +196,8 @@ public class UserNotificationController {
                 userNotification.setNotification(notiOptional.get());
                 userNotification.setUser(user);
                 return userNotificationService.sendNotification(userNotification).isPresent()
-                        ?ResponseEntity.status(200).build()
+                        && userNotificationService.sendNotificationEmail(byUser,user,task,"remove")
+                        ?ResponseEntity.status(200).body(new MessageResponse("Send email successfully"))
                         :ResponseEntity.status(304).build();
             }).orElse(ResponseEntity.status(304).build());
         }).orElse(ResponseEntity.status(304).build());

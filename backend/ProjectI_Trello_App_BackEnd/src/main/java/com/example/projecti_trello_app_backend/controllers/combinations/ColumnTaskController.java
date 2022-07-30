@@ -2,7 +2,6 @@ package com.example.projecti_trello_app_backend.controllers.combinations;
 
 import com.example.projecti_trello_app_backend.dto.MessageResponse;
 import com.example.projecti_trello_app_backend.entities.combinations.ColumnTask;
-import com.example.projecti_trello_app_backend.security.authorization.RequireBoardAdmin;
 import com.example.projecti_trello_app_backend.services.column.ColumnService;
 import com.example.projecti_trello_app_backend.services.combinations.ColumnTaskService;
 import com.example.projecti_trello_app_backend.services.task.TaskService;
@@ -12,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -31,12 +31,17 @@ public class ColumnTaskController {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
+
     @Operation(summary = "Find all column_tasks by column's id")
     @GetMapping("/find-all-by-column")
     @SecurityRequirement(name = "methodBearerAuth")
     public ResponseEntity<?> findAllByColumn(@RequestParam(name = "column_id") int columId,
                                              HttpServletRequest request)
     {
+
         return ResponseEntity.ok(columnTaskService.findAllByColumn(columId));
     }
 
@@ -98,7 +103,7 @@ public class ColumnTaskController {
                     .stage(true).build();
             return columnTaskService.add(columnTask).isPresent() && columnTaskService.changePosition(endColumnId,newPostion,"move")
                     ?ResponseEntity.status(200).build()
-                    : ResponseEntity.status(304).build();
+                    :ResponseEntity.status(304).build();
         }
     }
 
