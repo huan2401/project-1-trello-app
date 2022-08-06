@@ -15,17 +15,9 @@ export const register = createAsyncThunk(
         lastName,
         sex
       );
-      // thunkAPI.dispatch(setMessage(response.data.message));
       console.log("sign up data res", response);
       return response.data;
     } catch (error) {
-      // const message =
-      //   (error.response &&
-      //     error.response.data &&
-      //     error.response.data.message) ||
-      //   error.message ||
-      //   error.toString();
-      // thunkAPI.dispatch(setMessage(message));
       console.log("erorr register", error);
       return thunkAPI.rejectWithValue();
     }

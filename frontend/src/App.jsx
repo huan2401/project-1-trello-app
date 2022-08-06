@@ -30,7 +30,7 @@ function App() {
       <Route
         path="board"
         element={
-          <AuthLayout isAllowed={true}>
+          <AuthLayout isAllowed={isLogin}>
             <Board />
           </AuthLayout>
         }
@@ -48,7 +48,7 @@ function App() {
       <Route
         path="setting"
         element={
-          <AuthLayout isAllowed={true}>
+          <AuthLayout isAllowed={isLogin}>
             <Setting />
           </AuthLayout>
         }
@@ -56,7 +56,7 @@ function App() {
       <Route
         path="/"
         element={
-          <AuthLayout isAllowed={true}>
+          <AuthLayout isAllowed={isLogin}>
             <Home />
           </AuthLayout>
         }

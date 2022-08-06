@@ -23,8 +23,6 @@ function Login() {
       navigate("/", { replace: true });
     }
   }, [isLogin]);
-  console.log("isLogin", isLogin);
-  console.log("formValues", formValues);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
