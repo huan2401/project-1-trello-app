@@ -2,7 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 import authReducer from "./slices/authSlice";
-import workSpaceReducer from "./slices/workSpaceSlice";
+import workSpaceReducer from "./slices/workspaceSlice";
 import boardReducer from "slices/boardSlice";
 import columnReducer from "slices/columnSlice";
 import taskReducer from "slices/taskSlice";

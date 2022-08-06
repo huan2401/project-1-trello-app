@@ -12,7 +12,7 @@ import {
   faHouseLaptop,
   faNetworkWired,
 } from "@fortawesome/free-solid-svg-icons";
-import { findWorkSpaceByUser } from "slices/workSpaceSlice";
+import { findWorkSpaceByUser } from "slices/workspaceSlice";
 import { findAllBoard } from "slices/boardSlice";
 import { findAllColumnByBoard } from "slices/columnSlice";
 import { findAllTaskByColumn, findByTaskId } from "slices/taskSlice";
