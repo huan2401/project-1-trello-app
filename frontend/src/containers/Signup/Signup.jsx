@@ -93,6 +93,10 @@ function App() {
             autoClose: 2000,
           });
           showModal();
+        } else if (!res.payload) {
+          toast.error("Wrong username/email", {
+            autoClose: 2000,
+          });
         }
       })
       .catch((err) => {
