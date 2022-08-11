@@ -32,14 +32,39 @@ export const login = createAsyncThunk(
       const data = await AuthService.login(username, password);
       return { user: data };
     } catch (error) {
-      // const message =
-      //   (error.response &&
-      //     error.response.data &&
-      //     error.response.data.message) ||
-      //   error.message ||
-      //   error.toString();
-      // thunkAPI.dispatch(setMessage(message));
       console.log("erorr login", error);
+      return thunkAPI.rejectWithValue();
+    }
+  }
+);
+
+export const updateProfile = createAsyncThunk(
+  "auth/updateProfile",
+  async ({ email, firstName, lastName, sex, phoneNumber }, thunkAPI) => {
+    try {
+      const data = await AuthService.updateProfile(
+        email,
+        firstName,
+        lastName,
+        sex,
+        phoneNumber
+      );
+      return { user: data };
+    } catch (error) {
+      console.log("erorr updateProfile", error);
+      return thunkAPI.rejectWithValue();
+    }
+  }
+);
+
+export const changePassword = createAsyncThunk(
+  "auth/changePassword",
+  async ({ passWord, previousPassword }, thunkAPI) => {
+    try {
+      const data = await AuthService.changePassword(passWord, previousPassword);
+      return { user: data };
+    } catch (error) {
+      console.log("erorr changePassword", error);
       return thunkAPI.rejectWithValue();
     }
   }
@@ -85,11 +110,19 @@ const authSlice = createSlice({
     },
     [login.fulfilled]: (state, action) => {
       state.login = true;
-      state.user = action.payload.user;
+      state.user = action.payload.user.data.forUser;
     },
     [login.rejected]: (state, action) => {
       state.login = false;
       state.user = null;
+    },
+    [updateProfile.fulfilled]: (state, action) => {
+      console.log("action updateProfile", action.payload);
+      state.user = action.payload.user.data;
+    },
+    [changePassword.fulfilled]: (state, action) => {
+      console.log("action changePassword", action.payload);
+      state.user = action.payload.user.data;
     },
     // [logout.fulfilled]: (state, action) => {
     //   state.login = false;

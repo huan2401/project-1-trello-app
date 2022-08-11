@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { checkLogin, login } from "slices/authSlice";
 import { Navigate } from "react-router-dom";
 import "./Login.scss";
+import { toast } from "react-toastify";
 
 function Login() {
   const initialValues = { username: "", password: "" };
@@ -16,9 +17,6 @@ function Login() {
   const isLogin = useSelector((state) => state.auth.login);
   const dispatch = useDispatch();
   useEffect(() => {
-    // if (localStorage.getItem("token")) {
-    //   dispatch(checkLogin(true));
-    // }
     if (isLogin) {
       navigate("/", { replace: true });
     }
@@ -33,7 +31,17 @@ function Login() {
     e.preventDefault();
     setFormErrors(validate(formValues));
     setIsSubmit(true);
-    dispatch(login(formValues));
+    dispatch(login(formValues)).then((res) => {
+      console.log("res login", res);
+      if (!res.payload) {
+        toast.error("Wrong username/email or password !", {
+          autoClose: 2000,
+        });
+      }
+      toast.success("Login success", {
+        autoClose: 2000,
+      });
+    });
   };
 
   useEffect(() => {

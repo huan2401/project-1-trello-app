@@ -22,6 +22,7 @@ const Home = () => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state);
   const board = useSelector((state) => state.board.data);
+  const workSpace = useSelector((state) => state.workSpace.data);
   useEffect(() => {
     dispatch(findWorkSpaceByUser());
     dispatch(findAllBoard());
@@ -35,44 +36,44 @@ const Home = () => {
       <div className="home-sidebar">
         <ul className="list-sidebar">
           <li>
-            <a href="">
+            <Link to="/board">
               <span>
                 <FontAwesomeIcon icon={faChessBoard} />
               </span>
               <h3>Board</h3>
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="">
+            <Link to="/">
               <span>
                 <FontAwesomeIcon icon={faClapperboard} />
               </span>
               <h3>Sample</h3>
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="">
+            <Link to="/">
               <span>
                 <FontAwesomeIcon icon={faUsers} />
               </span>
               <h3>Member</h3>
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="">
+            <Link to="/setting">
               <span>
                 <FontAwesomeIcon icon={faGear} />
               </span>
               <h3>Setting</h3>
-            </a>
+            </Link>
           </li>
           {/* <li>
-                        <a href="">
+                        <Link to="/">
                             <span>
                                 <FontAwesomeIcon icon={faChessBoard} />
                             </span>
                             <h3>Setting</h3>
-                        </a>
+                        </Link>
                     </li> */}
         </ul>
       </div>
@@ -91,27 +92,27 @@ const Home = () => {
             </h3>
           </p>
           <div className="board_list">
-            <a href="">
+            <Link to="/">
               <h3>First Board</h3>
               <img
                 src="http://chiase24.com/wp-content/uploads/2022/02/tang-hap-hanh-na_n-blue-wallpaper-aap-nhayt-1.jpg"
                 alt=""
               />
-            </a>
-            <a href="">
+            </Link>
+            <Link to="/">
               <h3>Second Board</h3>
               <img
                 src="https://truongquochoc.com/wp-content/uploads/2020/10/25-hinh-nen-iphone-6-va-6s-hd-dep-nhat-the-gioi-1.jpg"
                 alt=""
               />
-            </a>
-            <a href="">
+            </Link>
+            <Link to="/">
               <h3>Third Board</h3>
               <img
                 src="https://i.pinimg.com/736x/fd/b4/da/fdb4da07ecd3be76083fe7c13bdb81e1.jpg"
                 alt=""
               />
-            </a>
+            </Link>
           </div>
         </div>
         <div className="workspace">
@@ -122,27 +123,55 @@ const Home = () => {
             <h3>Your Workspace</h3>
           </p>
           <div className="workspace_list">
-            <a href="">
+            {/* {workSpace.map((item) => {
+              return (
+                <div>
+                  <p
+                    style={{
+                      marginTop: "0",
+                      marginBottom: "0.5em",
+                      color: "#535353",
+                      fontWeight: "500",
+                    }}
+                  >
+                    {item.workspace.workspaceTitle}
+                  </p>
+                  <div>
+                    <img
+                      src="http://chiase24.com/wp-content/uploads/2022/02/tang-hap-hanh-na_n-blue-wallpaper-aap-nhayt-1.jpg"
+                      alt=""
+                      style={{
+                        width: "150px",
+                        height: "150px",
+                        objectFit: "cover",
+                        borderRadius: "5px",
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })} */}
+            <Link to="/">
               <h3>First Workspace</h3>
               <img
                 src="http://chiase24.com/wp-content/uploads/2022/02/tang-hap-hanh-na_n-blue-wallpaper-aap-nhayt-1.jpg"
                 alt=""
               />
-            </a>
-            <a href="">
+            </Link>
+            <Link to="/">
               <h3>Second Workspace</h3>
               <img
                 src="https://truongquochoc.com/wp-content/uploads/2020/10/25-hinh-nen-iphone-6-va-6s-hd-dep-nhat-the-gioi-1.jpg"
                 alt=""
               />
-            </a>
-            <a href="">
+            </Link>
+            <Link to="/">
               <h3>Third Workspace</h3>
               <img
                 src="https://upanh123.com/wp-content/uploads/2021/03/hinh-nen-mau-hong10.jpg"
                 alt=""
               />
-            </a>
+            </Link>
           </div>
         </div>
         <div className="workspace_other">
@@ -153,30 +182,30 @@ const Home = () => {
             <h3>Your Friend's Workspace</h3>
           </p>
           <div className="workspace_list">
-            <a href="">
+            <Link to="/">
               <h3 className="name">Chien Dao</h3>
               <h3>First Workspace</h3>
               <img
                 src="http://chiase24.com/wp-content/uploads/2022/02/tang-hap-hanh-na_n-blue-wallpaper-aap-nhayt-1.jpg"
                 alt=""
               />
-            </a>
-            <a href="">
+            </Link>
+            <Link to="/">
               <h3 className="name">Van Huan</h3>
               <h3>Second Workspace</h3>
               <img
                 src="https://truongquochoc.com/wp-content/uploads/2020/10/25-hinh-nen-iphone-6-va-6s-hd-dep-nhat-the-gioi-1.jpg"
                 alt=""
               />
-            </a>
-            <a href="">
+            </Link>
+            <Link to="/">
               <h3 className="name">Duc Toan</h3>
               <h3>Third Workspace</h3>
               <img
                 src="https://upanh123.com/wp-content/uploads/2021/03/hinh-nen-mau-hong10.jpg"
                 alt=""
               />
-            </a>
+            </Link>
           </div>
         </div>
       </div>

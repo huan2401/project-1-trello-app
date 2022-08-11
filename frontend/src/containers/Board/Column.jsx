@@ -8,6 +8,7 @@ const Container = styled.div`
   background-color: #ebecf0;
   border-radius: 3px;
   padding: 10px;
+  height: fit-content;
 `;
 
 const ColumnContent = styled.div`
@@ -25,7 +26,7 @@ const Column = ({ tasks, column, index }) => {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          <p>{column.title}</p>
+          <p className="column-title">{column.title}</p>
           <Droppable droppableId={column.id} type="task">
             {(provided, snapshot) => (
               <ColumnContent
@@ -36,7 +37,9 @@ const Column = ({ tasks, column, index }) => {
                 {tasks.map((task, index) => (
                   <Task key={task.id} task={task} index={index} />
                 ))}
-                <div><button>Thêm task</button></div>
+                <div className="task-add">
+                  <p>+ Add card</p>
+                </div>
                 {provided.placeholder}
               </ColumnContent>
             )}

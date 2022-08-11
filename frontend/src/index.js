@@ -12,6 +12,13 @@ import store from "store";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 
+import { ToastContainer } from "react-toastify";
+import { injectStyle } from "react-toastify/dist/inject-style";
+import "react-toastify/dist/ReactToastify.css";
+if (typeof window !== "undefined") {
+  injectStyle();
+}
+
 let persistor = persistStore(store);
 
 ReactDOM.render(
@@ -20,7 +27,8 @@ ReactDOM.render(
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           {/* <Provider store={store}> */}
-            <App />
+          <App />
+          <ToastContainer />
           {/* </Provider> */}
         </PersistGate>
       </Provider>

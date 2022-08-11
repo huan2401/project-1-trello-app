@@ -1,39 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import workSpaceService from "service/workspaceService";
 
-// const initialState = {
-//   id: undefined,
-//   user: {
-//     userId: undefined,
-//     userName: "",
-//     password: "",
-//     activated: true,
-//     verificationCode: "",
-//     email: "",
-//     firstName: "",
-//     lastName: "",
-//     sex: "",
-//     avatarUrl: "",
-//     phoneNumber: "",
-//     region: "",
-//   },
-//   workspace: {
-//     workspaceId: undefined,
-//     workspaceTitle: "",
-//     workspaceType: "",
-//     visibility: "",
-//     workspaceDescription: "",
-//     deleted: false,
-//   },
-//   role: {
-//     roleId: 1,
-//     roleName: "",
-//     roleType: "",
-//     deleted: false,
-//   },
-//   deleted: false,
-// };
-
 const initialState = {
   data: [],
 };
