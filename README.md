@@ -1,7 +1,7 @@
 # Project I : Project Management 
-## Side : Back-end
-## Language : Java
-## Framework : Spring FrameWork
-## Database : MySQL
-## Tools : IntelliJ IDEA, DataGrip, MySQL Workbench , Postman
+## Backend: Java + Spring Framework.
+## Frontend : HTML, CSS, Javascript + ReactJS.
+## Database : MySQL.
+## Third-party service : Mail server from Gmail , Cloudinary API.
+## Tools : IntelliJ IDEA, Visual Studio Code, DataGrip, MySQL Workbench , Postman.
 
