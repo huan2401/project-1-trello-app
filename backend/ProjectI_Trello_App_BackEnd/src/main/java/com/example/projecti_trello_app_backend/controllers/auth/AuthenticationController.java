@@ -1,6 +1,7 @@
-package com.example.projecti_trello_app_backend.controllers.login;
+package com.example.projecti_trello_app_backend.controllers.auth;
 
 import com.example.projecti_trello_app_backend.dto.MessageResponse;
+import com.example.projecti_trello_app_backend.dto.UserDTO;
 import com.example.projecti_trello_app_backend.dto.loginDTO.JWTResponse;
 import com.example.projecti_trello_app_backend.dto.loginDTO.LoginRequest;
 import com.example.projecti_trello_app_backend.dto.loginDTO.RefreshTokenRequest;
@@ -70,16 +71,17 @@ public class AuthenticationController {
             }
             String accessToken = jwtProvider.generateAccessToken(userDetails.getUser());
             String refreshToken = refreshTokenService.generateRefreshToken(userDetails.getUser());
-            if(refreshToken==null) return ResponseEntity.status(204).body(new MessageResponse("Generate refresh token fail"));
+            if(refreshToken==null) return ResponseEntity.status(204).body(new MessageResponse("Generate refresh token fail",204));
             return ResponseEntity.ok(new JWTResponse(accessToken,
                                                     refreshToken,
                                             "Bearer",
+                                                    UserDTO.convertToDTO(userDetails.getUser()),
                                                     jwtProvider.getClaims(accessToken).getIssuedAt(),
                                                     jwtProvider.getClaims(accessToken).getExpiration()));
         } catch (Exception ex)
         {
             ex.printStackTrace();
-            return ResponseEntity.badRequest().body(new MessageResponse("Wrong username/email or password !"));
+            return ResponseEntity.badRequest().body(new MessageResponse("Wrong username/email or password !",400));
         }
     }
 
@@ -102,38 +104,40 @@ public class AuthenticationController {
                                     HttpServletRequest request)
     {
         try {
+            if(userService.existedUserNameOrEmail(user.getUserName(), user.getEmail())>0)
+                return ResponseEntity.status(204).body(new MessageResponse("Username or Email is existed!",204));
             String url = request.getRequestURL().toString();
             String siteURL = url.substring(0, url.length() - 7); // get to request url
             Optional<User> userOptional = authService.signUp(user, siteURL);
             return userOptional.isPresent()
-                    ? ResponseEntity.status(200).body("Signup successfully, please go to your email to activate your account")
-                    : ResponseEntity.status(204).body(new MessageResponse("Signup fail"));
+                    ? ResponseEntity.status(200).body( new MessageResponse("Signup successfully, please go to your email to activate your account",200))
+                    : ResponseEntity.status(204).body(new MessageResponse("Signup fail",204));
         } catch (Exception ex)
         {
-            return ResponseEntity.badRequest().body(new MessageResponse(ex.getMessage()));
+            return ResponseEntity.badRequest().body(new MessageResponse(ex.getMessage(),400));
         }
     }
 
     @Operation(summary = "Acticate a user thourgh a link sent in an email")
-    @GetMapping(path = "/verify-link")
+    @GetMapping(path = "/verify-by-link")
     public ResponseEntity<?> verifyUserByLink(@RequestParam(name ="verification-code") String verificationCode,
                                               HttpServletRequest request)
     {
         Optional<User> verifiedUser = authService.verifyUser(verificationCode);
         return verifiedUser.isPresent()
-                ?ResponseEntity.status(200).body(new MessageResponse("Activate user successfully"))
-                :ResponseEntity.status(204).body(new MessageResponse("Activate user fail"));
+                ?ResponseEntity.status(200).body(new MessageResponse("Activate user successfully",200))
+                :ResponseEntity.status(204).body(new MessageResponse("Activate user fail",204));
     }
 
     @Operation(summary = "Acticate a user thourgh a code sent in an email")
     @GetMapping("/verify-by-code")
-    public ResponseEntity<?> verifyByVerificationCode(@RequestHeader(name = "VerificationCode") String verificationCode,
+    public ResponseEntity<?> verifyByVerificationCode(@RequestHeader(name = "verificationCode") String verificationCode,
                                                       HttpServletRequest request)
     {
         Optional<User> verifiedUser = authService.verifyUser(verificationCode);
         return verifiedUser.isPresent()
-                ?ResponseEntity.status(200).body(new MessageResponse("Activate user successfully"))
-                :ResponseEntity.status(204).body(new MessageResponse("Activate user fail"));
+                ?ResponseEntity.status(200).body(new MessageResponse("Activate user successfully",200))
+                :ResponseEntity.status(204).body(new MessageResponse("Activate user fail",204));
     }
 
 }

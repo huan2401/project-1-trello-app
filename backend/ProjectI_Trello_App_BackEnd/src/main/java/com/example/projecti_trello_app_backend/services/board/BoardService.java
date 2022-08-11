@@ -14,6 +14,8 @@ public interface BoardService {
 
     Optional<Board> findByBoardId(int boardId);
 
+    List<Board> findByWorkspace(int workspaceId);
+
     Optional<Board> addBoard (Board board);
 
     Optional<Board> update (BoardDTO boardDTO);

@@ -45,9 +45,9 @@ public class TaskController {
                                  HttpServletRequest request){
         return columnService.findByColumnId(columnId).map(column -> {
             return taskService.add(task,columnId).isPresent()
-                    ?ResponseEntity.status(200).body(new MessageResponse("Add column successfully"))
-                    :ResponseEntity.status(304).body(new MessageResponse("Add column fail"));
-        }).orElse(ResponseEntity.status(204).body(new MessageResponse("Column not found")));
+                    ?ResponseEntity.status(200).body(new MessageResponse("Add column successfully",200))
+                    :ResponseEntity.status(304).body(new MessageResponse("Add column fail",304));
+        }).orElse(ResponseEntity.status(204).body(new MessageResponse("Column not found",204)));
     }
 
     @Operation(summary = "Update task's infomation")

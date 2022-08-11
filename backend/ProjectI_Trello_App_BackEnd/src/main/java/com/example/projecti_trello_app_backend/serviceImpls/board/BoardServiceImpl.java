@@ -51,6 +51,18 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    public List<Board> findByWorkspace(int workspaceId) {
+        try
+        {
+            return boardRepo.findByWorkspace(workspaceId);
+        }catch (Exception ex)
+        {
+            log.error("Find boards by workspace error",ex);
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
     public Optional<Board> addBoard(Board board) {
         try {
             board.setCreatedAt(new Timestamp(System.currentTimeMillis()));

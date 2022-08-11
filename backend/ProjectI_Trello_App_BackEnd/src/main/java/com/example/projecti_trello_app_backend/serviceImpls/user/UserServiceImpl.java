@@ -92,16 +92,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean existsByUsernameOrEmail(String userName, String email) {
+    public int existsByUsernameOrEmail(String userName, String email) {
         try {
             return userRepo.existsByUsernameOrEmail(userName,email);
         }catch (Exception ex)
         {
             log.error("check existing user by username or email error",ex);
-            return false;
+            return -1;
         }
     }
 
+    @Override
+    public int existedUserNameOrEmail(String userName, String email) {
+        try {
+            return userRepo.existedUserNameOrEmail(userName,email);
+        } catch (Exception ex)
+        {
+            log.error("check existed userName or email error");
+            return -1;
+        }
+    }
 
     @Override
     public Optional<?> update(UserDTO userDTO) {

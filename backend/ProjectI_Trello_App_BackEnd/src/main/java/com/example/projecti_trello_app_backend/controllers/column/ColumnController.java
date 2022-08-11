@@ -35,7 +35,7 @@ public class ColumnController {
     {
         return boardService.findByBoardId(boardId).isPresent()
                 ?ResponseEntity.ok(columnService.findAllByBoard(boardId))
-                :ResponseEntity.ok(new MessageResponse("This board doesn't has any columns"));
+                :ResponseEntity.ok(new MessageResponse("This board doesn't has any columns",200));
     }
 
     @Operation(summary = "Add a column to a board")
@@ -47,11 +47,11 @@ public class ColumnController {
                                                     HttpServletRequest request)
     {
         if(!boardService.findByBoardId(boardId).isPresent())
-            return ResponseEntity.status(204).body(new MessageResponse("Board not found"));
+            return ResponseEntity.status(204).body(new MessageResponse("Board not found",204));
         column.setBoard(boardService.findByBoardId(boardId).get());
         return columnService.add(column).isPresent()
-                ?ResponseEntity.ok(new MessageResponse("Add new column successfully"))
-                :ResponseEntity.status(304).body(new MessageResponse("Add new column fail"));
+                ?ResponseEntity.ok(new MessageResponse("Add new column successfully",200))
+                :ResponseEntity.status(204).body(new MessageResponse("Add new column fail",204));
     }
 
     @Operation(summary = "Update a column's infomation")
@@ -65,8 +65,8 @@ public class ColumnController {
         if(!columnService.findByColumnId(columId).isPresent()) return ResponseEntity.ok(Optional.empty());
         columnDTO.setColumnId(columId);
         return columnService.update(columnDTO).isPresent()
-                ?ResponseEntity.ok(new MessageResponse("Update column successfully"))
-                :ResponseEntity.status(304).body(new MessageResponse("Update column fail"));
+                ?ResponseEntity.ok(new MessageResponse("Update column successfully",200))
+                :ResponseEntity.status(304).body(new MessageResponse("Update column fail",304));
     }
 
     @Operation(summary = "Delete a column by id")
@@ -77,7 +77,7 @@ public class ColumnController {
                                      HttpServletRequest request)
     {
         return columnService.delete(columnId)
-                ?ResponseEntity.ok(new MessageResponse("Delete column successfully"))
-                :ResponseEntity.status(304).body(new MessageResponse("Delete column fail"));
+                ?ResponseEntity.ok(new MessageResponse("Delete column successfully",200))
+                :ResponseEntity.status(304).body(new MessageResponse("Delete column fail",304));
     }
 }

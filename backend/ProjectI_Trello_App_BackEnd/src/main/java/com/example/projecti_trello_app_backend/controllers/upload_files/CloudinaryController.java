@@ -53,7 +53,7 @@ public class CloudinaryController {
     {
         User user = util.getUserFromRequest(request);
         if(user==null)
-            return ResponseEntity.status(204).body(new MessageResponse("User is not valid"));
+            return ResponseEntity.status(204).body(new MessageResponse("User is not valid",204));
         return ResponseEntity.ok(cloudinaryService.uploadAvatar(avatar,user.getUserId()));
     }
 
@@ -68,7 +68,7 @@ public class CloudinaryController {
     {
         Optional<Task> taskOptional = taskService.findByTaskId(taskId);
         if(!taskOptional.isPresent())
-            return ResponseEntity.status(204).body(new MessageResponse("Task not found"));
+            return ResponseEntity.status(204).body(new MessageResponse("Task not found",204));
         return ResponseEntity.ok(cloudinaryService.uploadTaskBackground(file,taskId));
     }
 
@@ -83,7 +83,7 @@ public class CloudinaryController {
 
     {
         Optional<Board> boardOptional = boardService.findByBoardId(boardId);
-        if(!boardOptional.isPresent()) return ResponseEntity.status(204).body(new MessageResponse("Board not found"));
+        if(!boardOptional.isPresent()) return ResponseEntity.status(204).body(new MessageResponse("Board not found",204));
         return ResponseEntity.ok(cloudinaryService.uploadTaskBackground(file,boardId));
     }
 

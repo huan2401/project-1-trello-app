@@ -29,7 +29,7 @@ public class RoleController {
     {
         Optional<Role> roleOptional = roleService.findByRoleName(roleName);
         return roleOptional.isPresent()?ResponseEntity.ok(roleOptional)
-                                        :ResponseEntity.status(304).body(new MessageResponse("Role not found"));
+                                        :ResponseEntity.status(204).body(new MessageResponse("Role not found",204));
     }
 
     @Operation(summary = "Find all roles of ta role's type")
@@ -39,7 +39,7 @@ public class RoleController {
                                              HttpServletRequest request)
     {
         return roleService.findByRoleType(roleType).isEmpty()
-                ?ResponseEntity.status(204).body(new MessageResponse("Not found any role of this type"))
+                ?ResponseEntity.status(204).body(new MessageResponse("Not found any role of this type",204))
                 :ResponseEntity.ok(roleService.findByRoleType(roleType));
     }
 
@@ -54,8 +54,8 @@ public class RoleController {
         else if(role.getRoleType().equals("Board"))
             role.setRoleName("BOARD_"+role.getRoleName());
         return roleService.add(role).isPresent()
-                ?ResponseEntity.status(200).body(new MessageResponse("Add role successfully"))
-                :ResponseEntity.status(304).body(new MessageResponse("Add role fail"));
+                ?ResponseEntity.status(200).body(new MessageResponse("Add role successfully",200))
+                :ResponseEntity.status(304).body(new MessageResponse("Add role fail",304));
     }
 
 }

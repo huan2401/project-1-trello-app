@@ -43,6 +43,7 @@ public class UserController {
                                                    @RequestParam(name = "email", required = false) String email,
                                                    HttpServletRequest request)
     {
+        if(email.contains("%4")) email =email.replace("%4","@");
         return userService.findByUsernameOrEmail(userName,email).isPresent()
                 ?ResponseEntity.ok(UserDTO.convertToDTO(userService.findByUsernameOrEmail(userName,email).get()))
                 :ResponseEntity.ok(Optional.empty());
@@ -62,23 +63,22 @@ public class UserController {
     }
 
     @Operation(summary = "Change user's password")
-    @PatchMapping(path = "/change-password")
+    @PutMapping(path = "/change-password")
     public ResponseEntity<?> changePassWord(@RequestBody UserDTO userDTO,
                                             HttpServletRequest request)
     {
         int userId = util.getUserFromRequest(request).getUserId();
         if(!userService.findByUserId(userId).isPresent())
-            return ResponseEntity.status(204).body(new MessageResponse("User not found"));
+            return ResponseEntity.status(204).body(new MessageResponse("User not found",204));
         User userToUpdate = userService.findByUserId(userId).get();
-//        if(!userDTO.getPreviousPassword().equals(userDTO.getPreviousPassword()))
-//            return ResponseEntity.status(204).body(new MessageResponse("This Password is similar to the previous password," +
-//                    "please choose a new password"));
-        if(passwordEncoder.matches(userDTO.getPreviousPassword(),userToUpdate.getPassword()))
+        if(!passwordEncoder.matches(userDTO.getPreviousPassword(),userToUpdate.getPassword()))
+            return ResponseEntity.status(204).body(new MessageResponse("Wrong current password",204));
+        else if (passwordEncoder.matches(userDTO.getPassWord(),userToUpdate.getPassword()))
             return ResponseEntity.status(304).body(new MessageResponse("This Password is similar to the previous password," +
-                    "please choose a new password"));
+                    "please choose a new password",304));
         else {
             userToUpdate.setPassword(passwordEncoder.encode(userDTO.getPassWord()));
-            return ResponseEntity.ok(Optional.of(UserDTO.convertToDTO(userService.changePassWord(userToUpdate).get())));
+            return ResponseEntity.ok(userService.changePassWord(userToUpdate));
         }
     }
 
@@ -87,6 +87,7 @@ public class UserController {
     public ResponseEntity<?> resetPasswordRequest(@RequestParam(name = "email") String email,
                                                   HttpServletRequest request)
     {
+        if(email.contains("%4")) email =email.replace("%4","@");
         return userService.findByUsernameOrEmail("username",email).map(user ->
         {
            return resetPasswordService.createResetPasswordToken(user)
@@ -104,13 +105,13 @@ public class UserController {
         Optional<ResetPasswordToken> rsPasswordTokenOptional = resetPasswordService.findByToken(token);
         System.out.println(rsPasswordTokenOptional);
         if(rsPasswordTokenOptional.isPresent()==false || resetPasswordService.validateToken(token)==false) {
-            return ResponseEntity.status(204).body(new MessageResponse("Not found token or token is invalid !"));
+            return ResponseEntity.status(304).body(new MessageResponse("Not found token or token is invalid !",304));
         }
         else {
             userDTO.setUserId(rsPasswordTokenOptional.get().getUser().getUserId());
             userDTO.setPassWord(passwordEncoder.encode(userDTO.getPassWord()));
             return userService.resetPassword(userDTO,token).isPresent() ? ResponseEntity.status(200).build()
-                    : ResponseEntity.status(204).body(new MessageResponse("Reset password fail"));
+                    : ResponseEntity.status(304).body(new MessageResponse("Reset password fail",304));
         }
     }
 }

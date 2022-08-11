@@ -59,10 +59,10 @@ public class CommentController {
             return userService.findByUserId(userId).map(user -> {
                 comment.setUser(user);
                 return commentService.add(comment).isPresent()
-                        ?ResponseEntity.status(200).body(new MessageResponse("Add comment successfully"))
-                        :ResponseEntity.status(304).body(new MessageResponse("Add comment fail"));
-            }).orElse(ResponseEntity.status(204).body(new MessageResponse("Add comment fail-User not found")));
-        }).orElse(ResponseEntity.status(204).body(new MessageResponse("Add comment fail-Task not found")));
+                        ?ResponseEntity.status(200).body(new MessageResponse("Add comment successfully",200))
+                        :ResponseEntity.status(304).body(new MessageResponse("Add comment fail",304));
+            }).orElse(ResponseEntity.status(204).body(new MessageResponse("Add comment fail-User not found",204)));
+        }).orElse(ResponseEntity.status(204).body(new MessageResponse("Add comment fail-Task not found",204)));
     }
 
     @Operation(summary = "Edit a comment of a user in a task")
@@ -74,12 +74,12 @@ public class CommentController {
                                   HttpServletRequest request)
     {
         if(!util.checkUserComment(request,commentId))
-            return ResponseEntity.status(403).body(new MessageResponse("User don't have permission to edit comment"));
+            return ResponseEntity.status(403).body(new MessageResponse("User don't have permission to edit comment",403));
         if(!commentService.findByCommentId(commentId).isPresent())
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new MessageResponse("Not found comment"));
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new MessageResponse("Not found comment",204));
         return commentService.update(commentDTO).isPresent()
-                ?ResponseEntity.status(200).body(new MessageResponse("Edit comment successfully"))
-                :ResponseEntity.status(304).body(new MessageResponse("Edit comment fail"));
+                ?ResponseEntity.status(200).body(new MessageResponse("Edit comment successfully",200))
+                :ResponseEntity.status(304).body(new MessageResponse("Edit comment fail",304));
     }
 
     @Operation(summary = "Delete by comment's id")
@@ -91,7 +91,7 @@ public class CommentController {
     {
         return commentService.findByCommentId(commentId).isPresent()
                 && commentService.deleteByComment(commentId)
-                ?ResponseEntity.status(200).body(new MessageResponse("Delete comment by id successfully"))
-                :ResponseEntity.status(304).body(new MessageResponse("Delete comment by id fail"));
+                ?ResponseEntity.status(200).body(new MessageResponse("Delete comment by id successfully",200))
+                :ResponseEntity.status(304).body(new MessageResponse("Delete comment by id fail",304));
     }
 }

@@ -1,5 +1,6 @@
 package com.example.projecti_trello_app_backend.entities.workspace;
 
+import com.example.projecti_trello_app_backend.entities.board.Board;
 import com.example.projecti_trello_app_backend.entities.user.User;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data

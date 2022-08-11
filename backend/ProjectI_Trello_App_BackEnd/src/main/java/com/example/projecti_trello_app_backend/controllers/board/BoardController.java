@@ -65,7 +65,7 @@ public class BoardController {
     {
         return boardService.findByBoardId(boardId).isPresent()
                 ? ResponseEntity.ok(boardService.findByBoardId(boardId))
-                : ResponseEntity.status(204).body(new MessageResponse("Board not found"));
+                : ResponseEntity.status(204).body(new MessageResponse("Board not found",204));
     }
 
     @Operation(summary = "Add a board to a workspace")
@@ -84,9 +84,9 @@ public class BoardController {
                board.setWorkspace(workspace);
                userBoardRole.setBoard(board);
                return boardService.addBoard(board).isPresent() && userBoardRoleService.add(userBoardRole).isPresent()
-                       ?ResponseEntity.status(200).body(new MessageResponse("Add new board successfully"))
-                       :ResponseEntity.status(204).body(new MessageResponse("Add new board fail"));
-           }).orElse(ResponseEntity.status(204).body(new MessageResponse("Workspace not found")));
+                       ?ResponseEntity.status(200).body(new MessageResponse("Add new board successfully",200))
+                       :ResponseEntity.status(204).body(new MessageResponse("Add new board fail",204));
+           }).orElse(ResponseEntity.status(204).body(new MessageResponse("Workspace not found",204)));
     }
 
     @Operation(summary = "Update board's infomation")
@@ -99,8 +99,8 @@ public class BoardController {
     {
         boardDTO.setBoardId(boardId);
         return boardService.update(boardDTO).isPresent()
-                ?ResponseEntity.ok(new MessageResponse("Update board successfully"))
-                :ResponseEntity.status(204).body(new MessageResponse("Update board fail"));
+                ?ResponseEntity.ok(new MessageResponse("Update board successfully",200))
+                :ResponseEntity.status(204).body(new MessageResponse("Update board fail",204));
     }
 
     @Operation(summary = "Delete a board by id")
@@ -111,8 +111,8 @@ public class BoardController {
                                     HttpServletRequest request)
     {
         return boardService.delete(boardId)
-                ? ResponseEntity.ok(new MessageResponse("Delete board successfully"))
-                : ResponseEntity.status(204).body(new MessageResponse("Delete board fail"));
+                ? ResponseEntity.ok(new MessageResponse("Delete board successfully",200))
+                : ResponseEntity.status(204).body(new MessageResponse("Delete board fail",204));
     }
 
     @Operation(summary = "Delete boards of a the workspace when that workspace was deleted")
@@ -123,7 +123,7 @@ public class BoardController {
                                                HttpServletRequest request)
     {
         return boardService.deleteByWorkspace(workSpaceId)
-                ? ResponseEntity.ok(new MessageResponse("Delete board successfully"))
-                : ResponseEntity.status(204).body(new MessageResponse("Delete board fail"));
+                ? ResponseEntity.ok(new MessageResponse("Delete board successfully",200))
+                : ResponseEntity.status(204).body(new MessageResponse("Delete board fail",204));
     }
 }

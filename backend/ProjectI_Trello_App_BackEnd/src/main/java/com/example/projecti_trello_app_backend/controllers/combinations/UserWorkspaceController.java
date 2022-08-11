@@ -49,7 +49,7 @@ public class UserWorkspaceController {
     {
         int userId = util.getUserFromRequest(request).getUserId();
         return userWorkspaceService.findByUser(userId).isEmpty()
-                ?ResponseEntity.status(204).body(new MessageResponse("This user doesn't belong to any workspace"))
+                ?ResponseEntity.status(204).body(new MessageResponse("This user doesn't belong to any workspace",204))
                 :ResponseEntity.ok(userWorkspaceService.findByUser(userId));
     }
 
@@ -60,7 +60,7 @@ public class UserWorkspaceController {
                                              HttpServletRequest request)
     {
         return userWorkspaceService.findByWorkspace(workspaceId).isEmpty()
-                ?ResponseEntity.status(204).body(new MessageResponse("This workspace doesn't has any member"))
+                ?ResponseEntity.status(204).body(new MessageResponse("This workspace doesn't has any member",204))
                 :ResponseEntity.ok(userWorkspaceService.findByWorkspace(workspaceId));
     }
 
@@ -74,22 +74,22 @@ public class UserWorkspaceController {
                                   HttpServletRequest request)
     {
         if(userWorkspaceService.findByUserAndWorkspace(userId,workspaceId).isPresent())
-            return ResponseEntity.status(304).body(new MessageResponse("User is exsiting in workspace")); // existed a user workspace
+            return ResponseEntity.status(304).body(new MessageResponse("User is exsiting in workspace",304)); // existed a user workspace
         UserWorkspace userWorkspace = new UserWorkspace();
         String roleNameSta = "WS_"+roleName;
         Optional<Role> roleOptional = roleService.findByRoleName(roleNameSta);
         if(roleOptional.isPresent()) userWorkspace.setRole(roleOptional.get());
-        else return ResponseEntity.status(304).body(new MessageResponse("Role not found"));
+        else return ResponseEntity.status(204).body(new MessageResponse("Role not found",204));
         return userService.findByUserId(userId).map(user -> {
             userWorkspace.setUser(user);
             return workspaceService.findByWorkspaceId(workspaceId).map(workspace -> {
                 userWorkspace.setWorkspace(workspace);
                 Optional<UserWorkspace> addedUserWorkspace = userWorkspaceService.add(userWorkspace);
                 return addedUserWorkspace.isPresent()
-                        ?ResponseEntity.status(200).body(new MessageResponse("Add user work space successfully"))
-                        :ResponseEntity.status(304).body(new MessageResponse("Add user workspace fail"));
-            }).orElse(ResponseEntity.status(204).body(new MessageResponse("Workspace not found")));
-        }).orElse(ResponseEntity.status(204).body(new MessageResponse("User not found")));
+                        ?ResponseEntity.status(200).body(new MessageResponse("Add user work space successfully",200))
+                        :ResponseEntity.status(304).body(new MessageResponse("Add user workspace fail",304));
+            }).orElse(ResponseEntity.status(204).body(new MessageResponse("Workspace not found",204)));
+        }).orElse(ResponseEntity.status(204).body(new MessageResponse("User not found",204)));
     }
 
 
@@ -110,8 +110,8 @@ public class UserWorkspaceController {
                                                HttpServletRequest request)
     {
         return userWorkspaceService.deleteByWorkSpace(workspaceId)
-                ?ResponseEntity.status(200).body(new MessageResponse("delete UserWorkspace by Workspace successfully "))
-                :ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(new MessageResponse("delete UserWorkspace by Workspace fail"));
+                ?ResponseEntity.status(200).body(new MessageResponse("delete UserWorkspace by Workspace successfully",200))
+                :ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(new MessageResponse("delete UserWorkspace by Workspace fail",304));
     }
 
 
@@ -126,7 +126,7 @@ public class UserWorkspaceController {
         if(userWorkspaceService.checkRole(workspaceId,userId,"WS_CREATOR")==true)
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         return userWorkspaceService.removeUserFromWorkspace(userId,workspaceId)
-                ?ResponseEntity.status(200).body(new MessageResponse("remove user from workspace successfully"))
-                :ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(new MessageResponse("remove user from workspace fail "));
+                ?ResponseEntity.status(200).body(new MessageResponse("remove user from workspace successfully",200))
+                :ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(new MessageResponse("remove user from workspace fail",304));
     }
 }

@@ -24,7 +24,9 @@ public interface UserService {
 
     Optional<User> findByUsernameOrEmail(String userName, String email);
 
-    Boolean existsByUsernameOrEmail(String userName, String email);
+    int existsByUsernameOrEmail(String userName, String email);
+
+    int existedUserNameOrEmail(String userName, String email);
 
     Optional<?> update(UserDTO userDTO);
 

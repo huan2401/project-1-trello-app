@@ -42,7 +42,7 @@ public class ActionController {
     {
         return actionService.findByActionId(actionId).isPresent()
                 ?ResponseEntity.ok(actionService.findByActionId(actionId))
-                :ResponseEntity.status(204).body(new MessageResponse("Action not found"));
+                :ResponseEntity.status(204).body(new MessageResponse("Action not found",204));
     }
 
     @Operation(summary = "Find all actions of a task")
@@ -53,9 +53,9 @@ public class ActionController {
     {
         return taskService.findByTaskId(taskId).map(task -> {
             List<Action> actions = actionService.findByTask(taskId);
-            return actions.isEmpty()?ResponseEntity.status(204).body(new MessageResponse("This task doesn't has any action"))
+            return actions.isEmpty()?ResponseEntity.status(204).body(new MessageResponse("This task doesn't has any action",200))
                                     :ResponseEntity.ok(actions);
-        }).orElse(ResponseEntity.status(204).body(new MessageResponse("Task not found")));
+        }).orElse(ResponseEntity.status(204).body(new MessageResponse("Task not found",204)));
     }
 
     @Operation(summary = "Add a action to a task")
@@ -71,9 +71,10 @@ public class ActionController {
             return taskService.findByTaskId(taskId).map(task -> {
                 action.setTask(task);
                 Optional<Action> actionOptional = actionService.add(action);
-                return actionOptional.isPresent()?ResponseEntity.ok(actionOptional)
-                                                :ResponseEntity.status(304).body(new MessageResponse("Add action fail"));
-            }).orElse(ResponseEntity.status(204).body(new MessageResponse("Task not found")));
+                if(actionOptional.isPresent())
+                    return ResponseEntity.status(200).body( new MessageResponse("Add action successfully",200));
+                    else return ResponseEntity.status(304).body(new MessageResponse("Add action fail",204));
+            }).orElse(ResponseEntity.status(204).body(new MessageResponse("Task not found",204)));
         }).orElse(ResponseEntity.noContent().build());
     }
 }
