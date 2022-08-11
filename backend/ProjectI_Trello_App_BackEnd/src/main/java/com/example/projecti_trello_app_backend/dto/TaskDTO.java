@@ -29,6 +29,5 @@ public class TaskDTO {
 
     private Boolean reviewed;
 
-    private Integer position;
 
 }

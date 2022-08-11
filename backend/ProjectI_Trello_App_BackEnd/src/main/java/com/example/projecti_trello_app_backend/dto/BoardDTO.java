@@ -19,4 +19,6 @@ public class BoardDTO {
     private int boardManagerId;
 
     private String boardTitle;
+
+    private String status;
 }

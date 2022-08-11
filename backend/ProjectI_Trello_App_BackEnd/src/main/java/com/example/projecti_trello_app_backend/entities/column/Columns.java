@@ -24,10 +24,6 @@ public class Columns {
     @Column(name = "column_id", unique = true, nullable = false)
     private int columnId;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "board_id", nullable = false)
-    private Board board ;
 
     @NotNull
     @Column(name = "column_title")
@@ -39,9 +35,17 @@ public class Columns {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
+    @Column(name = "status")
+    private String status;
+
     @Column(name = "position")
     private Integer position;
 
     @Column(name = "deleted")
     private boolean deleted;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "board_id", nullable = false)
+    private Board board ;
 }

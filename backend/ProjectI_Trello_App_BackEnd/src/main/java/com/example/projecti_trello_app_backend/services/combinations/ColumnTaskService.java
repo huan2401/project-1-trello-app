@@ -22,7 +22,11 @@ public interface ColumnTaskService {
 
     Optional<ColumnTask> add (ColumnTask columnTask);
 
-    Optional<ColumnTask> update(int columnTaskId);
+    Optional<ColumnTask> changeStage(int columnTaskId);
+
+    Optional<ColumnTask> update(ColumnTaskDTO columnTaskDTO);
+
+    boolean changePosition(int columnId,int position, String action);
 
     boolean deleteByTask(int taskId);
 

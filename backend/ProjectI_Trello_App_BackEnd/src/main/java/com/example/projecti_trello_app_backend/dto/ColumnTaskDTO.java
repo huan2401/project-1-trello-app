@@ -13,5 +13,9 @@ public class ColumnTaskDTO {
 
     private int id;
 
+    private Integer columnId;
+
+    private Integer taskId;
+
     private Boolean staged;
 }

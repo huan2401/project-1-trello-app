@@ -3,6 +3,7 @@ package com.example.projecti_trello_app_backend.serviceImpls.board;
 import com.example.projecti_trello_app_backend.dto.BoardDTO;
 import com.example.projecti_trello_app_backend.entities.board.Board;
 import com.example.projecti_trello_app_backend.repositories.board.BoardRepo;
+import com.example.projecti_trello_app_backend.repositories.combinations.UserBoardRoleRepo;
 import com.example.projecti_trello_app_backend.repositories.user.UserRepo;
 import com.example.projecti_trello_app_backend.services.board.BoardService;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,15 +25,17 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     private UserRepo userRepo;
 
+    @Autowired
+    private UserBoardRoleRepo userBoardRoleRepo;
+
     @Override
-    public List<Board> findAllByUser(int userId) {
+    public List<Board> findAll() {
         try {
-            return boardRepo.findAllByUser(userId);
-        } catch (Exception exp)
+            return boardRepo.findAll();
+        } catch (Exception ex)
         {
-            log.error("Find board by board's manager id error",exp);
-            exp.printStackTrace();
-            return List.of();
+            log.error("Find all board error",ex);
+            return Collections.emptyList();
         }
     }
 
@@ -43,6 +47,18 @@ public class BoardServiceImpl implements BoardService {
         {
             log.error("Find board by board's id error", exp);
             return Optional.empty();
+        }
+    }
+
+    @Override
+    public List<Board> findByWorkspace(int workspaceId) {
+        try
+        {
+            return boardRepo.findByWorkspace(workspaceId);
+        }catch (Exception ex)
+        {
+            log.error("Find boards by workspace error",ex);
+            return Collections.emptyList();
         }
     }
 
@@ -69,9 +85,8 @@ public class BoardServiceImpl implements BoardService {
             }
             Board boardToUpdate = boardRepo.findByBoardId(boardDTO.getBoardId()).get();
             boardToUpdate.setBoardTitle(boardDTO.getBoardTitle()!=null?boardDTO.getBoardTitle():boardToUpdate.getBoardTitle());
-            if(userRepo.findByUserId(boardDTO.getBoardManagerId()).isPresent() && boardDTO.getBoardManagerId()!=0)
-                boardToUpdate.setBoardManager(userRepo.findByUserId(boardDTO.getBoardManagerId()).get());
             boardToUpdate.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+            boardToUpdate.setStatus(boardDTO.getStatus()!=null? boardDTO.getStatus() : boardToUpdate.getStatus());
             return Optional.ofNullable(boardRepo.save(boardToUpdate));
         } catch (Exception exp)
         {
@@ -83,6 +98,23 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public boolean delete(int boardId) {
-        return false;
+        try{
+            return boardRepo.delete(boardId)>0?true:false;
+        } catch (Exception ex)
+        {
+            log.error("delete board error");
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deleteByWorkspace(int workspaceId) {
+        try{
+            return boardRepo.deleteByWorkspace(workspaceId)>0?true:false;
+        } catch (Exception ex)
+        {
+            log.error("delete board by workspace error",ex);
+            return false;
+        }
     }
 }

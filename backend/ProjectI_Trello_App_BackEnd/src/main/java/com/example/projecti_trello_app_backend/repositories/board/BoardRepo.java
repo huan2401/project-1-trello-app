@@ -13,17 +13,26 @@ import java.util.Optional;
 @Repository
 public interface BoardRepo extends JpaRepository<Board,Integer> {
 
-    @Query(value = "from Board board where board.boardManager.userId=?1 and  board.deleted=false")
-     List<Board> findAllByUser(int userId);
+    @Query("from Board board where board.deleted =false")
+    List<Board> findAll();
 
     @Query(value = "from Board board where board.boardId =?1 and board.deleted =false")
      Optional<Board> findByBoardId(int boardId);
+
+    @Query(value = "from Board board where board.workspace.workspaceId =?1 and board.deleted =false")
+    List<Board> findByWorkspace(int workSpaceId);
 
     @Modifying
     @Transactional
     @Query(value = "update Board  board set board.deleted=true " +
             " where  board.boardId =?1 and board.deleted =false")
     int delete (int boardId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "update Board board set board.deleted =true where board.workspace.workspaceId =?1 " +
+            "and board.deleted =false")
+    int deleteByWorkspace(int workspaceId);
 
 
 }

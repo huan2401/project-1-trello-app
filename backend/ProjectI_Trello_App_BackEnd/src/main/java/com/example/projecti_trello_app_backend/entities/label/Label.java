@@ -23,16 +23,16 @@ public class Label {
     @Column(name = "label_id", unique = true, nullable = false)
     private int labelId ;
 
-    @ManyToOne
-    @JoinColumn(name = "task_id")
-    @NotNull
-    private Task task;
-
     @Column(name = "label_color")
     private String labelColor;
 
     @Column(name = "label_title")
     private String labelTitle;
+
+    @ManyToOne
+    @JoinColumn(name = "task_id")
+    @NotNull
+    private Task task;
 
     @Column(name = "deleted")
     private boolean deleted;

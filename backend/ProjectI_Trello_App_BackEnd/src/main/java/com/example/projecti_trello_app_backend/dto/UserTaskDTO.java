@@ -17,4 +17,6 @@ public class UserTaskDTO {
 
     private Integer userId;
 
+    private String taskDetail;
+
 }

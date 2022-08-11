@@ -10,13 +10,17 @@ import java.util.Optional;
 @Service
 public interface BoardService {
 
-    List<Board> findAllByUser(int userId);
+    List<Board> findAll();
 
     Optional<Board> findByBoardId(int boardId);
+
+    List<Board> findByWorkspace(int workspaceId);
 
     Optional<Board> addBoard (Board board);
 
     Optional<Board> update (BoardDTO boardDTO);
 
     boolean delete(int boardId);
+
+    boolean deleteByWorkspace(int workspaceId);
 }

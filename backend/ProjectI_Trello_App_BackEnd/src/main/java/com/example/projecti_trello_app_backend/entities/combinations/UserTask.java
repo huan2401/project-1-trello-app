@@ -24,6 +24,12 @@ public class UserTask {
     @Column(name ="id",unique = true, nullable = false )
     private int id;
 
+    @Column(name = "task_detail")
+    private String taskDetail;
+
+    @Column(name ="assign-at")
+    private Date assignedAt;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @NotNull
@@ -34,9 +40,8 @@ public class UserTask {
     @NotNull
     private Task task;
 
-    @Column(name ="assign-at")
-    private Date assignedAt;
-
     @Column(name = "deleted")
     private boolean deleted;
+
+
 }

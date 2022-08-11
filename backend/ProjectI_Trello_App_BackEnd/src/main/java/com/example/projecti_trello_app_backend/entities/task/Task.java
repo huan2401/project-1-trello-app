@@ -33,9 +33,6 @@ public class Task {
     @Column(name = "task_background")
     private String taskBackgroundUrl;
 
-    @Column(name = "position")
-    private Integer position;
-
     @Column(name = "created_at")
     private Timestamp createdAt;
 

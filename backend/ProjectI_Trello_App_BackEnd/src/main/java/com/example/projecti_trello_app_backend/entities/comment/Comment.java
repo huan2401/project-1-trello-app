@@ -25,16 +25,6 @@ public class Comment {
     @Column(name = "comment_id", unique = true, nullable = false)
     private int commentId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id",nullable = false)
-    @NotNull
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name="task_id", nullable = false)
-    @NotNull
-    private Task task;
-
     @Column(name="content")
     private String content;
 
@@ -46,6 +36,16 @@ public class Comment {
 
     @Column(name = "edited")
     private boolean edited;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id",nullable = false)
+    @NotNull
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name="task_id", nullable = false)
+    @NotNull
+    private Task task;
 
     @Column(name = "deleted")
     private boolean deleted;

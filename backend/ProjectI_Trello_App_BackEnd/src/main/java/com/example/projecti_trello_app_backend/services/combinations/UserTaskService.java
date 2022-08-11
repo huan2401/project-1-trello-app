@@ -10,9 +10,13 @@ import java.util.Optional;
 @Service
 public interface UserTaskService {
 
+    Optional<UserTask> findById(int id);
+
     List<UserTask> findByTask(int taskId);
 
     List<UserTask> findByUser(int userId);
+
+    boolean existsUserTask(int userId, int taskId);
 
     Optional<UserTask> add(UserTask userTask);
 
@@ -21,4 +25,6 @@ public interface UserTaskService {
     boolean deleteUserFromTask(int taskId, int userId);
 
     boolean deleteByTask(int taskId);
+
+    boolean deleteById(int id);
 }

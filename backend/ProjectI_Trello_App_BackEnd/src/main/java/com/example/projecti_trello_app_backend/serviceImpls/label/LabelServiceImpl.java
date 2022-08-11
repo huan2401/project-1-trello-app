@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class LabelServiceImpl implements LabelService {
         } catch (Exception exp)
         {
             exp.printStackTrace();
-            return List.of();
+            return Collections.emptyList();
         }
     }
 
@@ -51,7 +52,7 @@ public class LabelServiceImpl implements LabelService {
             return labelRepo.findAllByTask(taskId);
         } catch (Exception exp){
             log.error("find all label in a task error",exp);
-            return List.of();
+            return Collections.emptyList();
         }
     }
 
