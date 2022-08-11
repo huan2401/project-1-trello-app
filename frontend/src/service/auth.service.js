@@ -1,37 +1,45 @@
-import axios from "axios";
+import axiosClient from "utils/axiosClient";
 
-const API_URL = "http://localhost:8080/api/auth/";
-
-const register = (username, email, password) => {
-  return axios.post(API_URL + "signup", {
-    username,
+const register = (userName, password, email, firstName, lastName, sex) => {
+  return axiosClient.post("/auth/signup", {
+    userName,
+    password,
     email,
+    firstName,
+    lastName,
+    sex,
+  });
+};
+
+const login = (userName, password) => {
+  return axiosClient.post("/auth/login", {
+    userName,
     password,
   });
 };
 
-const login = (username, password) => {
-  return axios
-    .post(API_URL + "signin", {
-      username,
-      password,
-    })
-    .then((response) => {
-      if (response.data.accessToken) {
-        localStorage.setItem("user", JSON.stringify(response.data));
-      }
-      return response.data;
-    });
+const updateProfile = (email, firstName, lastName, sex,phoneNumber) => {
+  return axiosClient.put("/user/update", {
+    email,
+    firstName,
+    lastName,
+    sex,
+    phoneNumber
+  });
 };
 
-const logout = () => {
-  localStorage.removeItem("user");
+const changePassword = (passWord, previousPassword) => {
+  return axiosClient.put("/user/change-password", {
+    passWord,
+    previousPassword,
+  });
 };
 
 const authService = {
   register,
   login,
-  logout,
+  updateProfile,
+  changePassword
 };
 
 export default authService;

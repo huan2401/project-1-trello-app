@@ -1,19 +1,26 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { login } from "slices/authSlice";
+import { checkLogin, login } from "slices/authSlice";
+import { Navigate } from "react-router-dom";
 import "./Login.scss";
+import { toast } from "react-toastify";
 
-function Login({ username, email }) {
+function Login() {
   const initialValues = { username: "", password: "" };
   const [formValues, setFormValues] = useState(initialValues);
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
+  const navigate = useNavigate();
 
   const isLogin = useSelector((state) => state.auth.login);
   const dispatch = useDispatch();
-  console.log("isLogin", isLogin);
+  useEffect(() => {
+    if (isLogin) {
+      navigate("/", { replace: true });
+    }
+  }, [isLogin]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,7 +31,17 @@ function Login({ username, email }) {
     e.preventDefault();
     setFormErrors(validate(formValues));
     setIsSubmit(true);
-    dispatch(login(formValues));
+    dispatch(login(formValues)).then((res) => {
+      console.log("res login", res);
+      if (!res.payload) {
+        toast.error("Wrong username/email or password !", {
+          autoClose: 2000,
+        });
+      }
+      toast.success("Login success", {
+        autoClose: 2000,
+      });
+    });
   };
 
   useEffect(() => {
