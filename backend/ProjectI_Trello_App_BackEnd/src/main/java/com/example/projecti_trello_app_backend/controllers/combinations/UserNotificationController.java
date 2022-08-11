@@ -120,7 +120,7 @@ public class UserNotificationController {
                 userNotification.setUser(user);
                 return userNotificationService.sendNotification(userNotification).isPresent()
                         && userNotificationService.sendNotificationEmail(byUser,user,board,"add")
-                        ?ResponseEntity.status(200).body(new MessageResponse("Send email successfully"))
+                        ?ResponseEntity.status(200).body(new MessageResponse("Send email successfully",200))
                         :ResponseEntity.status(304).build();
             }).orElse(ResponseEntity.status(304).build());
         }).orElse(ResponseEntity.status(304).build());
@@ -146,7 +146,7 @@ public class UserNotificationController {
                 userNotification.setUser(user);
                 return userNotificationService.sendNotification(userNotification).isPresent()
                         && userNotificationService.sendNotificationEmail(byUser,user,task,"add")
-                        ?ResponseEntity.status(200).body(new MessageResponse("Send email successfully"))
+                        ?ResponseEntity.status(200).body(new MessageResponse("Send email successfully",200))
                         :ResponseEntity.status(304).build();
             }).orElse(ResponseEntity.status(304).build());
         }).orElse(ResponseEntity.status(304).build());
@@ -197,7 +197,7 @@ public class UserNotificationController {
                 userNotification.setUser(user);
                 return userNotificationService.sendNotification(userNotification).isPresent()
                         && userNotificationService.sendNotificationEmail(byUser,user,task,"remove")
-                        ?ResponseEntity.status(200).body(new MessageResponse("Send email successfully"))
+                        ?ResponseEntity.status(200).body(new MessageResponse("Send email successfully",200))
                         :ResponseEntity.status(304).build();
             }).orElse(ResponseEntity.status(304).build());
         }).orElse(ResponseEntity.status(304).build());

@@ -11,4 +11,5 @@ public class SecurityConstants {
     public static final String TOKEN_TYPE ="Bearer ";
 
     public static  final long REFRESH_TOKEN_EXPIRATION_TIME = 1000*60*60;
+
 }

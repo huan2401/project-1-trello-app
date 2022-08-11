@@ -86,8 +86,8 @@ public class LabelController {
     public synchronized ResponseEntity<?> deleteById(@RequestParam(name ="label_id")int labelId)
     {
         return  labelService.findByLabelId(labelId).isPresent() && labelService.delete(labelId)
-                ?ResponseEntity.status(200).body(new MessageResponse("Delete label by id successfully"))
-                :ResponseEntity.status(204).body(new MessageResponse("Delete label fail"));
+                ?ResponseEntity.status(200).body(new MessageResponse("Delete label by id successfully",200))
+                :ResponseEntity.status(204).body(new MessageResponse("Delete label fail",204));
     }
 
     @Operation(summary = "Delete all labels of a task when it was deleted")
@@ -97,7 +97,7 @@ public class LabelController {
                                           HttpServletRequest request)
     {
         return  taskService.findByTaskId(taskId).isPresent()&&labelService.deleteByTask(taskId)
-                ?ResponseEntity.status(200).body(new MessageResponse("Delete label by task successfully"))
-                :ResponseEntity.status(304).body(new MessageResponse("Delete label by task fail"));
+                ?ResponseEntity.status(200).body(new MessageResponse("Delete label by task successfully",200))
+                :ResponseEntity.status(304).body(new MessageResponse("Delete label by task fail",304));
     }
 }

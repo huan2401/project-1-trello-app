@@ -6,10 +6,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class MessageResponse {
 
     private String message;
+
+    private int statusCode;
+
+    private String status;
+
+    public MessageResponse(String message, int statusCode ){
+        this.message =message;
+        this.statusCode =statusCode;
+        this.status = statusCode == 200 || statusCode ==201 ? "success" : "fail";
+    }
 }

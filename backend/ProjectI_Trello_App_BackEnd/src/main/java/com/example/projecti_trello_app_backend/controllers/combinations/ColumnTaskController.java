@@ -117,9 +117,9 @@ public class ColumnTaskController {
                                                          HttpServletRequest request)
     {
         if(!columnService.findByColumnId(columnId).isPresent())
-            return ResponseEntity.status(204).body(new MessageResponse("Column not found"));
+            return ResponseEntity.status(204).body(new MessageResponse("Column not found",204));
         return columnTaskService.changePosition(columnId,position,action)
-                ?ResponseEntity.status(200).body(new MessageResponse("Change position successfully"))
-                :ResponseEntity.status(304).body(new MessageResponse("Change position fail"));
+                ?ResponseEntity.status(200).body(new MessageResponse("Change position successfully",200))
+                :ResponseEntity.status(304).body(new MessageResponse("Change position fail",304));
     }
 }

@@ -6,6 +6,7 @@ import com.example.projecti_trello_app_backend.entities.combinations.UserWorkspa
 import com.example.projecti_trello_app_backend.entities.role.Role;
 import com.example.projecti_trello_app_backend.entities.workspace.Workspace;
 import com.example.projecti_trello_app_backend.security.authorization.RequireWorkspaceCreator;
+import com.example.projecti_trello_app_backend.services.board.BoardService;
 import com.example.projecti_trello_app_backend.services.combinations.UserWorkspaceService;
 import com.example.projecti_trello_app_backend.services.role.RoleService;
 import com.example.projecti_trello_app_backend.services.user.UserService;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +42,9 @@ public class WorkspaceController {
     private RoleService roleService;
 
     @Autowired
+    private BoardService boardService;
+
+    @Autowired
     private SecurityUtils util;
 
     @Operation(summary = "Find a workspace by id")
@@ -50,7 +55,19 @@ public class WorkspaceController {
     {
         return workspaceService.findByWorkspaceId(workSpaceId).isPresent()
                 ?ResponseEntity.ok(workspaceService.findByWorkspaceId(workSpaceId))
-                :ResponseEntity.noContent().build();
+                :ResponseEntity.status(204).body(new MessageResponse("Workspace not found ",204));
+    }
+
+    @Operation(summary = "Find all boards of a workspace")
+    @GetMapping(path = "/find-all-boards")
+    @RequireWorkspaceCreator
+    @SecurityRequirement(name = "methodBearerAuth")
+    public ResponseEntity<?> findBoardsByWorkspace(@RequestParam(name = "workspace_id") int workSpaceId,
+                                                   HttpServletRequest request)
+    {
+        return workspaceService.findByWorkspaceId(workSpaceId).isPresent()
+                ?ResponseEntity.ok(boardService.findByWorkspace(workSpaceId))
+                :ResponseEntity.status(204).body(new MessageResponse("Workspace not found",204));
     }
 
     @Operation(summary = "Add a new workspace")
@@ -68,10 +85,10 @@ public class WorkspaceController {
             Optional<Role> roleOptional = roleService.findByRoleName("WS_CREATOR");
             if(roleOptional.isPresent())
             userWorkspace.setRole(roleOptional.get());
-            else return ResponseEntity.status(304).body(new MessageResponse("Role not found"));
+            else return ResponseEntity.status(204).body(new MessageResponse("Role not found",204));
             return userWorkspaceService.add(userWorkspace).isPresent()
-                    ?ResponseEntity.status(200).body(new MessageResponse("Add workspace successfully"))
-                    :ResponseEntity.status(304).body(new MessageResponse("Add workspace fail"));
+                    ?ResponseEntity.status(200).body(new MessageResponse("Add workspace successfully",200))
+                    :ResponseEntity.status(304).body(new MessageResponse("Add workspace fail",304));
     }
 
     @Operation(summary = "Update workspace's infomation")

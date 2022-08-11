@@ -22,7 +22,6 @@ import java.util.Optional;
 description = "Use to represent the relationship between users and tasks")
 @RestController
 @RequestMapping("project1/api/user-task")
-@SecurityRequirement(name = "bearerAuth")
 public class UserTaskController {
 
     @Autowired
@@ -70,12 +69,12 @@ public class UserTaskController {
                                     HttpServletRequest request)
     {
         if(!userTaskService.findById(id).isPresent())
-            return ResponseEntity.status(204).body(new MessageResponse("User Task not found"));
+            return ResponseEntity.status(204).body(new MessageResponse("User Task not found",204));
         userTaskDTO.setId(id);
         Optional<UserTask> userTaskOptional = userTaskService.update(userTaskDTO);
         return userTaskOptional.isPresent()
-                ?ResponseEntity.status(200).body(new MessageResponse("Update UserTask successfully"))
-                :ResponseEntity.status(304).body(new MessageResponse("Update UserTask fail"));
+                ?ResponseEntity.status(200).body(new MessageResponse("Update UserTask successfully",200))
+                :ResponseEntity.status(304).body(new MessageResponse("Update UserTask fail",304));
     }
 
     @Operation(summary = "Remove a user from a task")

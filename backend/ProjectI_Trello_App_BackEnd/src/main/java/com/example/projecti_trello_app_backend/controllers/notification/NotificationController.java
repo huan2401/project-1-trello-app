@@ -39,7 +39,7 @@ public class NotificationController {
     {
         return notificationService.findByNotificationId(notificationId).isPresent()
                 ?ResponseEntity.ok(notificationService.findByNotificationId(notificationId))
-                :ResponseEntity.status(204).body(new MessageResponse("Not found notification"));
+                :ResponseEntity.status(204).body(new MessageResponse("Not found notification",204));
     }
 
     @Operation(summary = "Add a new notification")
@@ -50,7 +50,7 @@ public class NotificationController {
     {
         Optional<Notification> notificationOptional = notificationService.add(notification);
         return notificationOptional.isPresent()
-                ?ResponseEntity.status(200).body(new MessageResponse("Add notification successfully"))
-                :ResponseEntity.status(304).body(new MessageResponse("Add notificaion fail"));
+                ?ResponseEntity.status(200).body(new MessageResponse("Add notification successfully",200))
+                :ResponseEntity.status(304).body(new MessageResponse("Add notificaion fail",304));
     }
 }

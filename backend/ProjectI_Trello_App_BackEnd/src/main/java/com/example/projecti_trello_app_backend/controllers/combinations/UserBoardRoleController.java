@@ -71,7 +71,7 @@ public class UserBoardRoleController {
     public ResponseEntity<?> findMyBoards(HttpServletRequest request)
     {
         User user = util.getUserFromRequest(request);
-        if(user == null) return ResponseEntity.status(204).body(new MessageResponse("User is not found"));
+        if(user == null) return ResponseEntity.status(204).body(new MessageResponse("User is not found",204));
         return ResponseEntity.ok(userBoardRoleService.findByUser(user.getUserId()));
     }
 
@@ -114,12 +114,12 @@ public class UserBoardRoleController {
                                               HttpServletRequest request)
     {
         if(userBoardRoleService.findByUserAndBoard(userId,boardId).isPresent())
-            return ResponseEntity.status(304).body(new MessageResponse("User is in board"));
+            return ResponseEntity.status(304).body(new MessageResponse("User is in board",304));
         String roleNameSta = "BOARD_"+roleName.toUpperCase(); // stadardize role' name
         UserBoardRole userBoardRoleToAdd = UserBoardRole.builder().build();
         Optional<Role> roleOptional = roleService.findByRoleName(roleNameSta);
         if (roleOptional.isPresent()) userBoardRoleToAdd.setRole(roleOptional.get());
-        else return ResponseEntity.status(304).body(new MessageResponse("Add user to board fail - role not found"));
+        else return ResponseEntity.status(304).body(new MessageResponse("Add user to board fail - role not found",304));
         return userService.findByUserId(userId).map(user -> {
             userBoardRoleToAdd.setUser(user);
             return boardService.findByBoardId(boardId).map(board -> {
@@ -132,13 +132,13 @@ public class UserBoardRoleController {
                     userWorkspace.setUser(user);
                     userWorkspace.setRole(roleService.findByRoleName("WS_GUESS").get());
                     if(!userWorkspaceService.add(userWorkspace).isPresent())
-                        return ResponseEntity.status(304).body(new MessageResponse("Set new guess user of workspace fail"));
+                        return ResponseEntity.status(304).body(new MessageResponse("Set new guess user of workspace fail",304));
                 }
                 return userBoardRoleAdded.isPresent()
-                        ?ResponseEntity.status(200).body(new MessageResponse("Add user to board successfully"))
-                        : ResponseEntity.status(204).body(new MessageResponse("Add user to board fail"));
-            }).orElse(ResponseEntity.status(304).body(new MessageResponse("Add user to board fail - board not found")));
-        }).orElse(ResponseEntity.status(304).body(new MessageResponse("Add user to board fail - user not found")));
+                        ?ResponseEntity.status(200).body(new MessageResponse("Add user to board successfully",200))
+                        : ResponseEntity.status(204).body(new MessageResponse("Add user to board fail",204));
+            }).orElse(ResponseEntity.status(304).body(new MessageResponse("Add user to board fail - board not found",304)));
+        }).orElse(ResponseEntity.status(304).body(new MessageResponse("Add user to board fail - user not found",304)));
     }
 
     @Operation(summary = "Set role for a user in a board")
@@ -152,14 +152,14 @@ public class UserBoardRoleController {
     {
         String roleNameSta = "BOARD_"+roleName.toUpperCase();
         if(!roleService.findByRoleName(roleNameSta).isPresent())
-            return ResponseEntity.status(204).body(new MessageResponse("Not found role"));
+            return ResponseEntity.status(204).body(new MessageResponse("Not found role",204));
         if(!userService.findByUserId(userId).isPresent())
-            return ResponseEntity.status(204).body(new MessageResponse("Not found user"));
+            return ResponseEntity.status(204).body(new MessageResponse("Not found user",204));
         if(!boardService.findByBoardId(boardId).isPresent())
-            return ResponseEntity.status(204).body(new MessageResponse("Not found board"));
+            return ResponseEntity.status(204).body(new MessageResponse("Not found board",204));
         return userBoardRoleService.setRoleForUser(userId,boardId,roleNameSta)
-                ?ResponseEntity.status(200).body(new MessageResponse("Set role in board for user successfully"))
-                : ResponseEntity.status(304).body(new MessageResponse("Set role in board for user fail"));
+                ?ResponseEntity.status(200).body(new MessageResponse("Set role in board for user successfully",200))
+                : ResponseEntity.status(304).body(new MessageResponse("Set role in board for user fail",304));
     }
 
     @Operation(summary = "Delete all user_board_role of a board after it was deleted")
@@ -171,9 +171,9 @@ public class UserBoardRoleController {
     {
         return boardService.findByBoardId(boardId).map(board -> {
             return userBoardRoleService.deleteByBoard(boardId)
-                    ?ResponseEntity.status(200).body(new MessageResponse("Delete by board successfully"))
-                    :ResponseEntity.status(304).body(new MessageResponse("Delete by board fail"));
-        }).orElse(ResponseEntity.status(204).body(new MessageResponse("Delete by board fail - Not found board")));
+                    ?ResponseEntity.status(200).body(new MessageResponse("Delete by board successfully",200))
+                    :ResponseEntity.status(304).body(new MessageResponse("Delete by board fail",304));
+        }).orElse(ResponseEntity.status(204).body(new MessageResponse("Delete by board fail - Not found board",304)));
     }
 
     @Operation(summary = "Remove a board's member from the board")
@@ -187,10 +187,10 @@ public class UserBoardRoleController {
         return userService.findByUserId(userId).map(user -> {
             return boardService.findByBoardId(boardId).map(board -> {
                 return userBoardRoleService.deleteUserFromBoard(userId,boardId)
-                        ? ResponseEntity.status(200).body(new MessageResponse("Delete user from board successfully"))
-                        : ResponseEntity.status(304).body(new MessageResponse("Delete user from board fail"));
-            }).orElse(ResponseEntity.status(204).body(new MessageResponse("Delete user from board fail - board not found")));
-        }).orElse(ResponseEntity.status(304).body(new MessageResponse("Delete user from board fail - user not found")));
+                        ? ResponseEntity.status(200).body(new MessageResponse("Delete user from board successfully",200))
+                        : ResponseEntity.status(304).body(new MessageResponse("Delete user from board fail",304));
+            }).orElse(ResponseEntity.status(204).body(new MessageResponse("Delete user from board fail - board not found",204)));
+        }).orElse(ResponseEntity.status(304).body(new MessageResponse("Delete user from board fail - user not found",304)));
     }
 
 }
