@@ -1,163 +1,45 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import Column from "./Column";
-import { BoardWrapper } from "./CustomStyled";
-import ModalCard from "components/common/Modal/ModalCard";
+import React, { useState, useEffect } from "react";
 
-const column = {
-  columnId: undefined,
-  board: "",
-  columnTitle: "",
-  createdAt: "",
-  updatedAt: "",
-  status: "",
-  position: undefined,
-  deleted: false,
-};
+import { Container, Draggble } from "react-smooth-dnd";
+import Column from "../Board/Column/Column";
+import { initialData } from "actions/initialData";
+import "./Board.scss";
+import { isEmpty } from "lodash";
+import { mapOrder } from "ultilities/sorts";
 
-const task = {
-  taskId: undefined,
-  taskName: "",
-  taskDescription: "",
-  taskBackgroundUrl: "",
-  createdAt: "",
-  updatedAt: "",
-  startAt: "",
-  dueAt: "",
-  isReviewed: false,
-  isDone: false,
-  deleted: false,
-};
+function BoardContent() {
+    const [board, setBoard] = useState({});
+    const [columns, setColumns] = useState([]);
 
-const mockDataContentTask = (
-  <div>
-    <p style={{ fontWeight: "500", fontSize: "18px" }}>
-      Project 1 : Trello App
-    </p>
-    <p style={{ fontSize: "12px" }}>Create At : 11/08/2022</p>
-  </div>
-);
+    useEffect(() => {
+        const boardFromDB = initialData.boards.find(
+            (board) => board.id === "board-1"
+        );
+        if (boardFromDB) {
+            setBoard(boardFromDB);
+            setColumns(
+                mapOrder(boardFromDB.columns, boardFromDB.columnOrder, "id")
+            );
+        }
+    }, []);
 
-const initData = {
-  tasks: {
-    "task-1": {
-      id: "task-1",
-      content: mockDataContentTask,
-    },
-    "task-2": {
-      id: "task-2",
-      content: mockDataContentTask,
-    },
-    "task-3": {
-      id: "task-3",
-      content: mockDataContentTask,
-    },
-    "task-4": {
-      id: "task-4",
-      content: mockDataContentTask,
-    },
-    "task-5": {
-      id: "task-5",
-      content: mockDataContentTask,
-    },
-    "task-6": {
-      id: "task-6",
-      content: mockDataContentTask,
-    },
-    "task-7": {
-      id: "task-7",
-      content: mockDataContentTask,
-    },
-    "task-8": {
-      id: "task-8",
-      content: mockDataContentTask,
-    },
-    "task-9": {
-      id: "task-9",
-      content: mockDataContentTask,
-    },
-    "task-10": {
-      id: "task-10",
-      content: mockDataContentTask,
-    },
-    "task-11": {
-      id: "task-11",
-      content: mockDataContentTask,
-    },
-    "task-12": {
-      id: "task-12",
-      content: mockDataContentTask,
-    },
-  },
-  columns: {
-    "column-1": {
-      id: "column-1",
-      title: "Todo",
-      taskIds: ["task-1", "task-2", "task-3", "task-4"],
-    },
-    "column-2": {
-      id: "column-2",
-      title: "Doing",
-      taskIds: ["task-5", "task-6", "task-7", "task-8", "task-9"],
-    },
-    "column-3": {
-      id: "column-3",
-      title: "Test",
-      taskIds: ["task-10", "task-11", "task-12"],
-    },
-    "column-4": {
-      id: "column-4",
-      title: "Done",
-      taskIds: [],
-    },
-  },
-  columnOrder: ["column-1", "column-2", "column-3", "column-4"],
-};
-
-const Board = () => {
-  const [data, setData] = useState(initData);
-  const onDragEnd = (result) => {
-    console.log("result change board", result);
-  };
-  return (
-    <BoardWrapper>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable
-          droppableId="all-column"
-          type="column"
-          direction="horizontal"
-        >
-          {(provided, snapshot) => (
+    if (isEmpty(board)) {
+        return (
             <div
-              isDraggingOver={snapshot.isDraggingOver}
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              style={{ display: "flex", gap: "10px" }}
+                className="not-found"
+                style={{ padding: "10px", color: "white" }}
             >
-              {data.columnOrder.map((columnId, index) => {
-                const column = data.columns[columnId];
-                const tasks = column.taskIds.map(
-                  (taskId) => data.tasks[taskId]
-                );
-                return (
-                  <Column
-                    index={index}
-                    key={column.id}
-                    column={column}
-                    tasks={tasks}
-                  />
-                );
-              })}
-              {provided.placeholder}
-              <div className="column-add">
-                <p>+ Add another list</p>
-              </div>
+                Board not found
             </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    </BoardWrapper>
-  );
-};
-export default Board;
+        );
+    }
+    return (
+        <div className="board-content">
+            {columns.map((column, index) => (
+                <Column key={index} column={column} />
+            ))}
+        </div>
+    );
+}
+
+export default BoardContent;
